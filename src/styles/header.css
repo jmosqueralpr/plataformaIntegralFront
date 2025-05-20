@@ -1,0 +1,39 @@
+/* src/styles/Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #212930;
+    padding: 1px 2px;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 60px;
+}
+
+.logoContainer {
+    background-color: #007bff; /* Color del fondo del contenedor */
+    padding: 3px; /* Espacio alrededor del logo */
+    display: flex; /* Para centrar el logo dentro del contenedor */
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px; /* Bordes redondeados del contenedor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega una sombra para darle profundidad */
+}
+
+.logoContainer img {
+    height: 50px; /* Mantiene el tamaño del logo */
+    background-color: white; /* Fondo blanco para destacar el logo */
+    border-radius: 8px; /* Bordes redondeados del fondo del logo */
+    padding: 5px; /* Espacio interno para que no quede tan justo */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    margin: 0; /* Quita márgenes innecesarios */
+}
+
+
+.user-info {
+    font-size: 14px;
+    color: #333;
+}

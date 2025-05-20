@@ -1,0 +1,218 @@
+/* src/styles/configuration.css */
+.configuration-container {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #202020; /* Fondo oscuro */
+  color: rgb(231, 233, 234); /* Texto blanco suave */
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+header .header-left .company-logo {
+  width: 150px; /* Ajusta el tamaño del logo según necesites */
+}
+
+header .header-right {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.configuration-main {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #212930; /* Fondo gris oscuro */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 20px; /* Corrección */
+  flex-wrap: wrap; /* Permite que los elementos pasen a una nueva línea si no caben */
+}
+
+.configuration-main h2 {
+  font-size: 1.5rem;
+  color: rgb(231, 233, 234);
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.error-message {
+  color: #ff0000;
+  font-size: 1rem;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.success-message {
+  color: #00cc00;
+  font-size: 1rem;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.pages-config,
+.user-config {
+  margin-bottom: 30px;
+}
+
+.pages-config {
+  flex: 2;
+}
+
+.user-config {
+  flex: 1;
+}
+
+.pages-config h3,
+.user-config h3 {
+  font-size: 1.25rem;
+  color: rgb(231, 233, 234);
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.pages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #2c3640;
+  border-radius: 5px;
+}
+
+.page-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  color: rgb(231, 233, 234);
+}
+
+.page-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+.order-input {
+  width: 60px;
+  padding: 5px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #333;
+}
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 1rem;
+  color: rgb(231, 233, 234);
+}
+
+.form-group input {
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #333;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.save-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #00cc00;
+  color: rgb(231, 233, 234);
+  transition: background-color 0.2s ease;
+}
+
+.save-button:hover {
+  background-color: #009900;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .configuration-main {
+      flex-direction: column; /* Acomoda las secciones en columna */
+      padding: 15px;
+  }
+
+  .pages-config,
+  .user-config {
+      flex: 1; /* Ambos elementos ocupan el ancho completo */
+  }
+}
+
+@media (max-width: 600px) {
+  header .header-left .company-logo {
+      width: 120px;
+  }
+
+  header .header-right {
+      font-size: 16px;
+  }
+
+  .configuration-main {
+      padding: 15px;
+  }
+
+  .configuration-main h2 {
+      font-size: 1.25rem;
+  }
+
+  .pages-config h3,
+  .user-config h3 {
+      font-size: 1.1rem;
+  }
+
+  .page-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+  }
+
+  .order-input {
+      width: 100%;
+  }
+
+  .form-group label,
+  .form-group input {
+      font-size: 0.9rem;
+  }
+
+  .save-button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+  }
+}

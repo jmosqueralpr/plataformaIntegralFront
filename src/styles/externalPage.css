@@ -1,0 +1,107 @@
+.external-page-container {
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #202020; /* Fondo oscuro del body */
+    color: rgb(231, 233, 234); /* Color de texto heredado */
+  }
+  
+  header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+    color: rgb(231, 233, 234); /* Blanco suave */
+    font-weight: 600;
+  }
+  
+  .external-page-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre los globos */
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .external-page-box {
+    background-color: #212930; /* Fondo gris oscuro para los globos */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    /* Eliminamos la transición y el efecto de elevación */
+  }
+  
+  .box-title {
+    font-size: 1.5rem;
+    color: rgb(231, 233, 234); /* Blanco suave */
+    margin: 0;
+    line-height: 1.2;
+    text-align: center;
+  }
+  
+  .box-link {
+    display: inline-block;
+    font-size: 1rem;
+    color: rgb(231, 233, 234); /* Blanco suave */
+    background-color: #007bff; /* Azul para el enlace */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    text-align: center;
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    box-sizing: border-box;
+  }
+  
+  .box-link:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+  }
+  
+  .box-text {
+    font-size: 1rem;
+    color: rgb(231, 233, 234); /* Blanco suave */
+    margin: 0;
+    line-height: 1.5;
+    text-align: center;
+  }
+  
+  /* Ajustes específicos para cada tipo de globo */
+  .title-box {
+    /* Puedes agregar estilos específicos si lo deseas */
+  }
+  
+  .link-box {
+    /* Centrar el enlace */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .description-box {
+    /* Puedes agregar estilos específicos si lo deseas */
+  }
+  
+  /* Responsividad */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 1.5rem;
+    }
+  
+    .external-page-box {
+      padding: 15px;
+    }
+  
+    .box-title {
+      font-size: 1.25rem;
+    }
+  
+    .box-link {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+  
+    .box-text {
+      font-size: 0.9rem;
+    }
+  }

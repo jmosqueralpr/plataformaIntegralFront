@@ -1,0 +1,93 @@
+.dashboard-container {
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-left .company-logo {
+  width: 150px;
+}
+
+.header-right {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.section-box {
+  padding: 10px;
+  background-color: #212930;
+  border: 5px solid #ddd;
+  border-radius: 15px;
+  text-align: center;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transición suave para el efecto */
+  cursor: pointer; /* Cursor en forma de manito */
+}
+
+.section-box:hover {
+  transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+}
+
+.title-card {
+  margin: 3px;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  line-height: 1.2;
+  
+  /* Propiedades para WebKit (compatibilidad con navegadores antiguos) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  
+  /* Propiedades estándar (mejor compatibilidad en navegadores modernos) */
+  display: -webkit-box; /* Necesario para que line-clamp funcione */
+  line-clamp: 2; /* Propiedad estándar */
+  box-orient: vertical; /* Propiedad estándar, aunque menos común */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-card {
+  margin: 3px;
+  flex: 1; /* El párrafo ocupa el espacio restante */
+  overflow: auto; /* Si el texto es muy largo, permite scroll */
+}
+
+/* Responsividad */
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 600px) {
+  main {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+  }
+
+  .section-box {
+    height: 150px; /* Ajustar altura para pantallas pequeñas */
+  }
+
+  .title-card {
+    font-size: clamp(0.9rem, 2vw, 1.2rem); /* Ajustar tamaño del título */
+  }
+
+  .text-card {
+    font-size: 0.9rem; /* Ajustar tamaño del texto */
+  }
+}

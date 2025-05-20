@@ -1,0 +1,387 @@
+/* src/styles/expirationTracker.css */
+/* General */
+
+.expiration-tracker-container { /* Cambiado de .task-manager-container */
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #202020; /* Fondo oscuro */
+  color: rgb(231, 233, 234); /* Texto blanco suave */
+}
+.rows {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+}
+.columns {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column
+}
+
+.margin-top {
+  margin-top: 5px !important;
+}
+
+.expiration-header { /* Cambiado de .task-header */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.expiration-title-header { /* Cambiado de .task-title (para el encabezado) */
+  font-size: 24px;
+  color: rgb(231, 233, 234);
+  margin: 5px;
+  font-weight: 600;
+}
+
+.new-item-btn { /* Cambiado de .new-task-btn */
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: fit-content;
+  max-width: 200px; 
+  display: inline-block; 
+}
+
+
+.new-item-btn:hover { /* Cambiado de .new-task-btn:hover */
+  background-color: #218838; /* Verde más oscuro */
+}
+
+.modal-btn-delete {
+  margin-top: 5px;
+  background-color: #e74c3c;  /* Rojo */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.modal-btn-delete:hover {
+  background-color: #c0392b;  /* Rojo oscuro */
+}
+
+/* Contenedor principal de las tarjetas de vencimiento */
+.expiration-tracker-main { /* Cambiado de .task-manager-main */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Diseño adaptativo */
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto !important;
+}
+
+/* Estilos para ExpirationCard (reemplaza .task-box) */
+.expiration-box { /* Estilo para cada tarjeta de vencimiento, usado en ExpirationCard.jsx */
+  background-color: #212930; /* Fondo gris oscuro para las tarjetas */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer; /* Cursor en forma de manito */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.expiration-box:hover {
+  transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.expiration-title { /* Título dentro de la ExpirationCard */
+  font-size: 1.25rem;
+  color: rgb(231, 233, 234);
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.expiration-description { /* Descripción dentro de la ExpirationCard */
+  font-size: 1rem;
+  color: rgb(231, 233, 234);
+  margin: 0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Metadatos en la ExpirationCard */
+.expiration-meta {
+  margin-top: 15px;
+  border-top: 1px solid #3a3a3a;
+  padding-top: 10px;
+  font-size: 0.85rem;
+  color: rgb(200, 200, 200);
+}
+
+.expiration-meta-item {
+  margin: 5px 0; /* Ajustado el margen para mejor espaciado */
+  text-align: left; 
+}
+
+.expired-badge {
+  background-color: #e74c3c;  /* rojo */
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+
+/* Estilos del modal (generalmente se mantienen, ya que la estructura del modal es similar) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: #212930;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: -10px; 
+  right: -10px; 
+  background-color: #ffffff; 
+  color: #ff0000; 
+  border: none;
+  border-radius: 50%; 
+  width: 24px; 
+  height: 24px; 
+  font-size: 1rem; 
+  line-height: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  transition: background-color 0.2s ease, color 0.2s ease; 
+}
+
+.modal-close:hover {
+  background-color: #e6e6e6; 
+  color: #cc0000; 
+}
+
+.modal-close-alternative {
+  background-color: #ffffff;
+  color: #ff0000;
+  border: none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 1;
+  max-width: 24px; 
+  max-height: 24px;
+  padding: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+.modal-close-alternative:hover {
+  background-color: #e6e6e6; 
+  color: #cc0000; 
+}
+
+.modal-title { /* Título dentro del modal */
+  font-size: 1.5rem; /* Mantenido para el título del modal */
+  color: rgb(231, 233, 234);
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-align: center;
+  /* font-size: 1.25rem; /* Esta línea era redundante o un error, se usa la de arriba */
+  font-weight: bold;
+}
+
+.modal-text {
+  font-size: 1rem;
+  color: rgb(231, 233, 234);
+  margin: 2px 0;
+  line-height: 1.5;
+  /* text-align: center; */ /* Comentado para que el flex-direction lo maneje */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.modal-text input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4ade80; 
+}
+
+.modal-text-select { /* Se aplica a cualquier select dentro del modal si se necesitara */
+  width: 150px !important;
+  max-width: 100%;
+  padding: 0.25rem;
+  background-color: #2c2f36; /* Coherencia con date input */
+  color: #e7e9ea;
+  border: 1px solid #444;
+  border-radius: 6px;
+}
+
+.modal-text-box { /* Para inputs de texto y textarea en el modal */
+  background: #2c2f36; /* Cambio para mejor visibilidad */
+  border: 1px solid #444; /* Cambio para mejor visibilidad */
+  width: 100%;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 12px; /* Consistencia con date input */
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+/* Fecha y hora (se mantiene, ya que ExpirationTracker usa un input de fecha) */
+.date-time-container {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%; /* Ocupa el espacio disponible en el label .modal-text */
+}
+
+.modal-date-time-input { /* Estilo para el input de fecha */
+  background-color: #2c2f36;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #e7e9ea;
+  padding: 8px 12px;
+  font-size: 1rem;
+  width: 100%; /* Para que ocupe el espacio de su contenedor */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal-date-time-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.4);
+}
+
+.modal-date-time-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+
+/* Estado (Comentado, ya que no se usa en ExpirationTracker) */
+/*
+.state-select {
+  background-color: #212930;
+  border-radius: 6px;
+  border: 1px solid whitesmoke;
+}
+*/
+
+/* Importancia (Comentado, ya que no se usa en ExpirationTracker) */
+/*
+ul{
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.importance-urgente {
+  background-color: #da0000; 
+  color: #ffeaea;
+  border: 1px solid #b81a1a;
+  border-radius: 6px;
+}
+
+.importance-alta {
+  background-color: #7b1e1e; 
+  color: #ffeaea;
+  border: 1px solid #aa4b4b;
+  border-radius: 6px;
+}
+
+.importance-media {
+  background-color: #704900; 
+  color: #fff1da;
+  border: 1px solid #b57c28;
+  border-radius: 6px;
+}
+
+.importance-baja {
+  background-color: #1d3b1d; 
+  color: #d7ffe0;
+  border: 1px solid #4caf50;
+  border-radius: 6px;
+}
+
+.importance-badge { 
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-top: 6px;
+}
+*/
+
+
+/* Responsividad */
+@media (max-width: 600px) {
+  /* .expiration-header h1 {  No existe esta anidación, se corrige abajo */
+  .expiration-title-header { /* Aplicar al título del header directamente */
+    font-size: 1.5rem;
+  }
+
+  .expiration-box { /* Aplicar a la tarjeta de vencimiento */
+    padding: 15px;
+  }
+
+  .expiration-title { /* Aplicar al título dentro de la tarjeta */
+    font-size: 1.1rem;
+  }
+
+  .expiration-description { /* Aplicar a la descripción dentro de la tarjeta */
+    font-size: 0.9rem;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+
+  .modal-title { /* Título del modal */
+    font-size: 1.25rem;
+  }
+
+  .modal-text {
+    font-size: 0.9rem;
+  }
+
+  .modal-close {
+    top: -8px; 
+    right: -8px;
+    width: 20px; 
+    height: 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Estilos del expiration item (si se necesitaran más específicos que .expiration-box) */

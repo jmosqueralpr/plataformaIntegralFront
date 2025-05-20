@@ -1,0 +1,379 @@
+/* src/styles/taskManager.css */
+/* General */
+
+.task-manager-container {
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #202020; /* Fondo oscuro */
+    color: rgb(231, 233, 234); /* Texto blanco suave */
+  }
+  .rows {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+  .columns {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column
+  }
+
+  .margin-top {
+    margin-top: 5px !important;
+  }
+  
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .task-title {
+    font-size: 24px;
+    color: rgb(231, 233, 234);
+    margin: 5px;
+    font-weight: 600;
+  }
+  
+  .new-task-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: fit-content;
+    max-width: 200px; /* o lo que necesites */
+    display: inline-block; /* evita ocupar todo el ancho */
+  }
+  
+  
+  .new-task-btn:hover {
+    background-color: #218838; /* Verde más oscuro */
+  }
+
+  .modal-btn-delete {
+    margin-top: 5px;
+    background-color: #e74c3c;  /* Rojo */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .modal-btn-delete:hover {
+    background-color: #c0392b;  /* Rojo oscuro */
+  }
+  
+  
+  
+  .task-manager-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Diseño adaptativo */
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .task-box {
+    background-color: #212930; /* Fondo gris oscuro para las tareas */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer; /* Cursor en forma de manito */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .task-box:hover {
+    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .task-title {
+    font-size: 1.25rem;
+    color: rgb(231, 233, 234);
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    text-align: center;
+  }
+  
+  .task-text {
+    font-size: 1rem;
+    color: rgb(231, 233, 234);
+    margin: 0;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* 👇 **NUEVA SECCIÓN DE INFO EN LA TARJETA** */
+.task-meta {
+  margin-top: 15px;
+  border-top: 1px solid #3a3a3a;
+  padding-top: 10px;
+  font-size: 0.85rem;
+  color: rgb(200, 200, 200);
+}
+
+.task-meta-item {
+  margin: 0px 0;
+  text-align: left; /* 👈 opcional: alineación a la izquierda */
+}
+/* 👆 **FIN DE SECCIÓN NUEVA** */
+
+  
+  /* Estilos del modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+    
+  }
+  
+  .modal-content {
+    background-color: #212930;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: -10px; /* Ajustado para estar arriba del modal */
+    right: -10px; /* Ajustado para estar a la derecha del modal */
+    background-color: #ffffff; /* Fondo blanco */
+    color: #ff0000; /* Color rojo para la "×" */
+    border: none;
+    border-radius: 50%; /* Fondo redondeado */
+    width: 24px; /* Tamaño pequeño */
+    height: 24px; /* Tamaño pequeño */
+    font-size: 1rem; /* Tamaño de la "×" */
+    line-height: 1; /* Evita que el tamaño de línea afecte el botón */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    transition: background-color 0.2s ease, color 0.2s ease; /* Transición suave */
+  }
+  
+  .modal-close:hover {
+    background-color: #e6e6e6; /* Fondo blanco más oscuro al pasar el mouse */
+    color: #cc0000; /* Rojo más oscuro para la "×" */
+  }
+  
+  .modal-close-alternative {
+    background-color: #ffffff;
+    color: #ff0000;
+    border: none;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 1;
+    max-width: 24px; /* 👈 evita que el flex lo estire */
+    max-height: 24px;
+    padding: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+
+  .modal-close-alternative:hover {
+    background-color: #e6e6e6; /* Fondo blanco más oscuro al pasar el mouse */
+    color: #cc0000; /* Rojo más oscuro para la "×" */
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    color: rgb(231, 233, 234);
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .modal-text {
+    font-size: 1rem;
+    color: rgb(231, 233, 234);
+    margin: 2px 0;
+    line-height: 1.5;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* text-align: left; */
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .modal-text input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4ade80; /* verde lindo opcional si el navegador lo permite */
+  }
+
+  .modal-text-select {
+    width: 150px !important;
+    max-width: 100%;
+    padding: 0.25rem;
+
+  }
+
+  .modal-text-box {
+    background: none transparent;
+    border: 1px solid transparent;
+    width: 100%;
+    color: white;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  /* Fecha y hora */
+
+  .date-time-container {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .modal-date-time-input {
+    background-color: #2c2f36;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: #e7e9ea;
+    padding: 8px 12px;
+    font-size: 1rem;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .modal-date-time-input:focus {
+    outline: none;
+    border-color: #4ade80;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.4);
+  }
+  
+  .modal-date-time-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+  
+
+  /* Estado */
+
+  .state-select {
+    background-color: #212930;
+    border-radius: 6px;
+    border: 1px solid whitesmoke;
+  }
+
+  /* Importancia */
+
+  /* IMPORTANCIA (tonos oscuros, sin confundir con botones) */
+
+  ul{
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  .importance-urgente {
+    background-color: #da0000; /* rojo oscuro */
+    color: #ffeaea;
+    border: 1px solid #b81a1a;
+    border-radius: 6px;
+  }
+
+  .importance-alta {
+    background-color: #7b1e1e; /* rojo oscuro */
+    color: #ffeaea;
+    border: 1px solid #aa4b4b;
+    border-radius: 6px;
+  }
+
+  .importance-media {
+    background-color: #704900; /* naranja oscuro */
+    color: #fff1da;
+    border: 1px solid #b57c28;
+    border-radius: 6px;
+  }
+
+  .importance-baja {
+    background-color: #1d3b1d; /* verde oscuro */
+    color: #d7ffe0;
+    border: 1px solid #4caf50;
+    border-radius: 6px;
+  }
+
+  .importance-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 6px;
+  }
+
+  
+  
+  /* Responsividad */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 1.5rem;
+    }
+  
+    .task-box {
+      padding: 15px;
+    }
+  
+    .task-title {
+      font-size: 1.1rem;
+    }
+  
+    .task-text {
+      font-size: 0.9rem;
+    }
+  
+    .modal-content {
+      padding: 15px;
+    }
+  
+    .modal-title {
+      font-size: 1.25rem;
+    }
+  
+    .modal-text {
+      font-size: 0.9rem;
+    }
+  
+    .modal-close {
+      top: -8px; /* Ajustado para pantallas pequeñas */
+      right: -8px;
+      width: 20px; /* Tamaño más pequeño */
+      height: 20px;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Estilos del task */
