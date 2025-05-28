@@ -19,6 +19,7 @@ const Login = () => {
     event.preventDefault();
 
     console.log('Datos a enviar:', { username, password });
+    console.log("LogiN");
     console.log(`Login a: ${config.baseURL}/api/login`);
 
     const response = await fetch(`${config.baseURL}/api/login`, {
