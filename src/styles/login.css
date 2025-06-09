@@ -3,15 +3,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
     background-color: #202020;
   }
 
-  #root {
+/*   #root {
     background: #202020;
     color: rgb(231,233,234);
   }
-  
+   */
   form {
     background-color: #212930;
     padding: 20px;

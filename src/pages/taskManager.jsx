@@ -38,6 +38,7 @@ const TaskManager = () => {
 
   const handleSearch = async () => {
     setLoading(true);
+    console.log(`Solicitud de tareas a: ${config.baseURL}/api/tasks`);
     try {
       const response = await fetch(`${config.baseURL}/api/tasks`, {
         method: "GET",
@@ -45,11 +46,17 @@ const TaskManager = () => {
         headers: {"content-Type": "application/json"},
       });
       if (!response.ok) {
+        console.log("No pudo cargar las tareas");
+        console.log(`Error, response.status: ${response.status}`);
+        console.log(`Error, response.statusText ${response.statusText}`);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
+      console.log(`Las tareas deberian haberse cargado`);
+      console.log(data);
       setResults(data);
     } catch (error) {
+      console.log(`Entre al catch ${error}`);
       console.error("Error en la búsqueda:", error);
     } finally {
       setLoading(false);
@@ -59,6 +66,7 @@ const TaskManager = () => {
 
   /* Para poder cargar los resultados iniciales */
   useEffect(() => {
+    console.log("Ingreso a useEffect inicial");
     const fetchData = async () => {
       await handleSearch();
     };

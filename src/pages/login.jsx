@@ -19,8 +19,9 @@ const Login = () => {
     event.preventDefault();
 
     console.log('Datos a enviar:', { username, password });
-    console.log("LogiN");
+    console.log("LogiN - 2");
     console.log(`Login a: ${config.baseURL}/api/login`);
+    
 
     const response = await fetch(`${config.baseURL}/api/login`, {
       method: 'POST',
@@ -49,7 +50,7 @@ const Login = () => {
   const handleGuestLogin = async (event) => {
     event.preventDefault();
     setUsername('invitadoDePrueba');
-    setPassword('invitadoDePrueba');
+    setPassword('');
     console.log(username);
     
     const response = await fetch(`${config.baseURL}/api/login`, {
