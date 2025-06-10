@@ -21,6 +21,7 @@ const Dashboard = () => {
         </div>
       </header>
       <main>
+        <DashboardCard className='main-container' title={'AsistenteTelegram'} link={'AsistenteTelegram'} text = {'Acceso a asistente de Telegram.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Configuration'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Centro de soluciones'} link={'searchSolutions'} text = {'Herramienta para que puedas acceder a soluciones sencillas a tus problemas diarios.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Task Manager'} link={'TaskManager'} text = {'Herramienta para que puedas administrar tus tareas diarieas.'} ></DashboardCard>

@@ -15,6 +15,11 @@
     color: rgb(231, 233, 234); /* Blanco suave */
     font-weight: 600;
   }
+
+  .imgQr{
+    height: 250px;
+    width: 250px;
+  }
   
   .external-page-main {
     display: flex;

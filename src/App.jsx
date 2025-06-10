@@ -19,6 +19,7 @@ import ExpirationTracker from './pages/expirationTracker';
 import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
 import Gestionar from './pages/gestionar';
+import AsistenteTelegram from './pages/asistenteTelegram';
 
 
 
@@ -36,6 +37,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/asistenteTelegram" element={<AsistenteTelegram />} />
               <Route path="/configuration" element={<Configuration />} />
               <Route path="/comprasDYB" element={<ComprasDyb />} />
               <Route path="/comprasEmepa" element={<ComprasEmepa />} />

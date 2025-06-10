@@ -376,4 +376,16 @@
     }
   }
 
+  /* Responsividad */
+@media (max-width: 900px) {
+  .task-manager-main {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 600px) {
+  .task-manager-main {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+  }
+}
   /* Estilos del task */
