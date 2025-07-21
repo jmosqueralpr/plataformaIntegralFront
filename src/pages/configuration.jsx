@@ -202,6 +202,7 @@ const Configuration = () => {
         {success && <p className="success-message">{success}</p>}
 
         {/* Configuración de páginas */}
+        {/*
         <section className="pages-config">
           <h3>Configuración de Páginas</h3>
           <div className="pages-list">
@@ -236,7 +237,7 @@ const Configuration = () => {
           </div>
           
         </section>
-
+        */}
         {/* Configuración del usuario */}
         <section className="user-config">
           <h3>Datos del Usuario</h3>

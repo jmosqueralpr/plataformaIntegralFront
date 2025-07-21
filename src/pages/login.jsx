@@ -14,6 +14,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  console.log(`Prueba de variables de entorno: ${import.meta.env.VITE_PRUEBA_ENV}`)
 
   const handleLogin = async (event) => {
     event.preventDefault();
