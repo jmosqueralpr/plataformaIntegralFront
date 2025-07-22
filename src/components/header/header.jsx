@@ -12,7 +12,7 @@ const Header = ({ userName }) => {
     return (
         <header className="header">
             <Logo></Logo>
-            {/* <Prueba></Prueba> */}
+            <Prueba></Prueba>
             <UserCard isFollowing={true} userName= {authUser} name={authUser}/>
         </header>
     )
