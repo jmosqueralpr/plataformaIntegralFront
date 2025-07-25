@@ -101,6 +101,8 @@
     margin: 0 0 10px 0;
     line-height: 1.2;
     text-align: center;
+    height: 50px;
+    overflow: hidden;
   }
   
   .task-text {
@@ -109,6 +111,9 @@
     margin: 0;
     line-height: 1.5;
     text-align: center;
+    height: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* 👇 **NUEVA SECCIÓN DE INFO EN LA TARJETA** */

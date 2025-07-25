@@ -237,7 +237,7 @@ const ExpirationTracker = () => {
 
       {loading && <p>Cargando elementos...</p>}
       
-      <main className="items-grid">
+      <div className="items-grid">
         <div className="expiration-tracker-main">
           {[...results]
             .sort((a, b) => {
@@ -261,11 +261,20 @@ const ExpirationTracker = () => {
               <ExpirationCard key={item._id || item.id} item={item} onClick={() => openModal(item)} />
             ))}
         </div>
-      </main>
+      </div>
 
       {selectedItem && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+       <div
+          className="modal-overlay"
+          onMouseDown={(e) => {
+            // Solo cierra si se clickeó directamente el overlay (fuera del modal)
+            if (e.target.classList.contains("modal-overlay")) {
+              closeModal();
+            }
+          }}
+        >
+          <div className="modal-content">
+        
             <button className="modal-close" onClick={closeModal}>×</button>
 
             <input

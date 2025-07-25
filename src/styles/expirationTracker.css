@@ -76,7 +76,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Diseño adaptativo */
   gap: 20px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto !important;
 }
 
@@ -84,10 +84,11 @@
 .expiration-box { /* Estilo para cada tarjeta de vencimiento, usado en ExpirationCard.jsx */
   background-color: #212930; /* Fondo gris oscuro para las tarjetas */
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer; /* Cursor en forma de manito */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 200px;
 }
 
 .expiration-box:hover {
@@ -98,9 +99,10 @@
 .expiration-title { /* Título dentro de la ExpirationCard */
   font-size: 1.25rem;
   color: rgb(231, 233, 234);
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   line-height: 1.2;
   text-align: center;
+  height: 50px;
 }
 
 .expiration-description { /* Descripción dentro de la ExpirationCard */
