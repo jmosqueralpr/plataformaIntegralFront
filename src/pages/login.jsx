@@ -103,7 +103,7 @@ const Login = () => {
         </div>
         <button className="blueButton" type="submit">Iniciar sesión</button>
       </form>
-      <a rel="stylesheet" className="textLink greyButton externalButton" href="" onClick={handleGuestLogin}>Ingresar como invitado</a>
+      <a rel="stylesheet" className="textLink greyButton externalButton" href="" onClick={handleGuestLogin}>Ingresar como INVITADO</a>
     </div>
   );
 };
