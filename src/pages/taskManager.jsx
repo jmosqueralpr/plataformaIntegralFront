@@ -296,17 +296,17 @@ const TaskManager = () => {
 /*         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}> */
           <div
-              className="modal-overlay"
+              className="modalOverlay"
               onMouseDown={(e) => {
                 // Solo cierra si se clickeó directamente el overlay (fuera del modal)
-                if (e.target.classList.contains("modal-overlay")) {
+                if (e.target.classList.contains("modalOverlay")) {
                   closeModal();
                 }
               }}
             >
-              <div className="modal-content">
+              <div className="modalContent">
 
-            <button className="modal-close" onClick={closeModal}>×</button>
+            <button className="modalClose" onClick={closeModal}>×</button>
 
       {/* Título */}
       <input
@@ -460,6 +460,7 @@ const TaskManager = () => {
             }
           }}
         />
+        
         <datalist id="assigned-users-list">
           {assignedUsers.map((user) => (
             <option key={user} value={user} />
