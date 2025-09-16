@@ -191,8 +191,10 @@ const ExpirationTracker = () => {
   const handleUpdateCreate = async () => {
     if (isNewItem) {
       await createItem();
+      toast.success("Vencimiento creado correctamente");
     } else {
       await updateItem();
+      toast.success("Vencimiento actualizado correctamente");
     }
   };
 

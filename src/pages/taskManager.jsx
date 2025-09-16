@@ -234,6 +234,7 @@ const TaskManager = () => {
 
     } else {
       await updateTask();
+      toast.success("Tarea actualizada correctamente");
     }
 
     /* closeModal(); */
