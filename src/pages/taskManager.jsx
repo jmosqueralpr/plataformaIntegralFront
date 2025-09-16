@@ -4,6 +4,9 @@ import '../styles/taskManager.css';
 import '../styles/global.css';
 import AuthContext from '../context/authContext'; 
 import config from '../../src/config';
+import { toast } from 'react-toastify';
+
+
 
 
 const TaskManager = () => {
@@ -26,6 +29,7 @@ const TaskManager = () => {
       console.log("Estos son los usuarios");
       setAsignedUsers(data);
     }  catch (error) {
+      toast.error("Error en la búsqueda:", error);
       console.error("Error en la búsqueda:", error);
     }
 
@@ -46,6 +50,7 @@ const TaskManager = () => {
         headers: {"content-Type": "application/json"},
       });
       if (!response.ok) {
+        toast.error("No pudo cargar las tareas");
         console.log("No pudo cargar las tareas");
         console.log(`Error, response.status: ${response.status}`);
         console.log(`Error, response.statusText ${response.statusText}`);
@@ -56,6 +61,7 @@ const TaskManager = () => {
       console.log(data);
       setResults(data);
     } catch (error) {
+      toast.error("Error en la búsqueda:", error);
       console.log(`Entre al catch ${error}`);
       console.error("Error en la búsqueda:", error);
     } finally {
@@ -82,7 +88,7 @@ const TaskManager = () => {
   const createTask = async () => {
     // Validar que los campos principales están completos
     if (!selectedTask.title || !selectedTask.description) {
-      alert("Por favor, complete todos los campos obligatorios.");
+      toast.alert("Por favor, complete todos los campos obligatorios.");
       return;
     }
 
@@ -111,7 +117,10 @@ const TaskManager = () => {
       });
 
       if (!response.ok) {
+        toast.error(`Error al crear la tarea: ${response.statusText}`);
         throw new Error(`Error al crear la tarea: ${response.statusText}`);
+      } else {
+        toast.success("Tarea creada correctamente");
       }
 
       // Recibir la tarea creada (esto depende de la estructura de tu backend)
@@ -121,7 +130,11 @@ const TaskManager = () => {
       // Actualizar el estado con la nueva tarea
       setResults((prevResults) => [...prevResults, newTask]);
 
+      // Cerrar el modal
+      closeModal();
+
     } catch (error) {
+      toast.error("Error al crear la tarea:", error);
       console.error("Error al crear la tarea:", error);
     }
   };
@@ -134,6 +147,7 @@ const TaskManager = () => {
     console.log("Prueba hora");
     console.log(selectedTask.notifyAssignedTime);
     if (!selectedTask || !selectedTask._id) {
+      toast.error("No hay una tarea válida para actualizar.");
       console.error("No hay una tarea válida para actualizar.");
       return;
     }
@@ -164,6 +178,7 @@ const TaskManager = () => {
 
       if (!response.ok) {
         const error = await response.json();
+        toast.error("Error al actualizar la tarea:", error.message);
         console.error("Error al actualizar la tarea:", error.message);
         return;
       }
@@ -176,6 +191,7 @@ const TaskManager = () => {
       /* handleSearch(); */
 
     } catch (error) {
+      toast.error("Error al actualizar la tarea:", error);
       console.error("Error al actualizar la tarea:", error);
     }
   };
@@ -196,6 +212,7 @@ const TaskManager = () => {
 
       if (!response.ok) {
         const error = await response.json();
+        toast.error("Error al elimian la tarea:", error.message);
         console.error("Error al elimian la tarea:", error.message);
         return;
       }
@@ -204,6 +221,7 @@ const TaskManager = () => {
       closeModal();
       handleSearch();
     } catch (error) {
+      toast.error("Error al conectar con el servidor", error);
       console.error("Error al conectar con el servidor", error);
     }
   };
@@ -213,6 +231,7 @@ const TaskManager = () => {
   const handleUpdateCreate = async () => {
     if (isNewTask) {
       await createTask();
+
     } else {
       await updateTask();
     }

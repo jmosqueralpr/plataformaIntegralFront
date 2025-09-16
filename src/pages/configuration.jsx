@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AuthContext from '../context/authContext';
 import '../styles/configuration.css';
 import config from '../../src/config';
+import { toast } from 'react-toastify';
 
 // Datos de ejemplo simulados del servidor
 const sampleUserData = [
@@ -127,10 +128,10 @@ const Configuration = () => {
     const data = await response.json();
 
     if (response.status === 200) {
-        alert("El correo electrónico se cambió exitosamente.");
+        toast.success("El correo electrónico se cambió exitosamente.");
         setNewEmail(""); 
     } else {
-        alert("Error al cambiar el correo electrónico: " + data.message);
+        toast.error("Error al cambiar el correo electrónico: " + data.message);
     }
 };
 
@@ -157,7 +158,7 @@ const Configuration = () => {
 
               // Aquí puedes hacer logout o refrescar la página.
           } else {
-              alert("Error al cambiar la contraseña: " + data.message);
+              toast.error("Error al cambiar la contraseña: " + data.message);
           }
         //return data;
       } else {

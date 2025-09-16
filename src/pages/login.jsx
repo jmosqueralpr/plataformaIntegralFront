@@ -5,6 +5,7 @@ import AuthContext from '../context/authContext'; /* Para usar el contexto cread
 import '../styles/global.css';
 import '../styles/login.css';
 import config from '../../src/config';
+import { toast } from 'react-toastify';
 
 
 const Login = () => {
@@ -44,7 +45,7 @@ const Login = () => {
     //SI EL LOGIN NO ES EXITOSO
     } else {
       // Manejar errores de autenticación
-      alert('Usuario o contraseña incorrectos');
+      toast.error('Usuario o contraseña incorrectos');
     }
   };
 
@@ -73,7 +74,7 @@ const Login = () => {
 
     } else {
       // Manejar errores de autenticación
-      alert('Falta registrar el login inicial del usuario invitado');
+      toast.alert('Falta registrar el login inicial del usuario invitado');
     }
   };
 

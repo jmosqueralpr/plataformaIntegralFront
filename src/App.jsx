@@ -6,6 +6,9 @@ import Header from './components/header/header';
 import Footer from './components/footer';
 import { AuthProvider } from './context/authContext'; //El contexto para usuarios.
 import RouteChangeListener from './components/routeChangeListener';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+
 
 //PAGES
 import Login from './pages/login';
@@ -54,7 +57,7 @@ const App = () => {
           <Footer />
         </Router>
           
-        
+        <ToastContainer position="bottom-center" autoClose={8000} /> {/* Esto es para las notificaciones en toda la pagina */}
       </AuthProvider>
 
   );

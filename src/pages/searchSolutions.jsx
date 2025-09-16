@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/searchSolutions.css';
 import config from '../../src/config';
+import { toast } from 'react-toastify';
 
 const SearchSolutions = () => {
   const [query, setQuery] = useState('');
@@ -22,6 +23,7 @@ const SearchSolutions = () => {
       });
 
       if (!response.ok) {
+        toast.error(`Error ${response.status}: ${response.statusText}`);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
@@ -29,6 +31,7 @@ const SearchSolutions = () => {
       if (data.length == 0 ) { alert("NO HAY RESULTADOS EN LA BASE DE DATOS"); }
       setResults(data);
     } catch (error) {
+      toast.error("Error en la busqueda");
       console.error("Error en la búsqueda:", error);
     }
   };
@@ -83,7 +86,7 @@ const SearchSolutions = () => {
       alert('Solución actualizada correctamente');
     } catch (error) {
       console.error('Error actualizando la solución:', error);
-      alert('Hubo un error al actualizar la solución');
+      toast.error('Hubo un error al actualizar la solución');
     }
   };
 
@@ -128,7 +131,7 @@ const SearchSolutions = () => {
       alert('Contenido intercambiado con la versión anterior');
     } catch (error) {
       console.error('Error intercambiando el contenido:', error);
-      alert('Hubo un error al intercambiar el contenido');
+      toast.error('Hubo un error al intercambiar el contenido');
     }
   };
  

@@ -4,6 +4,7 @@ import '../styles/expirationTracker.css';
 import '../styles/global.css';
 import AuthContext from '../context/authContext';
 import config from '../../src/config';
+import { toast } from 'react-toastify';
 
 const ExpirationTracker = () => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -60,7 +61,7 @@ const ExpirationTracker = () => {
 
   const createItem = async () => {
     if (!selectedItem.title) {
-      alert("Por favor, complete el título.");
+      toast.alert("Por favor, complete el título.");
       return;
     }
 
@@ -102,7 +103,7 @@ const ExpirationTracker = () => {
       closeModal();
     } catch (error) {
       console.error("Error al crear el elemento:", error);
-      alert(`Error al crear el elemento: ${error.message}`);
+      toast.error(`Error al crear el elemento: ${error.message}`);
     }
   };
 
@@ -112,7 +113,7 @@ const ExpirationTracker = () => {
       return;
     }
     if (!selectedItem.title || !selectedItem.expirationDate) {
-      alert("Por favor, complete el título y la fecha de vencimiento.");
+      toast.alert("Por favor, complete el título y la fecha de vencimiento.");
       return;
     }
 
@@ -149,7 +150,7 @@ const ExpirationTracker = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error al actualizar el elemento:", errorData.message);
-        alert(`Error al actualizar: ${errorData.message || response.statusText}`);
+        toast.error(`Error al actualizar: ${errorData.message || response.statusText}`);
         return;
       }
       const updatedItemData = await response.json();
@@ -159,7 +160,7 @@ const ExpirationTracker = () => {
       closeModal();
     } catch (error) {
       console.error("Error al actualizar el elemento:", error);
-      alert(`Error al actualizar el elemento: ${error.message}`);
+      toast.error(`Error al actualizar el elemento: ${error.message}`);
     }
   };
 
@@ -176,14 +177,14 @@ const ExpirationTracker = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error al eliminar el elemento:", errorData.message);
-        alert(`Error al eliminar: ${errorData.message || response.statusText}`);
+        toast.error(`Error al eliminar: ${errorData.message || response.statusText}`);
         return;
       }
       setResults((prevResults) => prevResults.filter(item => (item._id || item.id) !== itemId));
       closeModal();
     } catch (error) {
       console.error("Error al conectar con el servidor para eliminar:", error);
-      alert(`Error al eliminar el elemento: ${error.message}`);
+      toast.error(`Error al eliminar el elemento: ${error.message}`);
     }
   };
 
@@ -379,7 +380,7 @@ const ExpirationTracker = () => {
                         });
                       }
                     } else {
-                      alert("El usuario no existe en la lista de usuarios disponibles.");
+                      toast.alert("El usuario no existe en la lista de usuarios disponibles.");
                     }
                     e.target.value = ""; 
                     e.preventDefault(); // Prevenir submit si está en un form

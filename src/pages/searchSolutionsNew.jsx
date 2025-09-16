@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/searchSolutionsNew.css';
 import config from '../../src/config';
+import { toast } from 'react-toastify';
 
 const SearchSolutionsNew = () => {
   const navigate = useNavigate();
@@ -36,11 +37,11 @@ const SearchSolutionsNew = () => {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
-      alert("Solución creada correctamente");
+      toast.alert("Solución creada correctamente");
       navigate('/searchSolutions');
     } catch (error) {
       console.error("Error al crear la solución:", error);
-      alert("Hubo un error al crear la solución");
+      toast.error("Hubo un error al crear la solución");
     }
   };
 
