@@ -47,11 +47,7 @@ const App = () => {
               <Route path="/expirationTracker" element={<ExpirationTracker />} />
               <Route path="/searchSolutions" element={<SearchSolutions />} />
               <Route path="/searchSolutionsNew" element={<SearchSolutionsNew />} />
-
-              
-             
-
-              
+            
             </Routes>
             <RouteChangeListener />
           </div>

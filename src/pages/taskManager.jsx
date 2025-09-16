@@ -86,6 +86,8 @@ const TaskManager = () => {
       return;
     }
 
+    /* selectedTask.notifyAssignedTime */
+
     try {
       // Aquí se envía la solicitud POST al backend
       const response = await fetch(`${config.baseURL}/api/task`, {
@@ -243,7 +245,7 @@ const TaskManager = () => {
       <div className="task-header">
         <h1 className="task-title">GESTOR DE TAREAS</h1>
         <button
-          onClick={() => openModal({
+          onClick={() => openModal({ /* Valores iniciales del modal */
             id: null,
             title: '',
             description: '',
@@ -251,6 +253,8 @@ const TaskManager = () => {
             assignedTo: [],
             sendWhatsAppOwner: false,
             sendWhatsAppAssignedTo: false,
+            notifyAssignedTime: '10:00',
+            notifyAssignedDate: new Date().toISOString().split('T')[0],
             status: 'No iniciada',
             importance: 'Media'
           })}
