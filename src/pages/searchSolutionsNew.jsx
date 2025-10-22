@@ -37,7 +37,7 @@ const SearchSolutionsNew = () => {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
-      toast.alert("Solución creada correctamente");
+      toast.success("Solución creada correctamente");
       navigate('/searchSolutions');
     } catch (error) {
       console.error("Error al crear la solución:", error);

@@ -28,7 +28,7 @@ const SearchSolutions = () => {
       }
 
       const data = await response.json();
-      if (data.length == 0 ) { alert("NO HAY RESULTADOS EN LA BASE DE DATOS"); }
+      if (data.length == 0 ) { toast.info("NO HAY RESULTADOS EN LA BASE DE DATOS"); }
       setResults(data);
     } catch (error) {
       toast.error("Error en la busqueda");
@@ -83,7 +83,7 @@ const SearchSolutions = () => {
       const data = await response.json();
       setSelectedResult(data.solution); // Actualizamos la solución en el estado
 
-      alert('Solución actualizada correctamente');
+      toast.success('Solución actualizada correctamente');
     } catch (error) {
       console.error('Error actualizando la solución:', error);
       toast.error('Hubo un error al actualizar la solución');
@@ -93,7 +93,7 @@ const SearchSolutions = () => {
   // Función para manejar el intercambio de contenido con la versión anterior
   const handleSwapWithPreviousVersion = async () => {
     if (!selectedResult.previousVersions || selectedResult.previousVersions.length === 0) {
-      alert('No hay versiones anteriores disponibles para intercambiar.');
+      toast.info('No hay versiones anteriores disponibles para intercambiar.');
       return;
     }
 
@@ -128,12 +128,44 @@ const SearchSolutions = () => {
       const data = await response.json();
       setSelectedResult(data.solution); // Actualizamos la solución con el contenido intercambiado
 
-      alert('Contenido intercambiado con la versión anterior');
+      toast.success('Contenido intercambiado con la versión anterior');
     } catch (error) {
       console.error('Error intercambiando el contenido:', error);
       toast.error('Hubo un error al intercambiar el contenido');
     }
   };
+
+  // Función para eliminar una solución
+    const handleDeleteSolution = async () => {
+      if (!selectedResult?._id) return;
+
+      const isConfirmed = window.confirm(
+        "⚠️ LA SOLUCIÓN SE BORRARÁ PERMANENTEMENTE. ¿ESTÁS SEGURO QUE DESEAS ELIMINARLA?"
+      );
+      if (!isConfirmed) return;
+
+      try {
+        const response = await fetch(`${config.baseURL}/api/solutions/${selectedResult._id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          toast.error(`Error al eliminar la solución: ${error.message || response.statusText}`);
+          console.error("Error al eliminar la solución:", error);
+          return;
+        }
+
+        toast.success("Solución eliminada correctamente");
+        // Quitamos la solución eliminada de la lista
+        setResults(results.filter((r) => r._id !== selectedResult._id));
+        setSelectedResult(null);
+      } catch (error) {
+        console.error("Error al eliminar la solución:", error);
+        toast.error("Hubo un error al eliminar la solución");
+      }
+    };
  
   return (
     <div className="search-container">
@@ -237,11 +269,13 @@ const SearchSolutions = () => {
                       </select>
                     </div>
                     <div className='buttonContent'>
-                      <button className='buttonResult redButton' onClick={handleCloseSolution}>Cerrar Solución</button>
+                      {/* <button className='buttonResult redButton' onClick={handleCloseSolution}>Cerrar Solución</button>
+                      <div className='space'></div> */}
+                      <button className='buttonResult redButton' onClick={handleDeleteSolution}>Eliminar Solución</button>
                       <div className='space'></div>
                       <button className='buttonResult' onClick={handleUpdateSolution}>Actualizar Solución</button>
                       <div className='space'></div>
-                      <button className='buttonResult' onClick={handleSwapWithPreviousVersion}>Intercambiar con versión anterior</button>
+                      <button className='buttonResult' onClick={handleSwapWithPreviousVersion}>Volver a versión anterior</button>
                     </div>
                   </div>
                 )}
