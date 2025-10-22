@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
 
-//PAGES
+//PAGES IMPORTANTE: Los componentes deben iniciar con mayuscula, sino los piensa como etiquetas.
 import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import Configuration from './pages/configuration';
@@ -23,6 +23,7 @@ import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
 import Gestionar from './pages/gestionar';
 import AsistenteTelegram from './pages/asistenteTelegram';
+import UsersAdmin  from './pages/usersAdmin';
 
 
 
@@ -50,6 +51,7 @@ const App = () => {
               <Route path="/expirationTracker" element={<ExpirationTracker />} />
               <Route path="/searchSolutions" element={<SearchSolutions />} />
               <Route path="/searchSolutionsNew" element={<SearchSolutionsNew />} />
+              <Route path="/usersAdmin" element={<UsersAdmin />} />
             
             </Routes>
             <RouteChangeListener />

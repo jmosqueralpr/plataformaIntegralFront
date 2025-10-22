@@ -317,7 +317,7 @@ const TaskManager = () => {
 
       {/* Modal para mostrar detalles de la tarea */}
       {selectedTask && (
-/*         <div className="modal-overlay" onClick={closeModal}>
+      /*         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}> */
           <div
               className="modalOverlay"

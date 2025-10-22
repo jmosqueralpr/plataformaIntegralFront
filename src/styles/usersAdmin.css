@@ -1,0 +1,57 @@
+
+
+.global-container {
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #202020; /* Fondo oscuro */
+    color: rgb(231, 233, 234); /* Texto blanco suave */
+}
+
+.global-buttonContainer {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.global-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+
+/* BOTONES DEL MAIN */
+.btn {
+  margin: 5px AUTO;
+  max-width: 300PX;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700; /* **negrita visual** */
+}
+
+/* MODAL PLACEHOLDERS */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #2a2a2a;
+  color: #eaeaea;
+  padding: 16px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+}
+.modal header h3 { margin: 0 0 8px 0; }
+.modal-body p { margin: 0 0 12px 0; }
+.modal footer { text-align: right; }

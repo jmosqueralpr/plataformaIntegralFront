@@ -20,7 +20,7 @@ const Dashboard = () => {
           <span>Bienvenido al Dashboard, {authUser}. </span>
         </div>
       </header>
-      <main>
+      <main className='dashboard-main'>
         <DashboardCard className='main-container' title={'AsistenteTelegram'} link={'AsistenteTelegram'} text = {'Acceso al asistente de Telegram.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Configuración de usuario'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Centro de soluciones'} link={'searchSolutions'} text = {'Herramienta para que puedas ver y crear soluciones rápidas a tus problemas diarios.'} ></DashboardCard>
@@ -30,6 +30,7 @@ const Dashboard = () => {
         <DashboardCard className='main-container' title={'Sis de compras DYB'} link={'ComprasDyb'} text = {'Acceso al sistema de compras DYB.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Sis de compras Emepa'} link={'ComprasEmepa'} text = {'Acceso al sistema de compras Emepa.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Gestor de contraseñas'} link={'GestorDeContraseñas'} text = {'Para que guardes y administres tus contraseñas de forma segura.'} ></DashboardCard>
+        <DashboardCard className='main-container' title={'Administrador de Usuarios'} link={'UsersAdmin'} text = {'Administración de los usuarios del sistema.'} ></DashboardCard>
       </main>
     </div>
   );
