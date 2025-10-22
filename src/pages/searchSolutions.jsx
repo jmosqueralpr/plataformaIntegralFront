@@ -152,8 +152,8 @@ const SearchSolutions = () => {
 
         if (!response.ok) {
           const error = await response.json();
-          toast.error(`Error al eliminar la solución: ${error.message || response.statusText}`);
-          console.error("Error al eliminar la solución:", error);
+          toast.error(`Error al eliminar la solución (json): ${error.message || response.statusText}`);
+          console.error("Error al eliminar la solución (json):", error);
           return;
         }
 

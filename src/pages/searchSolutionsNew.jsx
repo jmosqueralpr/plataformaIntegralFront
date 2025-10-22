@@ -34,7 +34,11 @@ const SearchSolutionsNew = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        const error = await response.json();
+        toast.error(`Error al eliminar la solución (json): ${error.message || response.statusText}`);
+        console.error("Error al eliminar la solución (json):", error);
+        return;
+        /* throw new Error(`Error ${response.status}: ${response.statusText}`); */
       }
 
       toast.success("Solución creada correctamente");
