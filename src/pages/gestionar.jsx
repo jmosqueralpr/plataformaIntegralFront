@@ -21,6 +21,16 @@ const Gestionar = () => {
             Descarga de gestionar
           </a>
         </div>
+        <div className="external-page-box link-box">
+          <a
+            href="https://nextcloud.apertura.net.ar/index.php/s/WNyBdD5GFc6KeA5"
+            className="box-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Descarga de gestionar instalable
+          </a>
+        </div>
 
         {/* Globo para la descripción */}
         <div className="external-page-box description-box">
