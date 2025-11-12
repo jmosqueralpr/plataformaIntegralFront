@@ -162,6 +162,7 @@ button:hover {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
+
 }
 
 .result-details h3 {
@@ -180,6 +181,7 @@ button:hover {
   background-color: #303840;
   color: rgb(231, 233, 234);
   resize: vertical;
+  overflow-y: auto !important;
 }
 
 .result-details textarea {
