@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import '../styles/dashboard.css';
 import { DashboardCard } from '../components/dashboardCard';
 import Cookies from 'js-cookie';
@@ -8,6 +8,10 @@ import config  from '../../src/config';
 
 const Dashboard = () => {
   const { authUser, setAuthUser, isAuthenticated, login, logout  } = useContext(AuthContext); /* Llamo a las variables del contexto. */
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
 
   
