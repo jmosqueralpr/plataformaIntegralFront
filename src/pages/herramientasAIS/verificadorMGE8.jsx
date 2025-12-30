@@ -67,7 +67,7 @@ const VerificadorMGE8 = () => {
 
         {/* TÍTULO */}
         <div className="external-page-box title-box">
-          <h2 className="box-title">Verificador MGE8 - En construcción</h2>
+          <h2 className="box-title">Verificador MGE8 - En construcción </h2>
         </div>
 
         {/* Globo para la descripción */}
