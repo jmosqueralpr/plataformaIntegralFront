@@ -1,0 +1,31 @@
+Referencias:
+References:
+Gov:
+https://www.navcen.uscg.gov/?pageName=AISMessagesA
+Gpsd:
+https://gpsd.gitlab.io/gpsd/AIVDM.html [recommended]
+OpenCPN:
+https://github.com/OpenCPN/OpenCPN [file: AIS_Bitstring.cpp]
+http://fossies.org/linux/misc/gpsd-3.11.tar.gz/gpsd-3.11/test/sample.aivdm
+online AIS decoder:
+http://www.maritec.co.za/tools/aisvdmvdodecoding/
+http://www.maritec.co.za/aisvdmvdodecoding1.php
+Wikipedia:
+https://en.wikipedia.org/wiki/Automatic_identification_system
+OpenCPN
+Github: https://github.com/OpenCPN/OpenCPN/blob/45504f35c005ed1ffcd117c67797279da42d53ae/src/AIS_Decoder.cpp
+Bugs & PR's
+If you find any bug please feel free to open an issue. PR are always welcome.
+Readme
+Keywords
+AISAis-DecoderOceanAIVDMAIVDONMEAOceanGPRMCGPGGABSVDMABVDM
+Package Sidebar
+Install
+npm i ais-decoder-ts
+
+
+Repository
+github.com/doron2402/ais-protocol-decoding
+
+Homepage
+github.com/doron2402/ais-protocol-decoding#readme

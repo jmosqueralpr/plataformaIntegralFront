@@ -23,6 +23,8 @@ import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
 import Gestionar from './pages/gestionar';
 import AsistenteTelegram from './pages/asistenteTelegram';
+import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
+import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
 
 
 
@@ -50,6 +52,9 @@ const App = () => {
               <Route path="/expirationTracker" element={<ExpirationTracker />} />
               <Route path="/searchSolutions" element={<SearchSolutions />} />
               <Route path="/searchSolutionsNew" element={<SearchSolutionsNew />} />
+              {/* Herramientas AIS */}
+              <Route path="/herramientasAIS" element={<HerramientasAIS />} />
+              <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
             
             </Routes>
             <RouteChangeListener />

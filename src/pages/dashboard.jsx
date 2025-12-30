@@ -21,9 +21,10 @@ const Dashboard = () => {
         </div>
       </header>
       <main>
-        <DashboardCard className='main-container' title={'AsistenteTelegram'} link={'AsistenteTelegram'} text = {'Acceso al asistente de Telegram.'} ></DashboardCard>
+        <DashboardCard className='main-container' title={'Asistente de Telegram'} link={'AsistenteTelegram'} text = {'Acceso al asistente de Telegram.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Configuración de usuario'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Centro de soluciones'} link={'searchSolutions'} text = {'Herramienta para que puedas ver y crear soluciones rápidas a tus problemas diarios.'} ></DashboardCard>
+        <DashboardCard className='main-container' title={'Herramientas AIS'} link={'HerramientasAIS'} text = {'Herramientas varias para sistemas AIS.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Task Manager'} link={'TaskManager'} text = {'Herramienta para que puedas administrar tus tareas diarias.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Registro de Vencimientos'} link={'ExpirationTracker'} text = {'Herramienta para que puedas gestionar tus vencimientos y configurar avisos pro Telegram.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Descarga de gestionar'} link={'Gestionar'} text = {'Enlace para que puedas descargar el soft Gestionar.'} ></DashboardCard>

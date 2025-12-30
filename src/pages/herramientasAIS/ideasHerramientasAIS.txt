@@ -1,0 +1,168 @@
+1️⃣ Monitor de salud de la estación AIS (imprescindible)
+Qué hace
+
+Detecta si la estación está viva y con tráfico real.
+
+Mide:
+Mensajes/minuto
+Último mensaje recibido
+% de mensajes válidos vs inválidos
+Canales A/B
+
+Indicadores simples
+
+🟢 OK: tráfico constante
+🟡 Bajo tráfico (posible antena / RF)
+🔴 Sin datos (caído)
+
+
+Extra útil
+Alertas si pasan X minutos sin mensajes
+Diferenciar “sin barcos” vs “sin recepción”
+👉 Ideal para un dashboard rápido.
+2️⃣ Estadísticas por tipo de mensaje AIS
+Qué hace
+
+Conteo por tipo: 1, 2, 3, 5, 8, 18, 19, 24, etc.
+Gráfica temporal (última hora / día)
+Para qué sirve
+Ver si el tráfico es “normal”
+
+Detectar:
+
+Falta de Msg 5 → problemas de decodificación
+Solo Msg 18 → zona con solo clase B
+Msg 8 desaparecidos → estaciones meteo caídas
+
+Esto ayuda mucho a diagnóstico RF y de decoders.
+
+3️⃣ Inspector de Message 8 (ASM) avanzado
+Ya tenés la idea básica, podés ampliarla:
+Funciones
+
+Filtro por:
+MMSI
+DAC / FI
+
+Decodificación automática de:
+Viento
+Corriente
+Presión
+Temperatura
+
+Validación de rangos:
+Viento > 100 kn → sospechoso
+Dirección fuera de 0–359 → error
+Output
+Último valor válido
+Histórico corto (ej. últimas 24h)
+Estado: OK / fuera de rango / no recibido
+
+
+👉 Esto es oro para estaciones meteorológicas AIS.
+
+4️⃣ Detector de MMSI “fantasma” o mal configurados
+Qué hace
+
+
+Detecta MMSI que:
+Cambian de posición imposible
+Transmiten Msg 5 incoherentes
+Envían velocidad constante absurda
+Marca transmisores problemáticos
+
+Útil para
+
+Pruebas de equipos nuevos
+Detectar errores de configuración
+Soporte técnico
+
+5️⃣ Herramienta de replay de NMEA / AIS
+Muy potente para laburo:
+
+Qué hace
+Cargar un archivo .nmea
+
+Reproducirlo:
+En tiempo real
+Acelerado
+Alimentar otras herramientas internas
+
+Casos de uso
+Debug
+Demostraciones
+Reproducir fallas reales
+Testing sin estación conectada
+
+6️⃣ Comparador de estaciones / fuentes
+
+Si tenés más de una fuente AIS:
+Qué hace
+
+Comparar:
+Mensajes recibidos
+MMSI vistos
+Intensidad de tráfico
+Detectar qué estación “ve mejor”
+Ideal si
+Tenés redundancia
+Estás evaluando antenas, ubicación o filtros
+
+7️⃣ Mapa mínimo de cobertura (sin volverte loco)
+
+No hace falta algo tipo MarineTraffic:
+
+Algo simple
+Heatmap de posiciones recibidas
+Últimas 24h
+Filtro por tipo de mensaje o clase A/B
+Para qué sirve
+Ver cobertura real
+Detectar zonas muertas
+
+8️⃣ Validador de stream NMEA
+
+Herramienta chica pero muy práctica:
+Chequea
+Checksums
+Frases cortadas
+Multipart (ej. !AIVDM,2,1,...)
+Latencia entre partes
+
+Output
+% frases válidas
+Errores comunes detectados
+
+9️⃣ Exportador “rápido” para soporte
+
+Botón tipo:
+“Generar reporte AIS”
+
+Incluye:
+Período
+Tráfico
+Msg 8 recibidos
+Errores detectados
+Estadísticas clave
+
+Ideal para:
+Enviar por mail
+Tickets
+Auditorías
+
+10️⃣ Roadmap lógico (si lo pensás en etapas)
+MVP
+
+Monitor de salud
+Inspector Msg 8
+Estadísticas básicas
+
+Nivel medio
+4. Replay
+5. Validador NMEA
+6. Detector de anomalías
+Nivel pro
+7. Comparador de estaciones
+8. Cobertura
+9. Reportes automáticos
+

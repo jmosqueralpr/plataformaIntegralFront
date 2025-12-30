@@ -1,0 +1,47 @@
+.upload-box {
+  display: flex;
+  justify-content: center;
+}
+
+.upload-box input {
+  width: 100%;
+  padding: 10px;
+  background-color: #2b3440;
+  color: rgb(231, 233, 234);
+  border: none;
+  border-radius: 5px;
+}
+
+.result-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mmsi-title {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #00bfff;
+}
+
+.mge8-message {
+  background-color: #1c2229;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.mge8-message p {
+  margin: 4px 0;
+}
+
+/* Estados */
+.info-box {
+  text-align: center;
+}
+
+.error-box {
+  background-color: #3a1c1c;
+  border: 1px solid #ff5c5c;
+}
