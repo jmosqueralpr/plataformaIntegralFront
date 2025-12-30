@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/externalPage.css';
+import '../../styles/externalPage.css';
 
 const ComprasEmepa = () => {
   return (
@@ -19,6 +19,18 @@ const ComprasEmepa = () => {
             rel="noopener noreferrer"
           >
             Acceso a sistema de compras Emepa
+          </a>
+        </div>
+
+        {/* Globo para el enlace */}
+        <div className="external-page-box link-box">
+          <a
+            href="https://gbacompras-emepa.com.ar/emepa/adm/index.php"
+            className="box-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Acceso a sistema de compras Emepa (ADMINISTRADOR)
           </a>
         </div>
 

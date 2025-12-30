@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/externalPage.css';
+import '../../styles/externalPage.css';
 
 const ComprasDyb = () => {
   return (
@@ -19,6 +19,18 @@ const ComprasDyb = () => {
             rel="noopener noreferrer"
           >
             Acceso a sistema de compras DYB
+          </a>
+        </div>
+
+        {/* Globo para el enlace */}
+        <div className="external-page-box link-box">
+          <a
+            href="http://compras-dyb.com.ar/adm/index.php"
+            className="box-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Acceso a sistema de compras DYB (ADMINISTRADOR)
           </a>
         </div>
 

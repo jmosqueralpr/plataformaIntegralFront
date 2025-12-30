@@ -25,12 +25,10 @@ const Dashboard = () => {
         <DashboardCard className='main-container' title={'Configuración de usuario'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Centro de soluciones'} link={'searchSolutions'} text = {'Herramienta para que puedas ver y crear soluciones rápidas a tus problemas diarios.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Herramientas AIS'} link={'HerramientasAIS'} text = {'Herramientas varias para sistemas AIS.'} ></DashboardCard>
+        <DashboardCard className='main-container' title={'Enlaces y Accesos'} link={'DashEnlaces'} text = {'Enlaces y accesos a los diferentes sistemas de DYB.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Task Manager'} link={'TaskManager'} text = {'Herramienta para que puedas administrar tus tareas diarias.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Registro de Vencimientos'} link={'ExpirationTracker'} text = {'Herramienta para que puedas gestionar tus vencimientos y configurar avisos pro Telegram.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Descarga de gestionar'} link={'Gestionar'} text = {'Enlace para que puedas descargar el soft Gestionar.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Sis de compras DYB'} link={'ComprasDyb'} text = {'Acceso al sistema de compras DYB.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Sis de compras Emepa'} link={'ComprasEmepa'} text = {'Acceso al sistema de compras Emepa.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Gestor de contraseñas'} link={'GestorDeContraseñas'} text = {'Para que guardes y administres tus contraseñas de forma segura.'} ></DashboardCard>
+        
       </main>
     </div>
   );

@@ -14,17 +14,19 @@ import { ToastContainer } from 'react-toastify';
 import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import Configuration from './pages/configuration';
-import ComprasDyb from './pages/comprasDYB';
-import ComprasEmepa from './pages/comprasEmepa';
+import ComprasDyb from './pages/enlaces/comprasDYB';
+import ComprasEmepa from './pages/enlaces/comprasEmepa';
 import GestorDeContraseñas from './pages/gestorDeContraseñas';
 import TaskManager from './pages/taskManager';
 import ExpirationTracker from './pages/expirationTracker';
 import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
-import Gestionar from './pages/gestionar';
+import Gestionar from './pages/enlaces/gestionar';
 import AsistenteTelegram from './pages/asistenteTelegram';
 import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
 import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
+import DashEnlaces from './pages/enlaces/dashEnlaces';
+import DropboxBackup from './pages/enlaces/dropboxBackup';
 
 
 
@@ -44,10 +46,9 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/asistenteTelegram" element={<AsistenteTelegram />} />
               <Route path="/configuration" element={<Configuration />} />
-              <Route path="/comprasDYB" element={<ComprasDyb />} />
-              <Route path="/comprasEmepa" element={<ComprasEmepa />} />
+              
               <Route path="/gestorDeContraseñas" element={<GestorDeContraseñas />} />
-              <Route path="/Gestionar" element={<Gestionar />} />
+              
               <Route path="/taskManager" element={<TaskManager />} />
               <Route path="/expirationTracker" element={<ExpirationTracker />} />
               <Route path="/searchSolutions" element={<SearchSolutions />} />
@@ -55,6 +56,12 @@ const App = () => {
               {/* Herramientas AIS */}
               <Route path="/herramientasAIS" element={<HerramientasAIS />} />
               <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
+              {/* Accesos y Enlaces */}
+              <Route path="/dashEnlaces" element={<DashEnlaces />} />
+              <Route path="/Gestionar" element={<Gestionar />} />
+              <Route path="/comprasDYB" element={<ComprasDyb />} />
+              <Route path="/comprasEmepa" element={<ComprasEmepa />} />
+              <Route path="/DropboxBackup" element={<DropboxBackup />} />
             
             </Routes>
             <RouteChangeListener />

@@ -57,6 +57,7 @@
     text-align: center;
     width: 100%; /* Ocupa todo el ancho del contenedor */
     box-sizing: border-box;
+    font-weight: bold;
   }
   
   .box-link:hover {
@@ -110,3 +111,32 @@
       font-size: 0.9rem;
     }
   }
+
+  /* ===== Secciones de embarcaciones ===== */
+
+.vessel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.links-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  color: rgb(231, 233, 234);
+  margin: 10px 0 5px;
+}
+
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* En desktop se ven más aireados */
+@media (min-width: 768px) {
+  .links-list {
+    gap: 12px;
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/externalPage.css';
+import '../../styles/externalPage.css';
 
 const Gestionar = () => {
   return (

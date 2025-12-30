@@ -3,7 +3,7 @@ import '../../styles/dashboard.css';
 import { DashboardCard } from '../../components/dashboardCard';
 import Cookies from 'js-cookie';
 import AuthContext from '../../context/authContext';
-import config  from '../../../src/config';
+import config  from '../../config';
 
 
 const herramientasAIS = () => {
