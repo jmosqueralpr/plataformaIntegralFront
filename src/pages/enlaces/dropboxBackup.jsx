@@ -1,10 +1,28 @@
 import React from 'react';
 import '../../styles/externalPage.css';
+import enlacesBackupImg from '../../img/Enlaces/enlacesBackup.png';
+
 
 const DropboxEnlaces = () => {
   return (
     <div className="external-page-container">
       <main className="external-page-main">
+
+        {/* ================= General ================= */}
+        <div className="external-page-box title-box">
+          <h2 className="box-title">
+            CARGAR BACKUPS DE ARCHIVOS EN DROPBOX
+          </h2>
+        </div>
+
+        {/* Imagen */}
+        <div className="external-page-box image-box">
+          <img
+            src={enlacesBackupImg}
+            alt="Instructivo para cargar archivos en Dropbox"
+            className="instructive-image"
+          />
+        </div>
 
         {/* ================= YAKTEMI ================= */}
         <div className="external-page-box title-box">

@@ -140,3 +140,29 @@
     gap: 12px;
   }
 }
+
+
+/* ================= Imagen instructiva ================= */
+
+.image-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.instructive-image {
+  max-width: 100%;
+  width: 720px;            /* Tamaño controlado */
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajuste mobile */
+@media (max-width: 600px) {
+  .instructive-image {
+    width: 100%;
+    max-width: 420px;
+  }
+}
