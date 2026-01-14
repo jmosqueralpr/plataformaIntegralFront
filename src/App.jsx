@@ -27,6 +27,8 @@ import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
 import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
 import DashEnlaces from './pages/enlaces/dashEnlaces';
 import DropboxBackup from './pages/enlaces/dropboxBackup';
+import DashboardBaseAIS from './pages/dashboardBaseAIS';
+import BaseAIS from './pages/baseAIS';
 
 
 
@@ -62,6 +64,10 @@ const App = () => {
               <Route path="/comprasDYB" element={<ComprasDyb />} />
               <Route path="/comprasEmepa" element={<ComprasEmepa />} />
               <Route path="/DropboxBackup" element={<DropboxBackup />} />
+
+              <Route path="/DashboardBaseAIS" element={<DashboardBaseAIS />} />
+              <Route path="/BaseAIS/:baseId" element={<BaseAIS />} />
+              
             
             </Routes>
             <RouteChangeListener />

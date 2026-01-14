@@ -25,6 +25,7 @@ const herramientasAIS = () => {
       <main>
         <DashboardCard className='main-container' title={'Verificación MGE 8 - En construcción'} link={'VerificadorMGE8'} text = {'Verifica la existencia del mensaje 8 en un archivo y muestra valores aleatorios (Velicidad y Dirección de viento). EN CONSTRUCCIÓN.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Conversor de uni GPS - En construcción'} link={'Configuration'} text = {'Conversor de unidades para varios GPS para varios sistemas de AIS utilizados en DYB. EN CONSTRUCCIÓN'} ></DashboardCard>
+        <DashboardCard className='main-container' title={'Bases AIS'} link={'DashboardBaseAIS'} text = {'Bases AIS de la Antartida'} ></DashboardCard>
       </main>
     </div>
   );

@@ -1,0 +1,250 @@
+.base-container {
+  max-width: 90%;
+  margin: auto;
+}
+
+.base-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 6px 12px;
+}
+
+.header-buttons button.green {
+  background-color: #28a745;
+  height: 50px;
+}
+
+.ais-btn-small {
+  padding: 4px 10px !important;
+  font-size: 13px;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: auto;
+}
+
+.ais-btn-small:hover {
+  background-color: #218838;
+}
+
+.years-bar {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.year-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.event-card {
+  background-color: #333;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.event-card:hover {
+  background-color: #444;
+}
+
+.base-info-card {
+  background-color: #212930;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.base-info-header h3 {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.base-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px 10px;
+}
+
+.base-info-grid .field {
+  display: flex;
+  flex-direction: column;
+}
+
+.base-info-grid .field.full {
+  grid-column: span 2;
+}
+
+.base-info-grid label {
+  font-size: 17px;
+  margin-bottom: 4px;
+  color: #cfd3d6;
+}
+
+.base-info-grid input,
+.base-info-grid textarea {
+  background-color: #303840;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: rgb(231, 233, 234);
+  font-size: 14px;
+}
+
+.base-info-grid textarea {
+ 
+  min-height: 70px;          /* 👈 altura inicial chica */
+  max-height: 160px;         /* 👈 límite razonable */
+  resize: none;              /* no permitir resize manual */
+  overflow-y: auto;          /* scroll si excede */
+  line-height: 1.35;
+}
+
+.base-info-grid textarea {
+  resize: vertical;
+}
+
+@media (max-width: 768px) {
+  .base-info-grid textarea {
+    min-height: 90px;
+  }
+}
+
+
+.base-info-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.base-info-actions button {
+  padding: 6px 14px;
+  font-size: 14px;
+}
+
+.campaign-years {
+  margin-top: 14px;
+}
+
+.campaign-years-title {
+  font-size: 13px;
+  color: #cfd3d6;
+  margin-bottom: 6px;
+}
+
+.years-bar {
+  display: flex;
+  flex-wrap: wrap;       /* 👈 clave para mobile */
+  gap: 6px;
+}
+
+.year-btn-small {
+  padding: 4px 6px;
+  font-size: 15px;
+  font-weight: bolder;
+  line-height: 1;
+  background-color: #303840;
+  color: #cfd3d6;
+  border: 1px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+
+  width: 100px;          /* 👈 ancho fijo */
+  max-width: 100px;
+  min-width: 56px;
+
+  text-align: center;
+  flex: 0 0 auto;       /* 👈 evita que flex lo estire */
+}
+
+.year-btn-small:hover {
+  background-color: #3a434c;
+}
+
+.year-btn-small.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .year-btn-small {
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+}
+
+.base-info-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  gap: 12px;
+}
+ 
+.actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.year-input {
+  width: 90px;
+  background-color: #303840;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: rgb(231, 233, 234);
+  font-size: 14px;
+}
+
+.ais-btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ais-btn-primary:hover {
+  background-color: #0069d9;
+}
+
+@media (max-width: 600px) {
+  .base-info-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions-left,
+  .actions-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .year-input {
+    width: 100%;
+  }
+}

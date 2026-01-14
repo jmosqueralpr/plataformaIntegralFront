@@ -1,0 +1,165 @@
+.ais-dashboard-container {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #202020;
+  color: rgb(231, 233, 234);
+}
+
+.ais-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.ais-dashboard-title {
+  font-size: 24px;
+  color: rgb(231, 233, 234);
+  margin: 5px;
+  font-weight: 600;
+}
+
+.ais-btn-primary {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: fit-content;
+  max-width: 200px; /* o lo que necesites */
+  display: inline-block; /* evita ocupar todo el ancho */
+}
+
+.ais-btn-primary:hover {
+  background-color: #218838; /* Verde más oscuro */
+}
+
+.ais-base-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.ais-base-card {
+  background-color: #212930;
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ais-base-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+.ais-base-name {
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.ais-base-type {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.ais-base-type.permanente {
+  background-color: #1d3b1d;
+  color: #d7ffe0;
+}
+
+.ais-base-type.temporal {
+  background-color: #704900;
+  color: #fff1da;
+}
+
+/* =========================
+   MODAL – BASE AIS
+========================= */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #212930;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+.modalClose {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: white;
+  color: #cc0000;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalClose:hover {
+  background-color: #e6e6e6;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgb(231, 233, 234);
+}
+
+/* Inputs del modal */
+
+.modal-text-box {
+  width: 100%;
+  background-color: #2c2f36;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #e7e9ea;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.modal-text-box:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.35);
+}
+
+.modal-text-box::placeholder {
+  color: #a0a0a0;
+}
+
+/* Botón principal dentro del modal */
+
+.modalContent .ais-btn-primary {
+  width: 100%;
+  margin-top: 10px;
+}
