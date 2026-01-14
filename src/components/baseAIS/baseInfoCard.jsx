@@ -1,4 +1,4 @@
-const BaseInfoCard = ({ base, setBase }) => {
+const BaseInfoCard = ({ base, setBase, onSave }) => {
   if (!base) return null;
 
   const handleChange = (field, value) => {
@@ -72,11 +72,14 @@ const BaseInfoCard = ({ base, setBase }) => {
         </div>
       </div>
 
-      <div className="base-info-actions">
-        <button className="ais-btn-primary">
-          Guardar cambios
-        </button>
-      </div>
+       <div className="base-info-actions">
+          <button
+            className="ais-btn-primary"
+            onClick={() => onSave(base)}
+          >
+            Guardar cambios
+          </button>
+        </div>
     </div>
   );
 };

@@ -80,6 +80,70 @@ const BaseAIS = () => {
 
   }, [baseId]);
 
+  /* Actualizar bases */
+
+  const confirmSaveBase = async (updatedBase) => {
+  try {
+    const response = await fetch(
+      `${config.baseURL}/api/base/${updatedBase._id}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedBase)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}`);
+    }
+
+    const savedBase = await response.json();
+    setBase(savedBase);
+
+    toast.success('Base actualizada correctamente');
+  } catch (error) {
+    console.error(error);
+    toast.error('No se pudieron guardar los cambios');
+  }
+};
+
+
+  const handleSaveBase = (updatedBase) => {
+  toast(
+    ({ closeToast }) => (
+      <div>
+        <p style={{ marginBottom: 8 }}>
+          ¿Querés guardar los cambios de la base?
+        </p>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            className="ais-btn-small green"
+            onClick={() => {
+              closeToast();
+              confirmSaveBase(updatedBase);
+            }}
+          >
+            Guardar
+          </button>
+
+          <button
+            className="ais-btn-small"
+            onClick={closeToast}
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    ),
+    { autoClose: false }
+  );
+};
+
+
   /* Actualizar campaña */
 
     const handleSaveCampaign = async (updatedCampaign) => {
@@ -227,7 +291,14 @@ const BaseAIS = () => {
       </div>
 
       {/* INFO BASE */}
-      {base && <BaseInfoCard base={base} setBase={setBase} />}
+      {base && (
+        <BaseInfoCard
+          base={base}
+          setBase={setBase}
+          onSave={handleSaveBase}
+        />
+      )}
+
       {/* RESUMEN ÚLTIMA CAMPAÑA */}
       {campaigns.length > 0 && (
           <CampaignSummary
