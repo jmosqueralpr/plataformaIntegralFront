@@ -19,7 +19,7 @@ const BaseAIS = () => {
   const currentYear = new Date().getFullYear();
   const maxYear = currentYear + 1;
 
-
+   /* CARGAR DATOS INICIALES DE BASE Y CAMPAÑAS */
   useEffect(() => {
     if (!baseId) return;
 

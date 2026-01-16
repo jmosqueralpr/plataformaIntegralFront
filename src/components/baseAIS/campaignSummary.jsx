@@ -31,6 +31,16 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
       </div>
 
       <div className="base-info-grid">
+
+        <div className="field full">
+          <label>Tareas y mejoras realizadas en la campaña</label>
+          <textarea
+            rows={2}
+            value={campaign.tareas_a_realizar || ''}
+            onChange={e => handleChange('tareas_a_realizar', e.target.value)}
+          />
+        </div>
+
         <div className="field full">
           <label>Elementos entregados al inicio de campaña</label>
           <textarea
@@ -41,16 +51,7 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
         </div>
 
         <div className="field full">
-          <label>Tareas realizadas de la campaña anterior</label>
-          <textarea
-            rows={2}
-            value={campaign.tareas_a_realizar || ''}
-            onChange={e => handleChange('tareas_a_realizar', e.target.value)}
-          />
-        </div>
-
-        <div className="field full">
-          <label>Próxima campaña – Elementos solicitados</label>
+          <label>Para próxima campaña: Elementos solicitados</label>
           <textarea
             rows={2}
             value={campaign.elementos_proxima_campania || ''}
@@ -61,7 +62,7 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
         </div>
 
         <div className="field full">
-          <label>Próxima campaña – Tareas a realizar</label>
+          <label>Para próxima campaña: Tareas a realizar</label>
           <textarea
             rows={2}
             value={campaign.tareas_proxima_campania || ''}
