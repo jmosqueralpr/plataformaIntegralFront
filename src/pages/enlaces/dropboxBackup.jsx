@@ -45,6 +45,28 @@ const DropboxEnlaces = () => {
           </a>
         </div>
 
+                {/* ================= OCEANO ================= */}
+
+        <div className="external-page-box title-box">
+          <h2 className="box-title">
+            OCEANO - Enlaces para cargar y consultar archivos en Dropbox
+          </h2>
+        </div>
+
+        <div className="external-page-box vessel-section">
+          <h3 className="links-subtitle">Cargar archivos</h3>
+          <div className="links-list">
+            <a className="box-link" href="https://www.dropbox.com/request/kbs7qtsms19j9ifktawh" target="_blank" rel="noopener noreferrer">Fotos</a>
+            <a className="box-link" href="https://www.dropbox.com/request/lv30hdn3gk15kmlpb7b6" target="_blank" rel="noopener noreferrer">Derrotas</a>
+            <a className="box-link" href="https://www.dropbox.com/request/pobtutv0l4bwabgqouya" target="_blank" rel="noopener noreferrer">Logs AIS</a>
+          </div>
+
+          <h3 className="links-subtitle">Consultar archivos</h3>
+          <a className="box-link" href="https://www.dropbox.com/scl/fo/2483phhkr2gkl54nikcid/AAi5g_w9FmtTbxu4hzws7cU?rlkey=e9gpltd025htre8docdiwn7l6&st=hacwcwuk&dl=0" target="_blank" rel="noopener noreferrer">
+            Acceder a carpeta
+          </a>
+        </div>
+
         {/* ================= 573 ================= */}
         <div className="external-page-box title-box">
           <h2 className="box-title">
