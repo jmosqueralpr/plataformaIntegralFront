@@ -13,6 +13,16 @@ const Gestionar = () => {
         {/* Globo para el enlace */}
         <div className="external-page-box link-box">
           <a
+            href="https://nextcloud.apertura.net.ar/index.php/s/sneDArFZNzBnyeA"
+            className="box-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Descarga de gestionar - Instalador 07/2026
+          </a>
+        </div>
+        <div className="external-page-box link-box">
+          <a
             href="http://downloadgestionar.gba-hidrovia.com/"
             className="box-link"
             target="_blank"
