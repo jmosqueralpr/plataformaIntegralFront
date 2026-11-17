@@ -1,41 +1,91 @@
-import React, { useContext, useEffect } from 'react';
-import '../../styles/dashboard.css';
-import { DashboardCard } from '../../components/dashboardCard';
-import Cookies from 'js-cookie';
-import AuthContext from '../../context/authContext';
-import config  from '../../config';
+import { useEffect } from 'react';
+import { FiArrowUpRight, FiCloud, FiDownload, FiHeadphones, FiLock, FiShoppingCart } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import '../../styles/enlaces.css';
 
+const accessLinks = [
+  {
+    title: 'Backups en Dropbox',
+    category: 'Archivos',
+    description: 'Cargá fotos, derrotas y logs, o consultá las carpetas de cada embarcación.',
+    to: '/DropboxBackup',
+    icon: FiCloud,
+  },
+  {
+    title: 'Gestionar',
+    category: 'Descargas',
+    description: 'Accedé a las opciones de descarga e instalación del sistema.',
+    to: '/Gestionar',
+    icon: FiDownload,
+  },
+  {
+    title: 'Compras DYB',
+    category: 'Compras',
+    description: 'Ingresá al sistema de compras de DYB y a sus herramientas administrativas.',
+    to: '/comprasDYB',
+    icon: FiShoppingCart,
+  },
+  {
+    title: 'Compras Emepa',
+    category: 'Compras',
+    description: 'Ingresá al sistema de compras de Emepa y a sus herramientas administrativas.',
+    to: '/comprasEmepa',
+    icon: FiShoppingCart,
+  },
+  {
+    title: 'Gestor de contraseñas',
+    category: 'Seguridad',
+    description: 'Abrí Bitwarden para guardar y administrar tus accesos.',
+    to: '/GestorDeContraseñas',
+    icon: FiLock,
+  },
+  {
+    title: 'Ticketera Ears',
+    category: 'Soporte técnico',
+    description: 'Mesa de ayuda del servicio de outsourcing para el personal técnico.',
+    to: '/earsTicketera',
+    icon: FiHeadphones,
+  },
+];
 
-const dashEnlaces = () => {
-  const { authUser, setAuthUser, isAuthenticated, login, logout  } = useContext(AuthContext); /* Llamo a las variables del contexto. */
-
-    useEffect(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }, []);
-
-  
+const DashEnlaces = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div>
-          <p className="dashboard-kicker">Accesos</p>
-          <h1 className="dashboard-title">Accesos y Enlaces</h1>
-        </div>
+    <div className="enlaces-page enlaces-portal">
+      <main className="enlaces-content enlaces-main">
+        <section className="enlaces-portal-hero">
+          <div className="enlaces-portal-hero-copy">
+            <span className="enlaces-eyebrow">Centro de recursos</span>
+            <h1>Accesos y enlaces</h1>
+            <p>Encontrá en un solo lugar las herramientas, descargas y carpetas que usás en tu trabajo diario.</p>
+          </div>
+          <div className="enlaces-portal-meta" aria-label={`${accessLinks.length} accesos disponibles`}>
+            <strong>{accessLinks.length}</strong>
+            <span>accesos disponibles</span>
+          </div>
+        </section>
 
-        <div className="header-right">
-          <span>{authUser}</span>
-        </div>
-      </header>
-      <main>
-        <DashboardCard className='main-container' title={'Backups en Dropbox - Enlaces'} link={'DropboxBackup'} text = {'Enlace para realizar backups de embarcaciones en Dropbox.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Descarga de gestionar'} link={'Gestionar'} text = {'Enlace para que puedas descargar el soft Gestionar.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Sis de compras DYB'} link={'ComprasDyb'} text = {'Acceso al sistema de compras DYB.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Sis de compras Emepa'} link={'ComprasEmepa'} text = {'Acceso al sistema de compras Emepa.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Gestor de contraseñas'} link={'GestorDeContraseñas'} text = {'Para que guardes y administres tus contraseñas de forma segura.'} ></DashboardCard>
+        <section className="enlaces-card-grid" aria-label="Herramientas y accesos">
+          {accessLinks.map(({ title, category, description, to, icon: Icon }) => (
+            <Link className="enlaces-portal-card" to={to} key={to}>
+              <span className="enlaces-portal-card-top">
+                <span className="enlaces-portal-icon"><Icon aria-hidden="true" /></span>
+                <span className="enlaces-portal-category">{category}</span>
+              </span>
+              <h2>{title}</h2>
+              <p>{description}</p>
+              <span className="enlaces-portal-card-cta">
+                Abrir recurso <FiArrowUpRight aria-hidden="true" />
+              </span>
+            </Link>
+          ))}
+        </section>
       </main>
     </div>
   );
 };
 
-export default dashEnlaces;
+export default DashEnlaces;

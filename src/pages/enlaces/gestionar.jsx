@@ -1,56 +1,20 @@
-import React from 'react';
-import '../../styles/externalPage.css';
+import EnlacesAccessPage from '../../components/EnlacesAccessPage';
 
-const Gestionar = () => {
-  return (
-    <div className="external-page-container">
-      <main className="external-page-main">
-        {/* Globo para el título */}
-        <div className="external-page-box title-box">
-          <h2 className="box-title">Descarga de Gestionar</h2>
-        </div>
-
-        {/* Globo para el enlace */}
-        <div className="external-page-box link-box">
-          <a
-            href="https://nextcloud.apertura.net.ar/index.php/s/sneDArFZNzBnyeA"
-            className="box-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Descarga de gestionar - Instalador 07/2026
-          </a>
-        </div>
-        <div className="external-page-box link-box">
-          <a
-            href="http://downloadgestionar.gba-hidrovia.com/"
-            className="box-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Descarga de gestionar
-          </a>
-        </div>
-        <div className="external-page-box link-box">
-          <a
-            href="https://nextcloud.apertura.net.ar/index.php/s/WNyBdD5GFc6KeA5"
-            className="box-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Descarga de gestionar instalable
-          </a>
-        </div>
-
-        {/* Globo para la descripción */}
-        <div className="external-page-box description-box">
-          <p className="box-text">
-          Descargar Gestionar en PC, copiar el archivo descargado al escritorio y ejecutarlo. Es posible que se requiera actualizar la última version de java.
-          </p>
-        </div>
-      </main>
-    </div>
-  );
-};
+const Gestionar = () => (
+  <EnlacesAccessPage
+    eyebrow="Descargas"
+    title="Gestionar"
+    description="Descargá la versión vigente del sistema desde el enlace oficial."
+    links={[
+      {
+        label: 'Descargar Gestionar',
+        description: 'Instalador disponible en Dropbox.',
+        href: 'https://www.dropbox.com/scl/fi/16ez7mq9v4sksl66qzvpv/dyb-gestionar-nuevo.exe?rlkey=yx3zcpofwio2wrsuu0j96t5xl&st=82hcr22z&e=1&dl=0',
+        download: true,
+      },
+    ]}
+    note="Descargá el instalador en tu PC, copialo al escritorio y ejecutalo. Es posible que necesites actualizar Java."
+  />
+);
 
 export default Gestionar;

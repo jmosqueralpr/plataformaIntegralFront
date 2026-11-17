@@ -1,6 +1,5 @@
 
 
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
 import Footer from './components/footer';
@@ -23,6 +22,7 @@ import ExpirationTracker from './pages/expirationTracker';
 import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
 import Gestionar from './pages/enlaces/gestionar';
+import EarsTicketera from './pages/enlaces/earsTicketera';
 import AsistenteTelegram from './pages/asistenteTelegram';
 import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
 import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
@@ -64,6 +64,7 @@ const AppLayout = () => {
           {/* Accesos y Enlaces */}
           <Route path="/dashEnlaces" element={<DashEnlaces />} />
           <Route path="/Gestionar" element={<Gestionar />} />
+          <Route path="/earsTicketera" element={<EarsTicketera />} />
           <Route path="/comprasDYB" element={<ComprasDyb />} />
           <Route path="/comprasEmepa" element={<ComprasEmepa />} />
           <Route path="/DropboxBackup" element={<DropboxBackup />} />
