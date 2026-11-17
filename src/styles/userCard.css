@@ -84,8 +84,50 @@
 
 @media (max-width: 640px) {
   .tw-followCard {
-    width: 100%;
-    margin-right: 0;
-    justify-content: center;
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 4px;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .tw-followCard-header {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .tw-followCard-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tw-followCard-info {
+    min-width: 0;
+    max-width: 58px;
+  }
+
+  .tw-followCard-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+  }
+
+  .tw-followCard-infoUserName {
+    display: none;
+  }
+
+  .tw-followCard-button-following,
+  .tw-followCard-button-notFollowing {
+    margin-left: 0;
+    padding: 7px 9px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .tw-followCard-info {
+    display: none;
   }
 }
