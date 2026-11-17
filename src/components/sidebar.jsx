@@ -4,18 +4,19 @@ import AuthContext from '../context/authContext';
 import '../styles/sidebar.css';
 
 const sidebarLinks = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/DashboardBaseAIS', label: 'Base AIS' },
-  { to: '/taskManager', label: 'Tareas' },
-  { to: '/expirationTracker', label: 'Vencimientos' },
-  { to: '/searchSolutions', label: 'Soluciones' },
-  { to: '/configuration', label: 'Configuración' },
+  { to: '/dashboard', label: 'Dashboard', icon: '▣' },
+  { to: '/DashboardBaseAIS', label: 'Base AIS', icon: '◫' },
+  { to: '/taskManager', label: 'Tareas', icon: '✓' },
+  { to: '/expirationTracker', label: 'Vencimientos', icon: '⏰' },
+  { to: '/searchSolutions', label: 'Soluciones', icon: '⌕' },
+  { to: '/configuration', label: 'Configuración', icon: '⚙' },
 ];
 
 const Sidebar = () => {
   const { authUser, userAvatar } = useContext(AuthContext);
 
   const avatarSrc = userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent((authUser || 'Usuario').toString())}&background=2563eb&color=fff&bold=true&length=2`;
+  const roleLabel = authUser && authUser !== 'invitado' ? 'Activo' : 'Invitado';
 
   return (
     <aside className="sidebar">
@@ -24,8 +25,11 @@ const Sidebar = () => {
         <div className="sidebar-user-meta">
           <span className="sidebar-user-label">Usuario</span>
           <strong>{authUser || 'Invitado'}</strong>
+          <span className="sidebar-role-badge">{roleLabel}</span>
         </div>
       </div>
+
+      <div className="sidebar-section-title">Panel</div>
 
       <nav className="sidebar-nav" aria-label="Navegación principal">
         {sidebarLinks.map((link) => (
@@ -34,7 +38,8 @@ const Sidebar = () => {
             to={link.to}
             className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
           >
-            {link.label}
+            <span className="sidebar-link-icon" aria-hidden="true">{link.icon}</span>
+            <span>{link.label}</span>
           </NavLink>
         ))}
       </nav>

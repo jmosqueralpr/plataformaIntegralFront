@@ -6,452 +6,86 @@ import AuthContext from '../context/authContext';
 import config from '../../src/config';
 import { toast } from 'react-toastify';
 
+const emptyForm = (currentUser) => ({
+  title: '',
+  description: '',
+  expirationDate: '',
+  expirationTime: '',
+  notify30DaysBefore: false,
+  notify90DaysBefore: false,
+  assignedTo: currentUser ? [currentUser] : [],
+});
+
+const normalizeAssignedUsers = (value) => {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    return [value.trim()];
+  }
+
+  return [];
+};
+
+const normalizeUserList = (data = []) =>
+  data
+    .map((user) => {
+      if (typeof user === 'string') return user;
+      return user?.username || user?.name || user?._id || null;
+    })
+    .filter(Boolean);
+
 const ExpirationTracker = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [results, setResults] = useState([]);
-  const { authUser } = useContext(AuthContext); // Se usa para el creador por defecto
+  const { authUser } = useContext(AuthContext);
+  const currentUser = typeof authUser === 'string' ? authUser : authUser?.username || 'Usuario';
+
+  const [items, setItems] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [userSearchTerm, setUserSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('todos');
+  const [loading, setLoading] = useState(true);
 
-  const searchAssignedUsers = async () => {
-
-    try {
-      const response = await fetch (`${config.baseURL}/api/find-users`, {
-        method: "GET",
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      const data = await response.json();
-      console.log("Estos son los usuarios");
-      setAssignedUsers(data);
-    }  catch (error) {
-      console.error("Error en la búsqueda:", error);
-    }
-
-  } 
-
-  const handleSearch = async () => {
+  const fetchExpirations = async () => {
     setLoading(true);
     try {
       const response = await fetch(`${config.baseURL}/api/expirations`, {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
       });
+
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
+
       const data = await response.json();
-      setResults(data);
+      setItems(data || []);
     } catch (error) {
-      console.error("Error en la búsqueda de elementos de vencimiento:", error);
+      console.error('Error al obtener vencimientos:', error);
+      toast.error('No se pudieron cargar los vencimientos.');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    handleSearch();
-    searchAssignedUsers();
-  }, []);
-
-  const isNewItem = selectedItem?.id === null || selectedItem?._id === null || !selectedItem?._id;
-
-  const createItem = async () => {
-    if (!selectedItem.title) {
-      toast.alert("Por favor, complete el título.");
-      return;
-    }
-
-    // Asegurarse de que assignedTo sea un array y tenga al menos el usuario actual si está vacío
-    let finalAssignedTo = selectedItem.assignedTo || [];
-    if (finalAssignedTo.length === 0 && authUser) {
-        finalAssignedTo = authUser; // Asumiendo que authUser tiene username. Ajustar si es necesario.
-    }
-
-    console.log("Prueba para el post");
-    console.log(selectedItem.assignedTo);
-    console.log("username");
-    console.log(authUser);
-    try {
-      const response = await fetch(`${config.baseURL}/api/expiration`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: selectedItem.title,
-          description: selectedItem.description, // Asegurar que no sea null
-          expirationDate: selectedItem.expirationDate,
-          expirationTime: selectedItem.expirationTime,
-          notified: false,
-          notify30DaysBefore: selectedItem.notify30DaysBefore,
-          notify90DaysBefore: selectedItem.notify90DaysBefore,
-          assignedTo: finalAssignedTo, // Usar finalAssignedTo 
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Error al crear el elemento: ${response.statusText}`);
-      }
-      const newItem = await response.json();
-      setResults((prevResults) => [...prevResults, newItem]);
-      closeModal();
-    } catch (error) {
-      console.error("Error al crear el elemento:", error);
-      toast.error(`Error al crear el elemento: ${error.message}`);
-    }
-  };
-
-  const updateItem = async () => {
-    if (!selectedItem || (!selectedItem._id && !selectedItem.id)) {
-      console.error("No hay un elemento válido para actualizar.");
-      return;
-    }
-    if (!selectedItem.title || !selectedItem.expirationDate) {
-      toast.alert("Por favor, complete el título y la fecha de vencimiento.");
-      return;
-    }
-
-    const isConfirmed = window.confirm("LA INFORMACIÓN DEL ELEMENTO CAMBIARÁ PERMANENTEMENTE, ¿ESTÁ SEGURO QUE QUIERE ACTUALIZARLA?");
-    if (!isConfirmed) return;
-
-    const itemId = selectedItem._id || selectedItem.id;
-
-    // Asegurarse de que assignedTo sea un array y tenga al menos el usuario actual si está vacío
-    let finalAssignedTo = selectedItem.assignedTo || [];
-    if (finalAssignedTo.length === 0 && authUser) {
-        finalAssignedTo = [authUser.username];
-    }
-
-    try {
-      const response = await fetch(`${config.baseURL}/api/expiration/${itemId}`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: selectedItem.title,
-          description: selectedItem.description || '',
-          expirationDate: selectedItem.expirationDate,
-          expirationTime: selectedItem.expirationTime || '',
-          notified: false,
-          notify30DaysBefore: selectedItem.notify30DaysBefore || false,
-          notify90DaysBefore: selectedItem.notify90DaysBefore || false,
-          assignedTo: finalAssignedTo,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error al actualizar el elemento:", errorData.message);
-        toast.error(`Error al actualizar: ${errorData.message || response.statusText}`);
-        return;
-      }
-      const updatedItemData = await response.json();
-      setResults(prevResults =>
-        prevResults.map(item => ((item._id || item.id) === itemId ? updatedItemData : item))
-      );
-      closeModal();
-    } catch (error) {
-      console.error("Error al actualizar el elemento:", error);
-      toast.error(`Error al actualizar el elemento: ${error.message}`);
-    }
-  };
-
-  const deleteItem = async (itemId) => {
-    const isConfirmed = window.confirm("EL ELEMENTO SE BORRARÁ PERMANENTEMENTE ¿ESTÁS SEGURO QUE DESEAS ELIMINARLO?");
-    if (!isConfirmed) return;
-
-    try {
-      const response = await fetch(`${config.baseURL}/api/expiration/${itemId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error al eliminar el elemento:", errorData.message);
-        toast.error(`Error al eliminar: ${errorData.message || response.statusText}`);
-        return;
-      }
-      setResults((prevResults) => prevResults.filter(item => (item._id || item.id) !== itemId));
-      closeModal();
-    } catch (error) {
-      console.error("Error al conectar con el servidor para eliminar:", error);
-      toast.error(`Error al eliminar el elemento: ${error.message}`);
-    }
-  };
-
-  const handleUpdateCreate = async () => {
-    if (isNewItem) {
-      await createItem();
-      toast.success("Vencimiento creado correctamente");
-    } else {
-      await updateItem();
-      toast.success("Vencimiento actualizado correctamente");
-    }
-  };
-
-  const openModal = (item) => {
-    if (!item || item.id === null || !item._id) { // Nuevo ítem
-      setSelectedItem({
-        id: null,
-        title: '',
-        description: '',
-        expirationDate: '',
-        expirationTime: '',
-        notify30DaysBefore: false,
-        notify90DaysBefore: false,
-        assignedTo: authUser && authUser.username ? [authUser.username] : [], // Asignar al usuario actual por defecto si está logueado
-      });
-    } else { // Ítem existente
-      setSelectedItem({
-        ...item,
-        expirationDate: item.expirationDate ? new Date(item.expirationDate).toISOString().split('T')[0] : '',
-        expirationTime: item.expirationTime || '',
-        notify30DaysBefore: item.notify30DaysBefore || false,
-        notify90DaysBefore: item.notify90DaysBefore || false,
-        assignedTo: Array.isArray(item.assignedTo) ? item.assignedTo : (item.assignedTo ? [item.assignedTo] : []),
-      });
-    }
-  };
-
-  const closeModal = () => {
-    setSelectedItem(null);
-  };
-
-  return (
-    <div className="expiration-tracker-container">
-      <div className="expiration-header">
-        <h1 className="expiration-title-header">REGISTRO DE VENCIMIENTOS</h1>
-        <button
-          onClick={() => openModal({ id: null })} // Simplificado, openModal se encarga del objeto por defecto
-          className="new-item-btn"
-        >
-          Nuevo Vencimiento
-        </button>
-      </div>
-
-      {loading && <p>Cargando elementos...</p>}
-      
-      <div className="items-grid">
-        <div className="expiration-tracker-main">
-          {[...results]
-            .sort((a, b) => {
-              const dateA = a.expirationDate ? new Date(a.expirationDate) : null;
-              const dateB = b.expirationDate ? new Date(b.expirationDate) : null;
-              // Considerar también expirationTime si las fechas son iguales
-              if (dateA && dateB) {
-                if (dateA.getTime() === dateB.getTime()) {
-                    // Comparar por hora si las fechas son iguales
-                    const timeA = a.expirationTime || "00:00";
-                    const timeB = b.expirationTime || "00:00";
-                    return timeA.localeCompare(timeB);
-                }
-                return dateA - dateB;
-              }
-              if (dateA) return -1;
-              if (dateB) return 1;
-              return 0;
-            })
-            .map((item) => (
-              <ExpirationCard key={item._id || item.id} item={item} onClick={() => openModal(item)} />
-            ))}
-        </div>
-      </div>
-
-      {selectedItem && (
-       <div
-          className="modal-overlay"
-          onMouseDown={(e) => {
-            // Solo cierra si se clickeó directamente el overlay (fuera del modal)
-            if (e.target.classList.contains("modal-overlay")) {
-              closeModal();
-            }
-          }}
-        >
-          <div className="modal-content">
-        
-            <button className="modal-close" onClick={closeModal}>×</button>
-
-            <input
-              type='text'
-              className="modal-title modal-text-box"
-              placeholder='Título del vencimiento *'
-              value={selectedItem.title || ''}
-              onChange={(e) => setSelectedItem({ ...selectedItem, title: e.target.value })}
-            />
-
-            <textarea
-              className="modal-text-box"
-              placeholder="Descripción (opcional)"
-              maxLength="1200"
-              value={selectedItem.description || ''}
-              onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
-            ></textarea>
-
-            <label className="modal-text">
-              <span>Vencimiento</span>
-              <div className="date-time-container">
-                <input
-                  type="date"
-                  className="modal-date-time-input"
-                  value={selectedItem.expirationDate || ''}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, expirationDate: e.target.value })
-                  }
-                />
-              </div>
-            
-              <div className="date-time-container">
-                <input
-                  type="time"
-                  className="modal-date-time-input"
-                  value={selectedItem.expirationTime || ''}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, expirationTime: e.target.value })
-                  }
-                />
-              </div>
-            </label>
-            
-            <label className="modal-text">
-              <span>Notificar 30 días antes</span>
-              <input
-                type="checkbox"
-                checked={selectedItem.notify30DaysBefore || false}
-                onChange={(e) =>
-                  setSelectedItem({ ...selectedItem, notify30DaysBefore: e.target.checked })
-                }
-              />
-            </label>
-
-            <label className="modal-text">
-              <span>Notificar 90 días antes</span>
-              <input
-                type="checkbox"
-                checked={selectedItem.notify90DaysBefore || false}
-                onChange={(e) =>
-                  setSelectedItem({ ...selectedItem, notify90DaysBefore: e.target.checked })
-                }
-              />
-            </label>
-
-            <div className="modal-text columns"> {/* Contenedor para la sección de asignados */}
-              <div className='modal-text rows' style={{alignItems: 'flex-start'}}> {/* Para alinear el título con la lista */}
-                <span>Asignado a:</span>
-                <ul>
-                  {selectedItem.assignedTo?.map((user) => (
-                    <li className="margin-top modal-text rows" key={user} style={{ justifyContent: 'flex-start' }}>
-                      <span>{user}</span>
-                      <button className='modal-close-alternative'
-                        onClick={() => {
-                          const updatedAssigned = selectedItem.assignedTo.filter((u) => u !== user);
-                          setSelectedItem({ ...selectedItem, assignedTo: updatedAssigned });
-                        }}
-                      >
-                        ❌
-                      </button>
-                    </li>
-                  ))}
-                   {(!selectedItem.assignedTo || selectedItem.assignedTo.length === 0) && (
-                     <li className="margin-top modal-text-small"> (Se asignará a usted por defecto si no selecciona a nadie)</li>
-                   )}
-                </ul>
-              </div>
-
-              <input
-                type="text"
-                placeholder="Buscar y agregar usuario"
-                className="modal-text-box"
-                list="assigned-users-list"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && e.target.value.trim()) {
-                    const newUser = e.target.value.trim();
-                    if (assignedUsers.includes(newUser)) {
-                      if (!selectedItem.assignedTo?.includes(newUser)) {
-                        setSelectedItem({
-                          ...selectedItem,
-                          assignedTo: [...(selectedItem.assignedTo || []), newUser],
-                        });
-                      }
-                    } else {
-                      toast.alert("El usuario no existe en la lista de usuarios disponibles.");
-                    }
-                    e.target.value = ""; 
-                    e.preventDefault(); // Prevenir submit si está en un form
-                  }
-                }}
-              />
-              <datalist id="assigned-users-list">
-                {assignedUsers.map((user) => (
-                  <option key={user} value={user} />
-                ))}
-              </datalist>
-            </div>
-
-            <button className="modal-btn" onClick={handleUpdateCreate}>
-              {isNewItem ? "Crear Vencimiento" : "Actualizar Vencimiento"}
-            </button>
-            {!isNewItem && (selectedItem?._id || selectedItem?.id) && (
-              <button
-                className="modal-btn modal-btn-delete"
-                onClick={() => deleteItem(selectedItem._id || selectedItem.id)}
-              >
-                Eliminar Vencimiento
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ExpirationTracker;
-
-/* import React, { useState, useEffect, useContext } from 'react';
-import ExpirationCard from '../components/ExpirationCard';
-import '../styles/expirationTracker.css';
-import '../styles/global.css';
-import AuthContext from '../context/authContext';
-import config from '../../src/config';
-
-const ExpirationTracker = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [items, setItems] = useState([]);
-  const [assignedUsers, setAssignedUsers] = useState([]);
-  const { authUser } = useContext(AuthContext);
-
-  const fetchExpirations = async () => {
-    try {
-      const response = await fetch(`${config.baseURL}/api/expirations`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      const data = await response.json();
-      setItems(data);
-    } catch (error) {
-      console.error("Error al obtener los vencimientos:", error);
-    }
-  };
-
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${config.baseURL}/api/find-users`, {
+      const response = await fetch(`${config.baseURL}/api/find-users`, {
         method: 'GET',
         credentials: 'include',
       });
-      const data = await res.json();
-      setAssignedUsers(data);
-    } catch (err) {
-      console.error("Error al cargar usuarios:", err);
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setAssignedUsers(normalizeUserList(data));
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
     }
   };
 
@@ -460,154 +94,339 @@ const ExpirationTracker = () => {
     fetchUsers();
   }, []);
 
-  const createExpiration = async () => {
-    if (!selectedItem.title || !selectedItem.expirationDate) {
-      alert("Título y fecha de vencimiento son obligatorios.");
-      return;
-    }
-    try {
-      const res = await fetch(`${config.baseURL}/api/expiration`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedItem),
-      });
-      const newItem = await res.json();
-      setItems(prev => [...prev, newItem]);
-      closeModal();
-    } catch (err) {
-      console.error("Error al crear vencimiento:", err);
-    }
+  const getStatus = (item) => {
+    if (!item.expirationDate) return 'sin-fecha';
+
+    const target = new Date(`${item.expirationDate}T${item.expirationTime || '00:00'}`);
+    const now = new Date();
+    const diffMs = target.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    if (target < now) return 'vencida';
+    if (diffDays <= 30) return 'proxima';
+    return 'activa';
   };
 
-  const updateExpiration = async () => {
-    if (!selectedItem._id) return;
+  const summary = {
+    total: items.length,
+    proximas: items.filter((item) => getStatus(item) === 'proxima').length,
+    vencidas: items.filter((item) => getStatus(item) === 'vencida').length,
+    activas: items.filter((item) => getStatus(item) === 'activa').length,
+  };
+
+  const filteredItems = [...items]
+    .filter((item) => {
+      const hayTermino = !searchTerm || `${item.title || ''} ${item.description || ''}`.toLowerCase().includes(searchTerm.toLowerCase());
+      const hayEstado = statusFilter === 'todos' || getStatus(item) === statusFilter;
+      return hayTermino && hayEstado;
+    })
+    .sort((a, b) => {
+      const dateA = a.expirationDate ? new Date(`${a.expirationDate}T${a.expirationTime || '00:00'}`) : new Date(8640000000000000);
+      const dateB = b.expirationDate ? new Date(`${b.expirationDate}T${b.expirationTime || '00:00'}`) : new Date(8640000000000000);
+      return dateA - dateB;
+    });
+
+  const openModal = (item = null) => {
+    if (!item) {
+      setSelectedItem({ ...emptyForm(currentUser), _id: null });
+      return;
+    }
+
+    setSelectedItem({
+      ...item,
+      assignedTo: normalizeAssignedUsers(item.assignedTo),
+    });
+  };
+
+  const closeModal = () => setSelectedItem(null);
+
+  const submitExpiration = async () => {
+    if (!selectedItem?.title?.trim()) {
+      toast.error('Ingresá un título para el vencimiento.');
+      return;
+    }
+
+    if (!selectedItem.expirationDate) {
+      toast.error('La fecha de vencimiento es obligatoria.');
+      return;
+    }
+
+    const payload = {
+      title: selectedItem.title.trim(),
+      description: selectedItem.description || '',
+      expirationDate: selectedItem.expirationDate,
+      expirationTime: selectedItem.expirationTime || '',
+      notified: false,
+      notify30DaysBefore: Boolean(selectedItem.notify30DaysBefore),
+      notify90DaysBefore: Boolean(selectedItem.notify90DaysBefore),
+      assignedTo: normalizeAssignedUsers(selectedItem.assignedTo).length
+        ? normalizeAssignedUsers(selectedItem.assignedTo)
+        : [currentUser],
+    };
+
     try {
-      const res = await fetch(`${config.baseURL}/api/expiration/${selectedItem._id}`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedItem),
-      });
-      const updated = await res.json();
-      setItems(prev => prev.map(item => item._id === updated._id ? updated : item));
+      if (selectedItem._id) {
+        const response = await fetch(`${config.baseURL}/api/expiration/${selectedItem._id}`, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'No se pudo actualizar.');
+        }
+
+        const updatedItem = await response.json();
+        setItems((prev) => prev.map((item) => (item._id === updatedItem._id ? updatedItem : item)));
+        toast.success('Vencimiento actualizado correctamente.');
+      } else {
+        const response = await fetch(`${config.baseURL}/api/expiration`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'No se pudo crear.');
+        }
+
+        const createdItem = await response.json();
+        setItems((prev) => [createdItem, ...prev]);
+        toast.success('Vencimiento creado correctamente.');
+      }
+
       closeModal();
-    } catch (err) {
-      console.error("Error al actualizar vencimiento:", err);
+    } catch (error) {
+      console.error('Error al guardar vencimiento:', error);
+      toast.error(error.message || 'No se pudo guardar el vencimiento.');
     }
   };
 
   const deleteExpiration = async (id) => {
-    if (!window.confirm("¿Estás seguro de que querés eliminar este vencimiento?")) return;
+    if (!window.confirm('¿Seguro que querés eliminar este vencimiento?')) return;
+
     try {
-      await fetch(`${config.baseURL}/api/expiration/${id}`, {
+      const response = await fetch(`${config.baseURL}/api/expiration/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      setItems(prev => prev.filter(item => item._id !== id));
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'No se pudo eliminar.');
+      }
+
+      setItems((prev) => prev.filter((item) => item._id !== id));
       closeModal();
-    } catch (err) {
-      console.error("Error al eliminar:", err);
+      toast.info('Vencimiento eliminado.');
+    } catch (error) {
+      console.error('Error al eliminar vencimiento:', error);
+      toast.error(error.message || 'No se pudo eliminar el vencimiento.');
     }
   };
 
-  const openModal = (item) => setSelectedItem(item);
-  const closeModal = () => setSelectedItem(null);
+  const toggleAssignedUser = (username) => {
+    if (!selectedItem) return;
 
-  const handleSubmit = async () => {
-    selectedItem._id ? await updateExpiration() : await createExpiration();
+    const current = normalizeAssignedUsers(selectedItem.assignedTo);
+    const exists = current.includes(username);
+
+    setSelectedItem({
+      ...selectedItem,
+      assignedTo: exists ? current.filter((user) => user !== username) : [...current, username],
+    });
   };
 
+  const selectedAssignedUsers = selectedItem ? normalizeAssignedUsers(selectedItem.assignedTo) : [];
+  const filteredAssignableUsers = (assignedUsers || [])
+    .filter((user) => user.toLowerCase().includes((userSearchTerm || '').toLowerCase()))
+    .filter((user) => !selectedAssignedUsers.includes(user))
+    .slice(0, 8);
+
   return (
-    <div className="task-manager-container">
-      <div className="task-header">
-        <h1 className="task-title">SEGUIMIENTO DE VENCIMIENTOS</h1>
-        <button onClick={() => openModal({
-          title: '',
-          description: '',
-          expirationDate: '',
-          notify30DaysBefore: false,
-          notify90DaysBefore: false,
-          assignedTo: [],
-        })} className="new-task-btn">
-          Nuevo Vencimiento
+    <div className="expiration-tracker-container">
+      <div className="expiration-header">
+        <div>
+          <p className="eyebrow">Seguimiento</p>
+          <h1 className="expiration-title-header">Vencimientos</h1>
+        </div>
+
+        <button className="new-item-btn" onClick={() => openModal()}>
+          + Nuevo vencimiento
         </button>
       </div>
 
-      <div className="task-manager-main">
-        {[...items]
-          .sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate))
-          .map(item => (
-            <ExpirationCard key={item._id} item={item} onClick={() => openModal(item)} />
-        ))}
+      <div className="expiration-summary">
+        <div className="summary-card primary">
+          <span>Total</span>
+          <strong>{summary.total}</strong>
+        </div>
+        <div className="summary-card warning">
+          <span>Próximos</span>
+          <strong>{summary.proximas}</strong>
+        </div>
+        <div className="summary-card danger">
+          <span>Vencidas</span>
+          <strong>{summary.vencidas}</strong>
+        </div>
+        <div className="summary-card success">
+          <span>Activas</span>
+          <strong>{summary.activas}</strong>
+        </div>
       </div>
 
+      <div className="expiration-toolbar">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar vencimiento o descripción"
+          className="expiration-search"
+        />
+
+        <select className="expiration-filter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="todos">Todos</option>
+          <option value="activa">Activas</option>
+          <option value="proxima">Próximas</option>
+          <option value="vencida">Vencidas</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="expiration-loading">Cargando vencimientos...</div>
+      ) : filteredItems.length === 0 ? (
+        <div className="empty-state">
+          <h3>No hay vencimientos para mostrar</h3>
+          <p>Creá tu primer registro para empezar a controlar licencias, servicios o alertas importantes.</p>
+        </div>
+      ) : (
+        <div className="expiration-tracker-main">
+          {filteredItems.map((item) => (
+            <ExpirationCard key={item._id} item={item} onClick={() => openModal(item)} />
+          ))}
+        </div>
+      )}
+
       {selectedItem && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && closeModal()}>
+          <div className="expiration-modal-content">
             <button className="modal-close" onClick={closeModal}>×</button>
 
-            <input
-              type="text"
-              placeholder="Título"
-              className="modal-title modal-text-box"
-              value={selectedItem.title}
-              onChange={(e) => setSelectedItem({ ...selectedItem, title: e.target.value })}
-            />
+            <div className="modal-topbar">
+              <span className="modal-tag">{selectedItem._id ? 'Editar vencimiento' : 'Nuevo vencimiento'}</span>
+            </div>
 
-            <textarea
-              placeholder="Descripción"
-              className="modal-text-box"
-              value={selectedItem.description}
-              onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
-            />
-
-            <label className="modal-text">
-              Fecha de Vencimiento
+            <label className="field">
+              <span>Título</span>
               <input
-                type="date"
-                value={selectedItem.expirationDate}
-                onChange={(e) => setSelectedItem({ ...selectedItem, expirationDate: e.target.value })}
+                type="text"
+                value={selectedItem.title || ''}
+                onChange={(e) => setSelectedItem({ ...selectedItem, title: e.target.value })}
+                placeholder="Ej: Licencia Adobe Creative Cloud"
               />
             </label>
 
-            <label className="modal-text">
-              Avisar 30 días antes
-              <input
-                type="checkbox"
-                checked={selectedItem.notify30DaysBefore}
-                onChange={(e) => setSelectedItem({ ...selectedItem, notify30DaysBefore: e.target.checked })}
+            <label className="field">
+              <span>Descripción</span>
+              <textarea
+                value={selectedItem.description || ''}
+                onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
+                placeholder="Información útil, responsable, detalle extra..."
               />
             </label>
 
-            <label className="modal-text">
-              Avisar 90 días antes
-              <input
-                type="checkbox"
-                checked={selectedItem.notify90DaysBefore}
-                onChange={(e) => setSelectedItem({ ...selectedItem, notify90DaysBefore: e.target.checked })}
-              />
-            </label>
+            <div className="field-row two-columns">
+              <label className="field">
+                <span>Fecha</span>
+                <input
+                  type="date"
+                  value={selectedItem.expirationDate || ''}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, expirationDate: e.target.value })}
+                />
+              </label>
 
-            <label className="modal-text">
-              Asignar a:
-              <select
-                multiple
-                value={selectedItem.assignedTo}
-                onChange={(e) =>
-                  setSelectedItem({ ...selectedItem, assignedTo: [...e.target.selectedOptions].map(opt => opt.value) })
-                }>
-                {assignedUsers.map((user) => (
-                  <option key={user._id} value={user._id}>{user.username}</option>
-                ))}
-              </select>
-            </label>
+              <label className="field">
+                <span>Hora</span>
+                <input
+                  type="time"
+                  value={selectedItem.expirationTime || ''}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, expirationTime: e.target.value })}
+                />
+              </label>
+            </div>
+
+            <div className="toggle-grid">
+              <label className="toggle-row">
+                <input
+                  type="checkbox"
+                  checked={Boolean(selectedItem.notify30DaysBefore)}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, notify30DaysBefore: e.target.checked })}
+                />
+                <span>Notificar 30 días antes</span>
+              </label>
+
+              <label className="toggle-row">
+                <input
+                  type="checkbox"
+                  checked={Boolean(selectedItem.notify90DaysBefore)}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, notify90DaysBefore: e.target.checked })}
+                />
+                <span>Notificar 90 días antes</span>
+              </label>
+            </div>
+
+            <div className="field">
+              <span>Asignado a</span>
+
+              <div className="selected-chip-list">
+                {selectedAssignedUsers.length > 0 ? (
+                  selectedAssignedUsers.map((user) => (
+                    <button key={user} type="button" className="chip active" onClick={() => toggleAssignedUser(user)}>
+                      {user} ×
+                    </button>
+                  ))
+                ) : (
+                  <span className="muted-text">Sin usuarios asignados</span>
+                )}
+              </div>
+
+              <input
+                type="text"
+                value={userSearchTerm}
+                onChange={(e) => setUserSearchTerm(e.target.value)}
+                placeholder="Buscar usuario para agregar"
+                className="user-search-input"
+              />
+
+              <div className="user-picker">
+                {filteredAssignableUsers.length > 0 ? (
+                  filteredAssignableUsers.map((user) => (
+                    <button key={user} type="button" className="user-picker-item" onClick={() => toggleAssignedUser(user)}>
+                      {user}
+                    </button>
+                  ))
+                ) : (
+                  <span className="muted-text">
+                    {userSearchTerm ? 'No se encontraron usuarios' : 'Escribí para buscar usuarios'}
+                  </span>
+                )}
+              </div>
+            </div>
 
             <div className="modal-actions">
-              <button onClick={handleSubmit} className="save-btn">Guardar</button>
+              <button className="secondary-btn" onClick={closeModal}>Cancelar</button>
               {selectedItem._id && (
-                <button onClick={() => deleteExpiration(selectedItem._id)} className="delete-btn">Eliminar</button>
+                <button className="danger-btn" onClick={() => deleteExpiration(selectedItem._id)}>
+                  Eliminar
+                </button>
               )}
+              <button className="primary-btn" onClick={submitExpiration}>
+                {selectedItem._id ? 'Guardar cambios' : 'Crear vencimiento'}
+              </button>
             </div>
           </div>
         </div>
@@ -617,4 +436,3 @@ const ExpirationTracker = () => {
 };
 
 export default ExpirationTracker;
- */
