@@ -17,10 +17,14 @@ const dashEnlaces = () => {
 
   return (
     <div className="dashboard-container">
-      <header>
-        
+      <header className="dashboard-header">
+        <div>
+          <p className="dashboard-kicker">Accesos</p>
+          <h1 className="dashboard-title">Accesos y Enlaces</h1>
+        </div>
+
         <div className="header-right">
-          <span>Accesos y Enlaces, {authUser}. </span>
+          <span>{authUser}</span>
         </div>
       </header>
       <main>

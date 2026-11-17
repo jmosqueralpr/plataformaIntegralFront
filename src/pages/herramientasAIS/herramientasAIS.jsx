@@ -16,10 +16,14 @@ const herramientasAIS = () => {
 
   return (
     <div className="dashboard-container">
-      <header>
-        
+      <header className="dashboard-header">
+        <div>
+          <p className="dashboard-kicker">Herramientas</p>
+          <h1 className="dashboard-title">Herramientas AIS</h1>
+        </div>
+
         <div className="header-right">
-          <span>Herramientas AIS, {authUser}. </span>
+          <span>{authUser}</span>
         </div>
       </header>
       <main>

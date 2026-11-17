@@ -18,10 +18,14 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <header>
-        
+      <header className="dashboard-header">
+        <div>
+          <p className="dashboard-kicker">Workspace</p>
+          <h1 className="dashboard-title">Dashboard</h1>
+        </div>
+
         <div className="header-right">
-          <span>Bienvenido al Dashboard, {authUser}. </span>
+          <span>Bienvenido, {authUser}</span>
         </div>
       </header>
       <main>
