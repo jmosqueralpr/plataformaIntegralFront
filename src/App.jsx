@@ -39,13 +39,14 @@ const user = { name: 'Nuevo Usuario', loggedIn: 'True' };
 
 const AppLayout = () => {
   const location = useLocation();
-  const showSidebar = location.pathname !== '/';
+  const isLoginRoute = location.pathname === '/';
+  const showSidebar = !isLoginRoute;
 
   return (
     <>
       <Header userName={user.name} />
       {showSidebar && <Sidebar />}
-      <div className={showSidebar ? 'main-container with-sidebar' : 'main-container'}>
+      <div className={showSidebar ? 'main-container with-sidebar' : 'main-container login-main-container'}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
