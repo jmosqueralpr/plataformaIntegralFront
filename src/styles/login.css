@@ -1,5 +1,5 @@
 .login-main-container {
-  padding: 98px 30px 72px;
+  padding: 24px 30px;
   overflow-y: auto;
   background: #0b1220;
 }
@@ -389,7 +389,7 @@
 
 @media (max-width: 640px) {
   .login-main-container {
-    padding: 96px 12px 70px;
+    padding: 12px;
   }
 
   .login-page {

@@ -3,7 +3,6 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiActivity, FiCheckSquare, FiCompass, FiLink, FiLock, FiShield } from 'react-icons/fi';
 import AuthContext from '../context/authContext';
-import '../styles/global.css';
 import '../styles/login.css';
 import config from '../../src/config';
 import { toast } from 'react-toastify';

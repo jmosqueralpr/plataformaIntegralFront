@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import TaskCard from '../components/TaskCard';
 import '../styles/taskManager.css';
-import '../styles/global.css';
 import AuthContext from '../context/authContext';
 import config from '../../src/config';
 import { toast } from 'react-toastify';

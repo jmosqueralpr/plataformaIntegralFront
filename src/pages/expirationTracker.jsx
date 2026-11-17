@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import ExpirationCard from '../components/ExpirationCard';
 import '../styles/expirationTracker.css';
-import '../styles/global.css';
 import AuthContext from '../context/authContext';
 import config from '../../src/config';
 import { toast } from 'react-toastify';
