@@ -40,6 +40,14 @@ const BaseAIS = () => {
   const { baseId } = useParams();
   const { authUser } = useContext(AuthContext);
 
+  useEffect(() => {
+    document.body.classList.toggle('modal-open', eventModalOpen);
+
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [eventModalOpen]);
+
   const currentYear = new Date().getFullYear();
   const maxYear = currentYear + 1;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/searchSolutions.css';
 import config from '../../src/config';
@@ -7,50 +7,59 @@ import { toast } from 'react-toastify';
 const SearchSolutions = () => {
   const [query, setQuery] = useState('');
   const [field, setField] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [results, setResults] = useState([]);
-  const [selectedResult, setSelectedResult] = useState(null); // Estado para manejar el resultado seleccionado
+  const [selectedResult, setSelectedResult] = useState(null);
   const navigate = useNavigate();
+
+  const categories = useMemo(
+    () => [...new Set(results.map((item) => item.category).filter(Boolean))],
+    [results]
+  );
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      toast.info('Ingresá un término para buscar una solución.');
+      return;
+    }
 
     try {
       const response = await fetch(`${config.baseURL}/api/search?query=${encodeURIComponent(query)}&field=${field}`, {
-        method: "GET",
-        credentials: "include", // Permite enviar cookies
-        headers: { "Content-Type": "application/json" },
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) {
-        toast.error(`Error ${response.status}: ${response.statusText}`);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      if (data.length == 0 ) { toast.info("NO HAY RESULTADOS EN LA BASE DE DATOS"); }
-      setResults(data);
+      setResults(data || []);
+      setSelectedResult(null);
+
+      if (!data || data.length === 0) {
+        toast.info('No hay resultados para esa búsqueda.');
+      }
     } catch (error) {
-      toast.error("Error en la busqueda");
-      console.error("Error en la búsqueda:", error);
+      console.error('Error en la búsqueda:', error);
+      toast.error('No se pudo realizar la búsqueda.');
     }
   };
 
-  // Función para manejar la selección de un resultado
+  const filteredResults = results.filter((item) => {
+    if (categoryFilter === 'all') return true;
+    return item.category === categoryFilter;
+  });
+
   const handleSelectResult = (item) => {
-    if (selectedResult && selectedResult._id === item._id) {
-      setSelectedResult(null); // Si ya está seleccionado, lo deseleccionamos
-    } else {
-      setSelectedResult(item); // Si no, lo seleccionamos
-    }
+    setSelectedResult((prev) => (prev && prev._id === item._id ? null : item));
   };
 
-  const handleCloseSolution = () => { 
-    setSelectedResult(null);
-  }
-
-  // Función para manejar la actualización de un resultado
   const handleUpdateSolution = async () => {
+    if (!selectedResult?._id) return;
+
     const updatedSolution = {
       title: selectedResult.title,
       content: selectedResult.content,
@@ -60,46 +69,40 @@ const SearchSolutions = () => {
       notes: selectedResult.notes,
     };
 
-    console.log("La solucion:");
-    console.log(selectedResult?.previousVersions?.[0]);
-
-    const isConfirmed = window.confirm("¿ESTAS SEGURO QUE QUIERES ACTUALIZAR LA SOLUCIÓN TÉCNICA?, LOS DATOS QUE TIENES GUARDADOS SE PERDERAN");
+    const isConfirmed = window.confirm('¿Seguro que querés actualizar esta solución técnica?');
     if (!isConfirmed) return;
 
     try {
       const response = await fetch(`${config.baseURL}/api/solutions/${selectedResult._id}`, {
         method: 'PUT',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedSolution),
       });
 
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        const error = await response.json();
+        throw new Error(error.message || 'Error al actualizar la solución');
       }
 
       const data = await response.json();
-      setSelectedResult(data.solution); // Actualizamos la solución en el estado
-
+      setSelectedResult(data.solution);
+      setResults((prev) => prev.map((item) => (item._id === data.solution._id ? data.solution : item)));
       toast.success('Solución actualizada correctamente');
     } catch (error) {
       console.error('Error actualizando la solución:', error);
-      toast.error('Hubo un error al actualizar la solución');
+      toast.error(error.message || 'Hubo un error al actualizar la solución');
     }
   };
 
-  // Función para manejar el intercambio de contenido con la versión anterior
   const handleSwapWithPreviousVersion = async () => {
-    if (!selectedResult.previousVersions || selectedResult.previousVersions.length === 0) {
-      toast.info('No hay versiones anteriores disponibles para intercambiar.');
+    if (!selectedResult?.previousVersions || selectedResult.previousVersions.length === 0) {
+      toast.info('No hay versiones anteriores disponibles.');
       return;
     }
 
-    const previousVersion = selectedResult?.previousVersions?.[0]; // Suponemos que intercambiamos con la primera versión anterior
-
-    const isConfirmed = window.confirm("¿ESTAS SEGURO QUE QUIERES ACTUALIZAR LA SOLUCIÓN TÉCNICA?, EL CONTENIDO SE VA A CAMBIAR CON LA VERSION ANTERIOR.");
+    const previousVersion = selectedResult.previousVersions[0];
+    const isConfirmed = window.confirm('¿Querés restaurar la versión anterior de esta solución?');
     if (!isConfirmed) return;
 
     const updatedSolution = {
@@ -115,179 +118,240 @@ const SearchSolutions = () => {
       const response = await fetch(`${config.baseURL}/api/solutions/${selectedResult._id}`, {
         method: 'PUT',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedSolution),
       });
 
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        const error = await response.json();
+        throw new Error(error.message || 'Error al restaurar la versión');
       }
 
       const data = await response.json();
-      setSelectedResult(data.solution); // Actualizamos la solución con el contenido intercambiado
-
-      toast.success('Contenido intercambiado con la versión anterior');
+      setSelectedResult(data.solution);
+      setResults((prev) => prev.map((item) => (item._id === data.solution._id ? data.solution : item)));
+      toast.success('Se restauró la versión anterior correctamente.');
     } catch (error) {
       console.error('Error intercambiando el contenido:', error);
-      toast.error('Hubo un error al intercambiar el contenido');
+      toast.error(error.message || 'Hubo un error al restaurar la versión.');
     }
   };
 
-  // Función para eliminar una solución
-    const handleDeleteSolution = async () => {
-      if (!selectedResult?._id) return;
+  const handleDeleteSolution = async () => {
+    if (!selectedResult?._id) return;
 
-      const isConfirmed = window.confirm(
-        "⚠️ LA SOLUCIÓN SE BORRARÁ PERMANENTEMENTE. ¿ESTÁS SEGURO QUE DESEAS ELIMINARLA?"
-      );
-      if (!isConfirmed) return;
+    const isConfirmed = window.confirm('⚠️ Esta solución se borrará permanentemente. ¿Continuás?');
+    if (!isConfirmed) return;
 
-      try {
-        const response = await fetch(`${config.baseURL}/api/solutions/${selectedResult._id}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        });
+    try {
+      const response = await fetch(`${config.baseURL}/api/solutions/${selectedResult._id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-          const error = await response.json();
-          toast.error(`Error al eliminar la solución (json): ${error.message || response.statusText}`);
-          console.error("Error al eliminar la solución (json):", error);
-          return;
-        }
-
-        toast.success("Solución eliminada correctamente");
-        // Quitamos la solución eliminada de la lista
-        setResults(results.filter((r) => r._id !== selectedResult._id));
-        setSelectedResult(null);
-      } catch (error) {
-        console.error("Error al eliminar la solución:", error);
-        toast.error("Hubo un error al eliminar la solución");
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error al eliminar la solución');
       }
-    };
- 
+
+      const updatedResults = results.filter((r) => r._id !== selectedResult._id);
+      setResults(updatedResults);
+      setSelectedResult(null);
+      toast.success('Solución eliminada correctamente');
+    } catch (error) {
+      console.error('Error al eliminar la solución:', error);
+      toast.error(error.message || 'Hubo un error al eliminar la solución');
+    }
+  };
+
   return (
-    <div className="search-container">
-      <div className="search-header">
-        <h2 className='search-title'>BUSCADOR DE SOLUCIONES TÉCNICAS</h2>
-        <button
-          onClick={() => navigate('/searchSolutionsNew')} // Cambiar la ruta a la página de nueva solución
-          className="new-solution-btn"
-        >
-          Nueva Solución
+    <div className="solutions-page">
+      <header className="solutions-header">
+        <div>
+          <p className="eyebrow">Base de conocimiento</p>
+          <h1 className="solutions-title">Soluciones técnicas</h1>
+        </div>
+
+        <button className="new-solution-btn" onClick={() => navigate('/searchSolutionsNew')}>
+          + Nueva solución
         </button>
-      </div>
-      
-      
-      <form onSubmit={handleSearch}>
-        <div className="form-group">
-          <label htmlFor="query">Término de Búsqueda</label>
-          <input
-            type="text"
-            id="query"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            required
-          />
+      </header>
+
+      <section className="solutions-summary">
+        <div className="summary-card primary">
+          <span>Totales</span>
+          <strong>{results.length}</strong>
+        </div>
+        <div className="summary-card success">
+          <span>Activas</span>
+          <strong>{results.filter((item) => item.status === 'activa').length}</strong>
+        </div>
+        <div className="summary-card warning">
+          <span>En revisión</span>
+          <strong>{results.filter((item) => item.status === 'en revisión').length}</strong>
+        </div>
+        <div className="summary-card danger">
+          <span>Obsoletas</span>
+          <strong>{results.filter((item) => item.status === 'obsoleta').length}</strong>
+        </div>
+      </section>
+
+      <section className="search-panel">
+        <div className="search-panel-header">
+          <div>
+            <span className="search-panel-label">Búsqueda rápida</span>
+            <h3>Encontrá soluciones por texto, contenido o categoría</h3>
+          </div>
+          <span className="search-panel-status">{filteredResults.length} resultados</span>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="field">Buscar en:</label>
-          <select id="field" value={field} onChange={(e) => setField(e.target.value)}>
-            <option value="all">Todos los campos</option>
-            <option value="title">Título</option>
-            <option value="content">Contenido</option>
-            <option value="document_ref">Documento de Referencia</option>
-            <option value="notes">Notas</option>
-          </select>
-        </div>
+        <form onSubmit={handleSearch} className="solutions-search-form">
+          <div className="search-field search-input-wrap">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar soluciones, error, comando, procedimiento..."
+              className="solutions-search-input"
+            />
+          </div>
 
-        <button type="submit">Buscar</button>
-      </form>
+          <div className="search-field">
+            <select value={field} onChange={(e) => setField(e.target.value)} className="solutions-filter">
+              <option value="all">Todos los campos</option>
+              <option value="title">Título</option>
+              <option value="content">Contenido</option>
+              <option value="document_ref">Documento</option>
+              <option value="notes">Notas</option>
+            </select>
+          </div>
 
-      {/* Mostramos los resultados debajo del formulario */}
-      {results.length > 0 && (
-        <div className="results">
-          <h3>Resultados de Búsqueda</h3>
-          <ul>
-            {results.map((item) => (
-              <li key={item._id}>
-                <div onClick={() => handleSelectResult(item)} style={{ cursor: 'pointer' }}>
-                  {item.title}
+          <div className="search-field">
+            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="solutions-filter">
+              <option value="all">Todas las categorías</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" className="search-button">Buscar</button>
+        </form>
+      </section>
+
+      <section className="solutions-layout">
+        <aside className="solutions-list-panel">
+          {filteredResults.length === 0 ? (
+            <div className="empty-state">
+              <h3>No hay soluciones para mostrar</h3>
+              <p>Usá la búsqueda para encontrar instructivos, pasos o soluciones rápidas.</p>
+            </div>
+          ) : (
+            filteredResults.map((item) => (
+              <article
+                key={item._id}
+                className={`solution-card ${selectedResult?._id === item._id ? 'selected' : ''}`}
+                onClick={() => handleSelectResult(item)}
+              >
+                <div className="solution-card-header">
+                  <span className={`status-badge ${item.status}`}>{item.status}</span>
+                  <span className="solution-category">{item.category || 'General'}</span>
                 </div>
-                {/* Si el resultado está seleccionado, mostramos los campos editables */}
-                {selectedResult && selectedResult._id === item._id && (
-                  <div className="result-details">
-                    <div>
-                      <label>Título:</label>
-                      <input
-                        type="text"
-                        value={selectedResult.title}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, title: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label>Contenido:</label>
-                      <textarea
-                        value={selectedResult.content}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, content: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label>Documento de Referencia:</label>
-                      <input
-                        type="text"
-                        value={selectedResult.document_ref}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, document_ref: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label>Notas:</label>
-                      <textarea
-                        value={selectedResult.notes}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, notes: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label>Categoría:</label>
-                      <input
-                        type="text"
-                        value={selectedResult.category}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, category: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label>Estado:</label>
-                      <select
-                        value={selectedResult.status}
-                        onChange={(e) => setSelectedResult({ ...selectedResult, status: e.target.value })}
-                      >
-                        <option value="activa">Activa</option>
-                        <option value="en revisión">En Revisión</option>
-                        <option value="obsoleta">Obsoleta</option>
-                      </select>
-                    </div>
-                    <div className='buttonContent'>
-                      {/* <button className='buttonResult redButton' onClick={handleCloseSolution}>Cerrar Solución</button>
-                      <div className='space'></div> */}
-                      <button className='buttonResult redButton' onClick={handleDeleteSolution}>Eliminar Solución</button>
-                      <div className='space'></div>
-                      <button className='buttonResult' onClick={handleUpdateSolution}>Actualizar Solución</button>
-                      <div className='space'></div>
-                      <button className='buttonResult' onClick={handleSwapWithPreviousVersion}>Volver a versión anterior</button>
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
-      {results.length === 0 && query && (
-        <p>{/* No se encontraron resultados para */} "{query}".</p>
-      )}
+                <h3>{item.title}</h3>
+                <p>{item.content ? item.content.slice(0, 120) : 'Sin contenido cargado'}...</p>
+
+                {item.document_ref && <small>Ref: {item.document_ref}</small>}
+              </article>
+            ))
+          )}
+        </aside>
+
+        <main className="solution-detail-panel">
+          {selectedResult ? (
+            <>
+              <div className="detail-header">
+                <div>
+                  <span className={`status-badge ${selectedResult.status}`}>{selectedResult.status}</span>
+                  <h2>{selectedResult.title}</h2>
+                </div>
+                <span className="detail-category">{selectedResult.category || 'General'}</span>
+              </div>
+
+              <div className="detail-grid">
+                <label className="field">
+                  <span>Título</span>
+                  <input
+                    type="text"
+                    value={selectedResult.title || ''}
+                    onChange={(e) => setSelectedResult({ ...selectedResult, title: e.target.value })}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>Categoría</span>
+                  <input
+                    type="text"
+                    value={selectedResult.category || ''}
+                    onChange={(e) => setSelectedResult({ ...selectedResult, category: e.target.value })}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>Documento de referencia</span>
+                  <input
+                    type="text"
+                    value={selectedResult.document_ref || ''}
+                    onChange={(e) => setSelectedResult({ ...selectedResult, document_ref: e.target.value })}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>Estado</span>
+                  <select
+                    value={selectedResult.status || 'activa'}
+                    onChange={(e) => setSelectedResult({ ...selectedResult, status: e.target.value })}
+                  >
+                    <option value="activa">Activa</option>
+                    <option value="en revisión">En revisión</option>
+                    <option value="obsoleta">Obsoleta</option>
+                  </select>
+                </label>
+              </div>
+
+              <label className="field">
+                <span>Contenido</span>
+                <textarea
+                  value={selectedResult.content || ''}
+                  onChange={(e) => setSelectedResult({ ...selectedResult, content: e.target.value })}
+                />
+              </label>
+
+              <label className="field">
+                <span>Notas</span>
+                <textarea
+                  value={selectedResult.notes || ''}
+                  onChange={(e) => setSelectedResult({ ...selectedResult, notes: e.target.value })}
+                />
+              </label>
+
+              <div className="detail-actions">
+                <button className="secondary-btn" onClick={() => setSelectedResult(null)}>Cerrar</button>
+                <button className="danger-btn" onClick={handleDeleteSolution}>Eliminar</button>
+                <button className="primary-btn" onClick={handleUpdateSolution}>Guardar cambios</button>
+                {selectedResult.previousVersions?.length > 0 && (
+                  <button className="ghost-btn" onClick={handleSwapWithPreviousVersion}>Restaurar versión anterior</button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="detail-empty">
+              <h3>Seleccioná una solución</h3>
+              <p>Elegí un instructivo para ver su contenido, notas, referencias y edición.</p>
+            </div>
+          )}
+        </main>
+      </section>
     </div>
   );
 };

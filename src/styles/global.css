@@ -53,6 +53,22 @@ body {
   width: calc(100% - 240px);
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+body.modal-open .header,
+body.modal-open .sidebar,
+body.modal-open .footer {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.modal-open .main-container {
+  overflow: hidden;
+}
+
 @media (max-width: 900px) {
   .main-container.with-sidebar {
     margin-left: 0;

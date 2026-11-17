@@ -55,33 +55,54 @@ const SearchSolutionsNew = () => {
 
   return (
     <div className="new-solution-container">
-      <h2 className="search-title">Nueva solución técnica</h2>
+      <div className="new-solution-header">
+        <div>
+          <p className="eyebrow">Base de conocimiento</p>
+          <h2 className="search-title">Nueva solución técnica</h2>
+        </div>
+        <button type="button" className="close-btn" onClick={handleCancel}>Volver</button>
+      </div>
+
       <div className="new-solution-form">
-        <label>Título:</label>
-        <input type="text" name="title" value={newSolution.title} onChange={handleChange} required />
+        <div className="form-grid">
+          <label className="field-block full-width">
+            <span>Título</span>
+            <input type="text" name="title" value={newSolution.title} onChange={handleChange} required placeholder="Ej: Error al iniciar sesión en CRM" />
+          </label>
 
-        <label>Contenido:</label>
-        <textarea name="content" value={newSolution.content} onChange={handleChange} required />
+          <label className="field-block">
+            <span>Categoría</span>
+            <input type="text" name="category" value={newSolution.category} onChange={handleChange} placeholder="Ej: Seguridad, Acceso, Configuración" />
+          </label>
 
-        <label>Documento de Referencia:</label>
-        <input type="text" name="document_ref" value={newSolution.document_ref} onChange={handleChange} />
+          <label className="field-block">
+            <span>Estado</span>
+            <select name="status" value={newSolution.status} onChange={handleChange}>
+              <option value="activa">Activa</option>
+              <option value="en revisión">En Revisión</option>
+              <option value="obsoleta">Obsoleta</option>
+            </select>
+          </label>
 
-        <label>Notas:</label>
-        <textarea name="notes" value={newSolution.notes} onChange={handleChange} />
+          <label className="field-block full-width">
+            <span>Documento de referencia</span>
+            <input type="text" name="document_ref" value={newSolution.document_ref} onChange={handleChange} placeholder="URL, ticket, documento interno o referencia" />
+          </label>
 
-        <label>Categoría:</label>
-        <input type="text" name="category" value={newSolution.category} onChange={handleChange} />
+          <label className="field-block full-width">
+            <span>Contenido</span>
+            <textarea name="content" value={newSolution.content} onChange={handleChange} required placeholder="Escribí la solución, pasos, error, comando o procedimiento claro..." />
+          </label>
 
-        <label>Estado:</label>
-        <select name="status" value={newSolution.status} onChange={handleChange}>
-          <option value="activa">Activa</option>
-          <option value="en revisión">En Revisión</option>
-          <option value="obsoleta">Obsoleta</option>
-        </select>
+          <label className="field-block full-width">
+            <span>Notas</span>
+            <textarea name="notes" value={newSolution.notes} onChange={handleChange} placeholder="Indicá observaciones, excepciones, aclaraciones o información adicional." />
+          </label>
+        </div>
 
         <div className="button-container">
-          <button className="cancel-btn" onClick={handleCancel}>Cerrar</button>
-          <button className="create-btn" onClick={handleSubmit}>Crear solución</button>
+          <button type="button" className="cancel-btn" onClick={handleCancel}>Cerrar</button>
+          <button type="button" className="create-btn" onClick={handleSubmit}>Crear solución</button>
         </div>
       </div>
     </div>
