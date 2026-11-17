@@ -1,79 +1,149 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-
+const formatCampaignYearLabel = (year) => {
+  const shortYear = String(year).slice(-2);
+  const nextYear = Number(shortYear) + 1;
+  return `${shortYear}/${String(nextYear).padStart(2, '0')}`;
+};
 
 const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
   if (!campaigns.length) return null;
 
-  // ordenar campañas por año desc
   const sortedCampaigns = [...campaigns].sort((a, b) => b.anio - a.anio);
-
-  // campaña activa
   const [campaign, setCampaign] = useState(sortedCampaigns[0]);
 
   useEffect(() => {
     setCampaign(sortedCampaigns[0]);
   }, [campaigns]);
 
+  const getValue = (field, fallback = '') => {
+    const value = campaign?.[field];
+    if (value === undefined || value === null) return fallback;
+    return value;
+  };
+
   const handleChange = (field, value) => {
-    setCampaign({ ...campaign, [field]: value });
+    setCampaign((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const buildPayload = () => {
+    const payload = {
+      ...campaign,
+      necesidades_campania: campaign.necesidades_campania ?? campaign.tareas_a_realizar ?? '',
+      a_enviar: campaign.a_enviar ?? campaign.elementos_entregados ?? '',
+      tareas_ejecutadas: campaign.tareas_ejecutadas ?? '',
+      tareas_pendientes: campaign.tareas_pendientes ?? campaign.tareas_proxima_campania ?? '',
+      enviado: Boolean(campaign.enviado),
+      tareas_a_realizar: campaign.necesidades_campania ?? campaign.tareas_a_realizar ?? '',
+      elementos_entregados: campaign.a_enviar ?? campaign.elementos_entregados ?? '',
+      tareas_proxima_campania: campaign.tareas_pendientes ?? campaign.tareas_proxima_campania ?? '',
+    };
+
+    return payload;
   };
 
   const handleSave = () => {
-    if (onSave) onSave(campaign);
+    if (onSave) onSave(buildPayload());
   };
 
+  const addCampaignButtonLabel = newYear
+    ? `+ Agregar campaña ${formatCampaignYearLabel(Number(newYear))}`
+    : '+ Agregar campaña';
+
+  const confirmToggleEnviado = (nextValue) => {
+    toast(
+      ({ closeToast }) => (
+        <div>
+          <p style={{ marginBottom: 8 }}>
+            {nextValue
+              ? '¿Seguro que querés marcar esta campaña como enviada?'
+              : '¿Seguro que querés desmarcar esta campaña como enviada?'}
+          </p>
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              className="ais-btn-small green"
+              onClick={() => {
+                closeToast();
+                handleChange('enviado', nextValue);
+              }}
+            >
+              {nextValue ? 'Marcar como enviado' : 'Desmarcar'}
+            </button>
+
+            <button className="ais-btn-small" onClick={closeToast}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ),
+      { autoClose: false }
+    );
+  };
 
   return (
-    <div className="base-info-card">
-      <div className="base-info-header">
-        <h3>Campaña {campaign.anio}</h3>
+    <div className="base-info-card campaign-card">
+      <div className="campaign-header-row">
+        <div className="campaign-title-wrap">
+          <span className="campaign-eyebrow">Resumen anual</span>
+          <h3>Campaña {formatCampaignYearLabel(campaign.anio)}</h3>
+        </div>
+
+        <span className={`campaign-status-pill ${campaign.enviado ? 'sent' : 'pending'}`}>
+          {campaign.enviado ? 'Enviado' : 'Envío pendiente'}
+        </span>
       </div>
 
-      <div className="base-info-grid">
-
-        <div className="field full">
-          <label>Tareas y mejoras realizadas en la campaña</label>
+      <div className="campaign-panels-grid">
+        <div className="campaign-panel">
+          <label>Necesidades de campaña</label>
           <textarea
-            rows={2}
-            value={campaign.tareas_a_realizar || ''}
-            onChange={e => handleChange('tareas_a_realizar', e.target.value)}
+            rows={3}
+            value={getValue('necesidades_campania', getValue('tareas_a_realizar'))}
+            onChange={(e) => handleChange('necesidades_campania', e.target.value)}
           />
         </div>
 
-        <div className="field full">
-          <label>Elementos entregados al inicio de campaña</label>
+        <div className="campaign-panel">
+          <div className="campaign-panel-header">
+            <label>A enviar</label>
+            <div className="campaign-send-toggle">
+              <input
+                type="checkbox"
+                checked={Boolean(campaign.enviado)}
+                onChange={() => confirmToggleEnviado(!campaign.enviado)}
+              />
+              <span>Enviado</span>
+            </div>
+          </div>
           <textarea
-            rows={2}
-            value={campaign.elementos_entregados || ''}
-            onChange={e => handleChange('elementos_entregados', e.target.value)}
+            rows={3}
+            value={getValue('a_enviar', getValue('elementos_entregados'))}
+            onChange={(e) => handleChange('a_enviar', e.target.value)}
           />
         </div>
 
-        <div className="field full">
-          <label>Para próxima campaña: Elementos solicitados</label>
+        <div className="campaign-panel">
+          <label>Tareas ejecutadas</label>
           <textarea
-            rows={2}
-            value={campaign.elementos_proxima_campania || ''}
-            onChange={e =>
-              handleChange('elementos_proxima_campania', e.target.value)
-            }
+            rows={3}
+            value={getValue('tareas_ejecutadas')}
+            onChange={(e) => handleChange('tareas_ejecutadas', e.target.value)}
           />
         </div>
 
-        <div className="field full">
-          <label>Para próxima campaña: Tareas a realizar</label>
+        <div className="campaign-panel">
+          <label>Tareas pendientes</label>
           <textarea
-            rows={2}
-            value={campaign.tareas_proxima_campania || ''}
-            onChange={e =>
-              handleChange('tareas_proxima_campania', e.target.value)
-            }
+            rows={3}
+            value={getValue('tareas_pendientes', getValue('tareas_proxima_campania'))}
+            onChange={(e) => handleChange('tareas_pendientes', e.target.value)}
           />
         </div>
       </div>
 
-      <div className="base-info-actions">
+      <div className="base-info-actions campaign-actions">
         <div className="actions-left">
           <input
             type="number"
@@ -85,11 +155,8 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
             onChange={(e) => setNewYear(e.target.value)}
           />
 
-          <button
-            className="ais-btn-primary"
-            onClick={onAdd}
-          >
-            + Agegar campaña
+          <button className="ais-btn-primary campaign-add-button" onClick={onAdd}>
+            {addCampaignButtonLabel}
           </button>
         </div>
 
@@ -100,28 +167,21 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
         </div>
       </div>
 
+      <div className="campaign-years">
+        <div className="campaign-years-title">Seleccionar año de campaña</div>
 
-      {/* SELECCIÓN DE AÑO */}
-<div className="campaign-years">
-  <div className="campaign-years-title">
-    Seleccionar año de campaña
-  </div>
-
-  <div className="years-bar">
-    {sortedCampaigns.map(c => (
-      <button
-        key={c._id}
-        className={`year-btn-small ${
-          campaign._id === c._id ? 'active' : ''
-        }`}
-        onClick={() => setCampaign(c)}
-      >
-        {c.anio}
-      </button>
-    ))}
-  </div>
-</div>
-
+        <div className="years-bar">
+          {sortedCampaigns.map((c) => (
+            <button
+              key={c._id}
+              className={`year-btn-small ${campaign._id === c._id ? 'active' : ''}`}
+              onClick={() => setCampaign(c)}
+            >
+              {formatCampaignYearLabel(c.anio)}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

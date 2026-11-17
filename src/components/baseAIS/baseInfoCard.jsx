@@ -5,81 +5,104 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
     setBase({ ...base, [field]: value });
   };
 
+  const status = base.activa || base.estado || 'Activa';
+
   return (
-    <div className="base-info-card">
-      <div className="base-info-header">
-        <h3>Información de la Base</h3>
+    <div className="base-info-card base-details-card">
+      <div className="base-details-header">
+        <div>
+          <span className="base-details-eyebrow">Información general</span>
+          <h3>{base.nombre_base || 'Base AIS'}</h3>
+        </div>
+
+        <span className="base-status-badge">{status}</span>
       </div>
 
-      <div className="base-info-grid">
-        <div className="field">
-          <label>Nombre</label>
-          <input
-            value={base.nombre_base || ''}
-            onChange={e => handleChange('nombre_base', e.target.value)}
-          />
-        </div>
+      <div className="base-details-section">
+        <div className="section-title">Datos principales</div>
 
-        <div className="field">
-          <label>Tipo</label>
-          <input
-            value={base.tipo_base || ''}
-            onChange={e => handleChange('tipo_base', e.target.value)}
-          />
-        </div>
+        <div className="base-info-grid">
+          <div className="field">
+            <label>Nombre</label>
+            <input
+              value={base.nombre_base || ''}
+              onChange={e => handleChange('nombre_base', e.target.value)}
+            />
+          </div>
 
-        <div className="field full">
-          <label>Descripción</label>
-          <textarea
-            rows={2}
-            value={base.descripcion_base || ''}
-            onChange={e => handleChange('descripcion_base', e.target.value)}
-          />
-        </div>
+          <div className="field">
+            <label>Tipo</label>
+            <input
+              value={base.tipo_base || ''}
+              onChange={e => handleChange('tipo_base', e.target.value)}
+            />
+          </div>
 
-        <div className="field">
-          <label>Comunicante</label>
-          <input
-            value={base.nombre_comunicante || ''}
-            onChange={e => handleChange('nombre_comunicante', e.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <label>Teléfono</label>
-          <input
-            value={base.tel_comunicante || ''}
-            onChange={e => handleChange('tel_comunicante', e.target.value)}
-          />
-        </div>
-
-        <div className="field full">
-          <label>AIS RX</label>
-          <textarea
-            rows={2}
-            value={base.descripcion_ais_rx || ''}
-            onChange={e => handleChange('descripcion_ais_rx', e.target.value)}
-          />
-        </div>
-
-        <div className="field full">
-          <label>AIS TX</label>
-          <textarea
-            rows={2}
-            value={base.descripcion_ais_tx || ''}
-            onChange={e => handleChange('descripcion_ais_tx', e.target.value)}
-          />
+          <div className="field full">
+            <label>Descripción</label>
+            <textarea
+              rows={2}
+              value={base.descripcion_base || ''}
+              onChange={e => handleChange('descripcion_base', e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
-       <div className="base-info-actions">
-          <button
-            className="ais-btn-primary"
-            onClick={() => onSave(base)}
-          >
-            Guardar cambios
-          </button>
+      <div className="base-details-section">
+        <div className="section-title">Contacto</div>
+
+        <div className="base-info-grid">
+          <div className="field">
+            <label>Comunicante</label>
+            <input
+              value={base.nombre_comunicante || ''}
+              onChange={e => handleChange('nombre_comunicante', e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label>Teléfono</label>
+            <input
+              value={base.tel_comunicante || ''}
+              onChange={e => handleChange('tel_comunicante', e.target.value)}
+            />
+          </div>
         </div>
+      </div>
+
+      <div className="base-details-section">
+        <div className="section-title">Sistema AIS</div>
+
+        <div className="base-info-grid">
+          <div className="field full">
+            <label>AIS RX</label>
+            <textarea
+              rows={2}
+              value={base.descripcion_ais_rx || ''}
+              onChange={e => handleChange('descripcion_ais_rx', e.target.value)}
+            />
+          </div>
+
+          <div className="field full">
+            <label>AIS TX</label>
+            <textarea
+              rows={2}
+              value={base.descripcion_ais_tx || ''}
+              onChange={e => handleChange('descripcion_ais_tx', e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="base-info-actions">
+        <button
+          className="ais-btn-primary"
+          onClick={() => onSave(base)}
+        >
+          Guardar cambios
+        </button>
+      </div>
     </div>
   );
 };

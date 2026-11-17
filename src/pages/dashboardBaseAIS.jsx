@@ -90,23 +90,47 @@ const DashboardBaseAIS = () => {
     }
   };
 
+  const totalBases = bases.length;
+  const totalPermanentes = bases.filter(
+    (base) => base.tipo_base?.toLowerCase() === 'permanente'
+  ).length;
+  const totalTemporales = bases.filter(
+    (base) => base.tipo_base?.toLowerCase() !== 'permanente'
+  ).length;
+
   return (
     <div className="ais-dashboard-container">
-      {/* Header */}
       <div className="ais-dashboard-header">
-        <h1 className="ais-dashboard-title">BASES AIS</h1>
+        <div>
+          <p className="ais-dashboard-kicker">Gestión operativa</p>
+          <h1 className="ais-dashboard-title">Bases AIS</h1>
+        </div>
 
         <button
           className="ais-btn-primary"
           onClick={() => setShowModal(true)}
         >
-          Nueva Base
+          + Nueva Base
         </button>
       </div>
 
-      {/* Listado */}
+      <div className="ais-dashboard-summary">
+        <div className="ais-summary-card">
+          <span className="ais-summary-label">Total</span>
+          <strong>{totalBases}</strong>
+        </div>
+        <div className="ais-summary-card permanent">
+          <span className="ais-summary-label">Permanentes</span>
+          <strong>{totalPermanentes}</strong>
+        </div>
+        <div className="ais-summary-card temporary">
+          <span className="ais-summary-label">Temporales</span>
+          <strong>{totalTemporales}</strong>
+        </div>
+      </div>
+
       {loading ? (
-        <p>Cargando bases...</p>
+        <div className="ais-loading-state">Cargando bases...</div>
       ) : (
         <div className="ais-base-grid">
           {bases.map((base) => (
@@ -115,16 +139,42 @@ const DashboardBaseAIS = () => {
               className="ais-base-card"
               onClick={() => navigate(`/BaseAIS/${base._id}`)}
             >
+              <div className="ais-base-header">
+                <span
+                  className={`ais-base-type ${
+                    base.tipo_base?.toLowerCase() === 'permanente'
+                      ? 'permanente'
+                      : 'temporal'
+                  }`}
+                >
+                  {base.tipo_base?.toUpperCase() || 'TEMPORAL'}
+                </span>
+                <span className="ais-base-dot" aria-hidden="true" />
+              </div>
+
               <h3 className="ais-base-name">{base.nombre_base}</h3>
-              <span
-                className={`ais-base-type ${
-                  base.tipo_base.toLowerCase() === 'permanente'
-                    ? 'permanente'
-                    : 'temporal'
-                }`}
-              >
-                {base.tipo_base.toUpperCase()}
-              </span>
+
+              <p className="ais-base-description">
+                {base.descripcion_base || 'Sin descripción cargada.'}
+              </p>
+
+              <div className="ais-base-meta">
+                <div>
+                  <span className="ais-meta-label">Comunicante</span>
+                  <strong>
+                    {base.nombre_comunicante || 'No asignado'}
+                  </strong>
+                </div>
+                <div>
+                  <span className="ais-meta-label">Tel.</span>
+                  <strong>{base.tel_comunicante || '-'}</strong>
+                </div>
+              </div>
+
+              <div className="ais-base-footer">
+                <span>Ver detalle</span>
+                <span className="ais-base-arrow">→</span>
+              </div>
             </div>
           ))}
         </div>
