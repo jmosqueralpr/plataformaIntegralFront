@@ -167,3 +167,9 @@
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 }
+
+@media (max-width: 640px) {
+  .sidebar {
+    display: none;
+  }
+}
