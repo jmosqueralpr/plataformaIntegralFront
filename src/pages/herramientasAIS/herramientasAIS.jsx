@@ -31,6 +31,11 @@ const HerramientasAIS = () => {
           text="Analiza archivos TXT, identifica los MMSI que transmiten mensajes AIS tipo 8 y muestra datos reales decodificados de una trama de ejemplo."
         />
         <DashboardCard
+          title="Monitor AIS en vivo"
+          link="aisLive"
+          text="Visualiza barcos, ATON y mensajes AIS 6, 8 y 21 recibidos desde una fuente NMEA 0183."
+        />
+        <DashboardCard
           title="Conversor de coordenadas GPS"
           link="gpsConverter"
           text="Convierte coordenadas GPS entre formatos MTU AIS-C, Kanaton, grados decimales, DDM, DMS y NMEA."

@@ -1,5 +1,6 @@
 
 
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
 import Footer from './components/footer';
@@ -34,7 +35,7 @@ import DashboardBaseAIS from './pages/dashboardBaseAIS';
 import BaseAIS from './pages/baseAIS';
 import UserManagement from './pages/userManagement';
 
-
+const AisLive = lazy(() => import('./pages/herramientasAIS/aisLive'));
 
 const user = { name: 'Nuevo Usuario', loggedIn: 'True' };
 
@@ -65,6 +66,14 @@ const AppLayout = () => {
           {/* Herramientas AIS */}
           <Route path="/herramientasAIS" element={<HerramientasAIS />} />
           <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
+          <Route
+            path="/aisLive"
+            element={(
+              <Suspense fallback={<div role="status">Cargando monitor AIS…</div>}>
+                <AisLive />
+              </Suspense>
+            )}
+          />
           <Route path="/gpsConverter" element={<GPSConverter />} />
           {/* Accesos y Enlaces */}
           <Route path="/dashEnlaces" element={<DashEnlaces />} />

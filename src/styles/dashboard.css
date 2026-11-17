@@ -68,7 +68,7 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
-main {
+.dashboard-container main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
@@ -117,7 +117,7 @@ main {
 }
 
 @media (max-width: 900px) {
-  main {
+  .dashboard-container main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -128,7 +128,7 @@ main {
     align-items: flex-start;
   }
 
-  main {
+  .dashboard-container main {
     grid-template-columns: 1fr;
   }
 
