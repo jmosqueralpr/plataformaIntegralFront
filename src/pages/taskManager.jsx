@@ -503,7 +503,7 @@ const TaskManager = () => {
           }}
         >
           <div className="modalContent">
-            <button type="button" className="modalClose" onClick={closeModal}>
+            <button type="button" className="task-modal-close" onClick={closeModal} aria-label="Cerrar">
               ×
             </button>
 

@@ -232,17 +232,36 @@
 }
 
 .modal-close {
+  display: grid;
+  place-items: center;
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: #f8fafc;
-  width: 32px;
-  height: 32px;
+  z-index: 2;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
   cursor: pointer;
-  font-size: 1.2rem;
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.28);
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.modal-close:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
 .modal-topbar {

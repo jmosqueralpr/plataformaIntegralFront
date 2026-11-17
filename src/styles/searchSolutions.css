@@ -132,7 +132,14 @@
 
 .solutions-search-form {
   display: grid;
-  grid-template-columns: minmax(260px, 2.2fr) minmax(160px, 1fr) minmax(160px, 1fr) auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  grid-template-columns: minmax(280px, 2.2fr) minmax(170px, 1fr) minmax(190px, 1.1fr) auto;
   gap: 12px;
   align-items: end;
 }
@@ -140,6 +147,7 @@
 .search-field {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: 8px;
 }
 
@@ -175,6 +183,12 @@
 
 .solutions-search-input {
   padding-left: 40px;
+  margin: 0;
+  min-width: 0;
+}
+
+.solutions-filter {
+  min-width: 0;
 }
 
 .solutions-search-input:focus,

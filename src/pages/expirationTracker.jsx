@@ -315,7 +315,7 @@ const ExpirationTracker = () => {
       {selectedItem && (
         <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && closeModal()}>
           <div className="expiration-modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
+            <button type="button" className="modal-close" onClick={closeModal} aria-label="Cerrar">×</button>
 
             <div className="modal-topbar">
               <span className="modal-tag">{selectedItem._id ? 'Editar vencimiento' : 'Nuevo vencimiento'}</span>
