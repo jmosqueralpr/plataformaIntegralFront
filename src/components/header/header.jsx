@@ -28,25 +28,28 @@ const Header = ({ userName }) => {
 
   return (
     <header className="header">
-        <div className="header-left">
-            <Logo />
+      <div className="header-left">
+        <Logo />
 
-            {!hideBackButton && (
-            <button
-                className="back-button"
-                onClick={handleBack}
-                aria-label="Volver atrás"
-                title="Volver"
-                >
-                Volver
-                </button>
-
-            )}
+        <div className="header-brand" aria-label="Marca de la plataforma">
+          <span className="brand-kicker">Plataforma</span>
+          <strong>DYB</strong>
         </div>
 
-        <UserCard isFollowing={true} userName={authUser} name={authUser} />
-        </header>
+        {!hideBackButton && (
+          <button
+            className="back-button"
+            onClick={handleBack}
+            aria-label="Volver atrás"
+            title="Volver"
+          >
+            ← Volver
+          </button>
+        )}
+      </div>
 
+      <UserCard isFollowing={true} userName={authUser} name={authUser} />
+    </header>
   );
 };
 

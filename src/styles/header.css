@@ -1,68 +1,111 @@
 /* src/styles/Header.css */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #212930;
-    padding: 1px 2px;
-    border-bottom: 1px solid #ccc;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    height: 10vh;
-    z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 82px;
+  padding: 12px 22px 12px 18px;
+  background: linear-gradient(135deg, rgba(7, 12, 20, 0.96), rgba(15, 23, 42, 0.92));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
+  backdrop-filter: blur(14px);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  min-width: 0;
 }
 
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.05;
+  margin-right: 6px;
+}
+
+.brand-kicker {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8fb9ff;
+}
+
+.header-brand strong {
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: #f8fafc;
+}
 
 .logoContainer {
-    background-color: #007bff; /* Color del fondo del contenedor */
-    padding: 3px; /* Espacio alrededor del logo */
-    display: flex; /* Para centrar el logo dentro del contenedor */
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px; /* Bordes redondeados del contenedor */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega una sombra para darle profundidad */
-}
-
-.logoContainer img {
-    height: 50px; /* Mantiene el tamaño del logo */
-    background-color: white; /* Fondo blanco para destacar el logo */
-    border-radius: 8px; /* Bordes redondeados del fondo del logo */
-    padding: 5px; /* Espacio interno para que no quede tan justo */
-    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
-    margin: 0; /* Quita márgenes innecesarios */
-}
-
-
-.user-info {
-    font-size: 14px;
-    color: #333;
-}
-
-.back-button {
-  height: 100%;
-  padding: 13px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: rgb(231, 233, 234);
-  font-size: 1.5rem; /* Flecha visible */
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
-  font-weight: bolder;
+  padding: 6px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(14, 165, 233, 0.12));
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+}
+
+.logoContainer img {
+  height: 42px;
+  background-color: rgba(255, 255, 255, 0.96);
   border-radius: 10px;
+  padding: 6px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.user-info {
+  font-size: 14px;
+  color: #dfe7f3;
+}
+
+.back-button {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(148, 163, 184, 0.06);
+  color: #edf6ff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: none;
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateY(-1px);
 }
+
+@media (max-width: 640px) {
+  .header {
+    height: auto;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header-brand {
+    display: none;
+  }
+}
+
 

@@ -42,14 +42,22 @@ body {
 .main-container {
   flex: 1;
   overflow-y: auto;
-  padding-top: 10vh;
-  padding-bottom: 7vh;
+  padding-top: 96px;
+  padding-bottom: 70px;
   background-color: #202020;
-  min-height: 0; /* Ayuda a que flex funcione bien con overflow */
- /*  height: 75vh !important; */
+  min-height: 0;
+}
 
+.main-container.with-sidebar {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+}
 
-  
+@media (max-width: 900px) {
+  .main-container.with-sidebar {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 /* .footer {

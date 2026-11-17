@@ -1,20 +1,40 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/dashboard.css';
 import { DashboardCard } from '../components/dashboardCard';
-import Cookies from 'js-cookie';
 import AuthContext from '../context/authContext';
-import config  from '../../src/config';
 
+const dashboardTips = [
+  'Tip: revisá primero el historial de eventos antes de hacer cambios importantes.',
+  'Tip: configurá tus alertas para no perder tareas ni vencimientos clave.',
+  'Tip: desde configuración podés activar o desactivar tus ayudas del panel.',
+  'Tip: usá el dashboard para entrar rápidamente a los módulos que más usás.',
+];
 
 const Dashboard = () => {
-  const { authUser, setAuthUser, isAuthenticated, login, logout  } = useContext(AuthContext); /* Llamo a las variables del contexto. */
+  const { authUser } = useContext(AuthContext);
+  const [tipsEnabled, setTipsEnabled] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    const readPreferences = () => {
+      try {
+        const savedPreferences = JSON.parse(localStorage.getItem('dyb-user-preferences') || '{}');
+        setTipsEnabled(Boolean(savedPreferences.dashboardTips));
+      } catch {
+        setTipsEnabled(false);
+      }
+    };
+
+    readPreferences();
+    window.addEventListener('storage', readPreferences);
+
+    return () => {
+      window.removeEventListener('storage', readPreferences);
+    };
   }, []);
 
-
-  
+  const activeTip = tipsEnabled ? dashboardTips[Math.floor((Date.now() / 1000) % dashboardTips.length)] : null;
 
   return (
     <div className="dashboard-container">
@@ -28,6 +48,14 @@ const Dashboard = () => {
           <span>Bienvenido, {authUser}</span>
         </div>
       </header>
+
+      {activeTip && (
+        <div className="dashboard-tip-banner" role="status" aria-live="polite">
+          <span className="dashboard-tip-icon">✦</span>
+          <span>{activeTip}</span>
+        </div>
+      )}
+
       <main>
         <DashboardCard className='main-container' title={'Asistente de Telegram'} link={'AsistenteTelegram'} text = {'Acceso al asistente de Telegram.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Configuración de usuario'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
@@ -36,7 +64,6 @@ const Dashboard = () => {
         <DashboardCard className='main-container' title={'Enlaces y Accesos'} link={'DashEnlaces'} text = {'Enlaces y accesos a los diferentes sistemas de DYB.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Task Manager'} link={'TaskManager'} text = {'Herramienta para que puedas administrar tus tareas diarias.'} ></DashboardCard>
         <DashboardCard className='main-container' title={'Registro de Vencimientos'} link={'ExpirationTracker'} text = {'Herramienta para que puedas gestionar tus vencimientos y configurar avisos pro Telegram.'} ></DashboardCard>
-        
       </main>
     </div>
   );

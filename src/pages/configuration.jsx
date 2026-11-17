@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/authContext';
 import '../styles/configuration.css';
 import config from '../../src/config';
@@ -35,152 +36,234 @@ const sampleUserData = [
   },
 ];
 
-const Configuration = () => {
-  const { isAuthenticated } = useContext(AuthContext); // Solo usamos isAuthenticated
-  const [pagesConfig, setPagesConfig] = useState({});
-  const [userDetails, setUserDetails] = useState({ email: '', password: '' });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+const STORAGE_KEY = 'dyb-user-preferences';
 
+const CONFIG_STORAGE_AVATAR_KEY = 'dyb-user-avatar';
+
+const Configuration = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, authUser, setUserAvatar } = useContext(AuthContext);
   const [newEmail, setNewEmail] = useState('');
+  const [currentProfile, setCurrentProfile] = useState(null);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [rNewPassword, setRNewPassword] = useState('');
- 
+  const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const [preferences, setPreferences] = useState({
+    emailAlerts: true,
+    taskReminders: true,
+    dashboardTips: false,
+  });
 
-  // Simular la carga de datos del servidor
+  const displayName = authUser && authUser !== 'invitado' ? authUser : (currentProfile?.username || 'Usuario');
+  const profileRole = currentProfile?.role || 'user';
+  const roleLabel = profileRole.toLowerCase().includes('admin') ? 'Administrador' : 'Usuario';
+  const isAdminUser = profileRole.toLowerCase().includes('admin');
+  const initials = displayName
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || '')
+    .join('') || 'U';
+
   useEffect(() => {
-    // Simulamos la obtención de datos del servidor
-    const userData = sampleUserData[0];
-    setPagesConfig({
-      dashboard: userData.dashboard,
-      settings: userData.settings,
-      profile: userData.profile,
-      taskManager: userData.taskManager,
-      bitWarden: userData.bitWarden,
-      comprasHidrovia: userData.comprasHidrovia,
-      comprasEmepa: userData.comprasEmepa,
-      comprasDYB: userData.comprasDYB,
-      gpsUnitsConverter: userData.gpsUnitsConverter,
-      guiaLinternista: userData.guiaLinternista,
-      downloadGestionar: userData.downloadGestionar,
-    });
-    setUserDetails({
-      email: userData.user.email,
-      password: '', // No mostramos la contraseña por seguridad
-    });
-  }, []);
+    const fallbackEmail = sampleUserData[0]?.user?.email || '';
+    setNewEmail(fallbackEmail);
 
-  // Manejar cambios en el acceso
-  const handleAccessChange = (page) => {
-    setPagesConfig((prevConfig) => ({
-      ...prevConfig,
-      [page]: { ...prevConfig[page], access: !prevConfig[page].access },
-    }));
-  };
-
-  // Manejar cambios en el orden
-  const handleOrderChange = (page, newOrder) => {
-    const newOrderNum = parseInt(newOrder, 10);
-    if (isNaN(newOrderNum) || newOrderNum < 1 || newOrderNum > Object.keys(pagesConfig).length) {
-      return; // Validación de rango
+    const savedAvatar = localStorage.getItem(CONFIG_STORAGE_AVATAR_KEY) || '';
+    if (savedAvatar) {
+      setAvatarPreview(savedAvatar);
     }
 
-    // Crear una copia del estado actual
-    const updatedConfig = { ...pagesConfig };
-    const currentOrder = updatedConfig[page].order;
+    const savedPreferences = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    setPreferences((prev) => ({
+      ...prev,
+      ...savedPreferences,
+    }));
 
-    // Reconfigurar los órdenes
-    Object.keys(updatedConfig).forEach((p) => {
-      if (p !== page) {
-        if (currentOrder < newOrderNum && updatedConfig[p].order > currentOrder && updatedConfig[p].order <= newOrderNum) {
-          updatedConfig[p].order -= 1;
-        } else if (currentOrder > newOrderNum && updatedConfig[p].order < currentOrder && updatedConfig[p].order >= newOrderNum) {
-          updatedConfig[p].order += 1;
+    if (!isAuthenticated) return;
+
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`${config.baseURL}/api/profile`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'No se pudo cargar el perfil.');
+
+        setCurrentProfile(data);
+        if (data.email) {
+          setNewEmail(data.email);
         }
+        if (data.avatar) {
+          localStorage.setItem(CONFIG_STORAGE_AVATAR_KEY, data.avatar);
+          setAvatarPreview(data.avatar);
+        }
+      } catch (error) {
+        toast.error(error.message || 'No se pudo cargar el perfil.');
       }
-    });
-    updatedConfig[page].order = newOrderNum;
+    };
 
-    setPagesConfig(updatedConfig);
-  };
+    fetchProfile();
+  }, [isAuthenticated]);
 
-  // Manejar cambios en los detalles del usuario
-  const handleUserDetailsChange = (e) => {
-    const { name, value } = e.target;
-    setUserDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  }, [preferences]);
+
+  const togglePreference = (key) => {
+    setPreferences((prev) => ({
+      ...prev,
+      [key]: !prev[key],
     }));
   };
 
-  // Simular el envío de datos al servidor
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Seleccioná un archivo de imagen válido.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const result = String(reader.result || '');
+
+      try {
+        const response = await fetch(`${config.baseURL}/api/profile/avatar`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatar: result }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'No se pudo guardar la foto.');
+
+        localStorage.setItem(CONFIG_STORAGE_AVATAR_KEY, result);
+        setAvatarPreview(result);
+        setUserAvatar(result);
+        toast.success('Foto de perfil actualizada.');
+      } catch (error) {
+        toast.error(error.message || 'No se pudo guardar la foto.');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = async () => {
+    try {
+      const response = await fetch(`${config.baseURL}/api/profile/avatar`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatar: '' }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'No se pudo quitar la foto.');
+
+      localStorage.removeItem(CONFIG_STORAGE_AVATAR_KEY);
+      setAvatarPreview('');
+      setUserAvatar('');
+      toast.info('Se eliminó la foto de perfil.');
+    } catch (error) {
+      toast.error(error.message || 'No se pudo quitar la foto.');
+    }
+  };
+
   const handleChangeEmail = async (e) => {
     e.preventDefault();
+    const trimmedEmail = newEmail.trim();
 
-    const response = await fetch(`${config.baseURL}/api/change-email`, {
-        method: "PUT",
-        credentials: "include", // Importante para enviar la cookie con el token
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newEmail: newEmail }) // Enviar el nuevo email
-    });
-
-    const data = await response.json();
-
-    if (response.status === 200) {
-        toast.success("El correo electrónico se cambió exitosamente.");
-        setNewEmail(""); 
-    } else {
-        toast.error("Error al cambiar el correo electrónico: " + data.message);
+    if (!trimmedEmail || !/\S+@\S+\.\S+/.test(trimmedEmail)) {
+      toast.error('Ingresá un email válido antes de guardar.');
+      return;
     }
-};
 
+    setIsSavingEmail(true);
 
-  // CAMBIO DE PASSWORD
+    try {
+      const response = await fetch(`${config.baseURL}/api/change-email`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newEmail: trimmedEmail }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'No se pudo cambiar el email.');
+
+      toast.success('El correo electrónico se actualizó correctamente.');
+    } catch (error) {
+      toast.error(error.message || 'No se pudo cambiar el email.');
+    } finally {
+      setIsSavingEmail(false);
+    }
+  };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
-      if (newPassword === rNewPassword) {    
-        const response = await fetch(`${config.baseURL}/api/change-password`, {
-            method: "PUT",
-            credentials: "include", // Importante para enviar la cookie con el token
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ oldPassword, newPassword })
-        });
-        const data = await response.json();
+    if (!oldPassword || !newPassword || !rNewPassword) {
+      toast.error('Completá la contraseña actual, la nueva y la confirmación.');
+      return;
+    }
 
-        if (response.status === 200) {
-              alert("La contraseña cambió exitosamente.");
-              setOldPassword("");  // Limpiar input
-              setNewPassword("");  // Limpiar input
-              setRNewPassword(""); // Limpiar input
+    if (newPassword.length < 6) {
+      toast.error('La nueva contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
 
-              // Aquí puedes hacer logout o refrescar la página.
-          } else {
-              toast.error("Error al cambiar la contraseña: " + data.message);
-          }
-        //return data;
-      } else {
-    alert("El nuevo password no coincide");
-  }
-};
+    if (newPassword !== rNewPassword) {
+      toast.error('Las contraseñas nuevas no coinciden.');
+      return;
+    }
 
+    setIsSavingPassword(true);
 
-  // Si el usuario no está autenticado, mostrar mensaje de acceso denegado
+    try {
+      const response = await fetch(`${config.baseURL}/api/change-password`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'No se pudo cambiar la contraseña.');
+
+      toast.success('La contraseña se actualizó correctamente.');
+      setOldPassword('');
+      setNewPassword('');
+      setRNewPassword('');
+    } catch (error) {
+      toast.error(error.message || 'No se pudo cambiar la contraseña.');
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="configuration-container">
-        <header>
-          <div className="header-left">
-            <img src="/path/to/company-logo.png" alt="Empresa" className="company-logo" />
-          </div>
-          <div className="header-right">
-            <span>Por favor, inicia sesión para acceder a la configuración.</span>
+        <header className="config-header config-header-locked">
+          <div>
+            <p className="config-kicker">Acceso</p>
+            <h1 className="config-page-title">Configuración de la cuenta</h1>
           </div>
         </header>
-        <main>
-          <p>No tienes acceso a esta página.</p>
+        <main className="configuration-main locked-state">
+          <div className="config-card empty-state-card">
+            <h3>Iniciá sesión para continuar</h3>
+            <p>Necesitás una sesión activa para ver y modificar los datos de tu cuenta.</p>
+          </div>
         </main>
       </div>
     );
@@ -188,110 +271,183 @@ const Configuration = () => {
 
   return (
     <div className="configuration-container">
-      <header>
-        <div className="header-left">
-        <h2>Configuración del Usuario</h2>
-         {/*  <img src="/path/to/company-logo.png" alt="Empresa" className="company-logo" /> */}
+      <header className="config-header">
+        <div>
+          <p className="config-kicker">Cuenta</p>
+          <h1 className="config-page-title">Configuración de la cuenta</h1>
         </div>
-        <div className="header-right">
-          <span></span>
+
+        <div className="config-header-actions">
+          {isAdminUser && (
+            <button type="button" className="save-button secondary" onClick={() => navigate('/userManagement')}>
+              Administración de usuarios
+            </button>
+          )}
+          <div className="config-user-badge">
+            <span className="config-user-dot" aria-hidden="true" />
+            <span>{displayName}</span>
+          </div>
         </div>
       </header>
+
       <main className="configuration-main">
-        
-        {error && <p className="error-message">{error}</p>}
-        {success && <p className="success-message">{success}</p>}
-
-        {/* Configuración de páginas */}
-        {/*
-        <section className="pages-config">
-          <h3>Configuración de Páginas</h3>
-          <div className="pages-list">
-            <form onSubmit={handleChangeEmail} className="user-form">
-              {Object.entries(pagesConfig)
-                .sort(([, a], [, b]) => a.order - b.order)
-                .map(([page, config]) => (
-                  <div key={page} className="page-item">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={config.access}
-                        onChange={() => handleAccessChange(page)}
-                      />
-                      {page}
-                    </label>
-                    <input
-                      type="number"
-                      value={config.order}
-                      onChange={(e) => handleOrderChange(page, e.target.value)}
-                      min="1"
-                      max={Object.keys(pagesConfig).length}
-                      className="order-input"
-                    />
-                  </div>
-                ))}
-                <button type="submit" className="save-button">
-                  Establecer cambio
-                </button>
-              </form>
-
+        <section className="config-card config-profile-summary">
+          <div className="config-profile-hero">
+            <div className="config-avatar" aria-label="Avatar del usuario">
+              {avatarPreview ? (
+                <img src={avatarPreview} alt="Avatar del usuario" className="config-avatar-image" />
+              ) : (
+                initials
+              )}
+            </div>
+            <div className="config-profile-copy">
+              <p className="config-section-label">Perfil</p>
+              <h2>{displayName}</h2>
+              <div className="config-role-row">
+                <span className="role-pill">{roleLabel}</span>
+                <span className="status-pill">Sesión activa</span>
+              </div>
+              <div className="avatar-actions">
+                <label className="avatar-upload-button">
+                  <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                  Cambiar foto
+                </label>
+                {avatarPreview && (
+                  <button type="button" className="avatar-remove-button" onClick={handleRemoveAvatar}>
+                    Quitar foto
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-          
+
+          <div className="config-summary-grid">
+            <div className="summary-stat">
+              <span className="summary-label">Correo</span>
+              <strong>{newEmail || 'No cargado'}</strong>
+            </div>
+            <div className="summary-stat">
+              <span className="summary-label">Acceso</span>
+              <strong>{roleLabel}</strong>
+            </div>
+            <div className="summary-stat">
+              <span className="summary-label">Estado</span>
+              <strong>Online</strong>
+            </div>
+          </div>
         </section>
-        */}
-        {/* Configuración del usuario */}
-        <section className="user-config">
-          <h3>Datos del Usuario</h3>
+
+        <section className="config-card">
+          <div className="config-card-header">
+            <div>
+              <p className="config-section-label">Perfil</p>
+              <h3>Datos personales</h3>
+            </div>
+          </div>
+
           <form onSubmit={handleChangeEmail} className="user-form">
             <div className="form-group">
-              <label htmlFor="email">Email:</label>
+              <label htmlFor="email">Correo electrónico</label>
               <input
                 type="email"
                 id="email"
                 name="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
+                placeholder="usuario@ejemplo.com"
                 required
               />
             </div>
-            <button type="submit" className="save-button">
-                Cambiar Email
-              </button>
+
+            <button type="submit" className="save-button" disabled={isSavingEmail}>
+              {isSavingEmail ? 'Guardando...' : 'Guardar email'}
+            </button>
           </form>
+        </section>
+
+        <section className="config-card">
+          <div className="config-card-header">
+            <div>
+              <p className="config-section-label">Seguridad</p>
+              <h3>Cambiar contraseña</h3>
+            </div>
+          </div>
 
           <form onSubmit={handleChangePassword} className="user-form">
             <div className="form-group">
-              <label htmlFor="password">Contraseña Actual</label>
+              <label htmlFor="oldPassword">Contraseña actual</label>
               <input
                 type="password"
                 id="oldPassword"
                 name="oldPassword"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="••••••••"
               />
-              <label htmlFor="password">Nueva Contraseña</label>
+
+              <label htmlFor="newPassword">Nueva contraseña</label>
               <input
                 type="password"
                 id="newPassword"
                 name="newPassword"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
               />
-              <label htmlFor="password">Repetir Nueva Contraseña</label>
+
+              <label htmlFor="rNewPassword">Confirmar contraseña</label>
               <input
                 type="password"
                 id="rNewPassword"
                 name="rNewPassword"
                 value={rNewPassword}
                 onChange={(e) => setRNewPassword(e.target.value)}
+                placeholder="Repetir contraseña"
               />
             </div>
-            <div className="form-actions">
-              <button type="submit" className="save-button">
-                Cambiar contraseña
-              </button>
-            </div>
+
+            <button type="submit" className="save-button secondary" disabled={isSavingPassword}>
+              {isSavingPassword ? 'Actualizando...' : 'Actualizar contraseña'}
+            </button>
           </form>
+        </section>
+
+        <section className="config-card">
+          <div className="config-card-header">
+            <div>
+              <p className="config-section-label">Preferencias</p>
+              <h3>Notificaciones</h3>
+            </div>
+          </div>
+
+          <div className="preferences-list">
+            <button
+              type="button"
+              className={`pref-toggle ${preferences.emailAlerts ? 'active' : ''}`}
+              onClick={() => togglePreference('emailAlerts')}
+            >
+              <span>Alertas por email</span>
+              <span className="toggle-indicator" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              className={`pref-toggle ${preferences.taskReminders ? 'active' : ''}`}
+              onClick={() => togglePreference('taskReminders')}
+            >
+              <span>Recordatorios de tareas</span>
+              <span className="toggle-indicator" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              className={`pref-toggle ${preferences.dashboardTips ? 'active' : ''}`}
+              onClick={() => togglePreference('dashboardTips')}
+            >
+              <span>Tips del panel</span>
+              <span className="toggle-indicator" aria-hidden="true" />
+            </button>
+          </div>
         </section>
       </main>
     </div>
