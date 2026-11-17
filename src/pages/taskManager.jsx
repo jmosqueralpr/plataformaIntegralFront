@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import TaskCard from '../components/TaskCard';
 import '../styles/taskManager.css';
 import '../styles/global.css';
@@ -11,6 +11,13 @@ const priorityRank = {
   Alta: 3,
   Media: 2,
   Baja: 1,
+};
+
+const getLocalDateString = () => {
+  const date = new Date();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
 };
 
 const TaskManager = () => {
@@ -33,7 +40,7 @@ const TaskManager = () => {
     sendWhatsAppOwner: false,
     sendWhatsAppAssignedTo: false,
     notifyAssignedTime: '10:00',
-    notifyAssignedDate: new Date().toISOString().split('T')[0],
+    notifyAssignedDate: getLocalDateString(),
     status: 'No iniciada',
     importance: 'Media',
   });
@@ -408,9 +415,8 @@ const TaskManager = () => {
           >
             <option value="Todos">Todos los estados</option>
             <option value="No iniciada">No iniciada</option>
-            <option value="En curso">En curso</option>
-            <option value="Completada">Completada</option>
-            <option value="En espera">En espera</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Finalizada">Finalizada</option>
           </select>
 
           <select
@@ -572,9 +578,8 @@ const TaskManager = () => {
                     onChange={(e) => setSelectedTask({ ...selectedTask, status: e.target.value })}
                   >
                     <option value="No iniciada">No iniciada</option>
-                    <option value="En curso">En curso</option>
-                    <option value="Completada">Completada</option>
-                    <option value="En espera">En espera</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Finalizada">Finalizada</option>
                   </select>
                 </label>
 

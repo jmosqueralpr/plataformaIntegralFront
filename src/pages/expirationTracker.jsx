@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import ExpirationCard from '../components/ExpirationCard';
 import '../styles/expirationTracker.css';
 import '../styles/global.css';
@@ -10,7 +10,8 @@ const emptyForm = (currentUser) => ({
   title: '',
   description: '',
   expirationDate: '',
-  expirationTime: '',
+  expirationTime: '10:00',
+  notify7DaysBefore: true,
   notify30DaysBefore: false,
   notify90DaysBefore: false,
   assignedTo: currentUser ? [currentUser] : [],
@@ -97,7 +98,7 @@ const ExpirationTracker = () => {
   const getStatus = (item) => {
     if (!item.expirationDate) return 'sin-fecha';
 
-    const target = new Date(`${item.expirationDate}T${item.expirationTime || '00:00'}`);
+    const target = new Date(`${item.expirationDate}T${item.expirationTime || '10:00'}`);
     const now = new Date();
     const diffMs = target.getTime() - now.getTime();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
@@ -121,8 +122,8 @@ const ExpirationTracker = () => {
       return hayTermino && hayEstado;
     })
     .sort((a, b) => {
-      const dateA = a.expirationDate ? new Date(`${a.expirationDate}T${a.expirationTime || '00:00'}`) : new Date(8640000000000000);
-      const dateB = b.expirationDate ? new Date(`${b.expirationDate}T${b.expirationTime || '00:00'}`) : new Date(8640000000000000);
+      const dateA = a.expirationDate ? new Date(`${a.expirationDate}T${a.expirationTime || '10:00'}`) : new Date(8640000000000000);
+      const dateB = b.expirationDate ? new Date(`${b.expirationDate}T${b.expirationTime || '10:00'}`) : new Date(8640000000000000);
       return dateA - dateB;
     });
 
@@ -155,8 +156,8 @@ const ExpirationTracker = () => {
       title: selectedItem.title.trim(),
       description: selectedItem.description || '',
       expirationDate: selectedItem.expirationDate,
-      expirationTime: selectedItem.expirationTime || '',
-      notified: false,
+      expirationTime: selectedItem.expirationTime || '10:00',
+      notify7DaysBefore: Boolean(selectedItem.notify7DaysBefore),
       notify30DaysBefore: Boolean(selectedItem.notify30DaysBefore),
       notify90DaysBefore: Boolean(selectedItem.notify90DaysBefore),
       assignedTo: normalizeAssignedUsers(selectedItem.assignedTo).length
@@ -360,6 +361,15 @@ const ExpirationTracker = () => {
             </div>
 
             <div className="toggle-grid">
+              <label className="toggle-row">
+                <input
+                  type="checkbox"
+                  checked={Boolean(selectedItem.notify7DaysBefore)}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, notify7DaysBefore: e.target.checked })}
+                />
+                <span>Notificar 7 días antes</span>
+              </label>
+
               <label className="toggle-row">
                 <input
                   type="checkbox"

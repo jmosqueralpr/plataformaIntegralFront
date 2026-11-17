@@ -1,17 +1,22 @@
-import React from 'react';
 import '../styles/expirationTracker.css';
 
 const ExpirationCard = ({ item, onClick }) => {
   // Combina fecha y hora en un solo Date
   const isExpired = (() => {
-    if (!item.expirationDate || !item.expirationTime) return false;
+    if (!item.expirationDate) return false;
 
     const [year, month, day] = item.expirationDate.split('-').map(Number);
-    const [hour, minute] = item.expirationTime.split(':').map(Number);
+    const [hour, minute] = (item.expirationTime || '10:00').split(':').map(Number);
 
     const expirationDateTime = new Date(year, month - 1, day, hour, minute);
     return expirationDateTime < new Date();
   })();
+  const expirationDate = item.expirationDate
+    ? (() => {
+        const [year, month, day] = item.expirationDate.split('-').map(Number);
+        return new Date(year, month - 1, day);
+      })()
+    : null;
 
   return (
     <div className="expiration-box" onClick={onClick}>
@@ -25,8 +30,8 @@ const ExpirationCard = ({ item, onClick }) => {
               <span className="expired-badge">Vencida</span>
             ) : (
               <>
-                {new Date(item.expirationDate).toLocaleDateString()}
-                {item.expirationTime && ` ${item.expirationTime}`}
+                {expirationDate.toLocaleDateString()}
+                {` ${item.expirationTime || '10:00'}`}
               </>
             )
           ) : (

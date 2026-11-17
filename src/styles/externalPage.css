@@ -87,6 +87,33 @@
   .description-box {
     /* Puedes agregar estilos específicos si lo deseas */
   }
+
+  .telegram-link-code {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .telegram-link-code code {
+    padding: 12px;
+    border-radius: 6px;
+    background: #111820;
+    color: #fff;
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
+
+  .telegram-link-error {
+    margin: 12px 0 0;
+    color: #ff8e8e;
+  }
+
+  .box-link:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
   
   /* Responsividad */
   @media (max-width: 600px) {
