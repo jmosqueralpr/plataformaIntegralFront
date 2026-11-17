@@ -27,6 +27,7 @@ import TelegramMessages from './pages/telegramMessages';
 import AsistenteTelegram from './pages/asistenteTelegram';
 import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
 import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
+import GPSConverter from './pages/herramientasAIS/gpsConverter';
 import DashEnlaces from './pages/enlaces/dashEnlaces';
 import DropboxBackup from './pages/enlaces/dropboxBackup';
 import DashboardBaseAIS from './pages/dashboardBaseAIS';
@@ -64,6 +65,7 @@ const AppLayout = () => {
           {/* Herramientas AIS */}
           <Route path="/herramientasAIS" element={<HerramientasAIS />} />
           <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
+          <Route path="/gpsConverter" element={<GPSConverter />} />
           {/* Accesos y Enlaces */}
           <Route path="/dashEnlaces" element={<DashEnlaces />} />
           <Route path="/Gestionar" element={<Gestionar />} />

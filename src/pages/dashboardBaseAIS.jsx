@@ -191,8 +191,8 @@ const DashboardBaseAIS = () => {
     <div className="ais-dashboard-container">
       <div className="ais-dashboard-header">
         <div>
-          <p className="ais-dashboard-kicker">Gestión operativa</p>
-          <h1 className="ais-dashboard-title">Bases AIS</h1>
+          <p className="ais-dashboard-kicker">Herramientas AIS</p>
+          <h1 className="ais-dashboard-title">Información de Bases AIS</h1>
         </div>
 
         <button
