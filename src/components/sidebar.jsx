@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { FiSend } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../context/authContext';
+import config from '../config';
 import '../styles/sidebar.css';
 
 const sidebarLinks = [
@@ -14,6 +16,34 @@ const sidebarLinks = [
 
 const Sidebar = () => {
   const { authUser, userAvatar } = useContext(AuthContext);
+  const [isAdministrator, setIsAdministrator] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    const checkAdministratorRole = async () => {
+      try {
+        const response = await fetch(`${config.baseURL}/api/profile`, { credentials: 'include' });
+        if (!response.ok) {
+          if (response.status !== 401 && response.status !== 403) {
+            console.error(`No se pudo verificar el rol de usuario: HTTP ${response.status}`);
+          }
+          return;
+        }
+
+        const profile = await response.json();
+        const role = String(profile.role || '').trim().toLowerCase().replace(/[_\s]+/g, '');
+        if (active) setIsAdministrator(role === 'admin' || role === 'superadmin');
+      } catch (error) {
+        console.error('Error al verificar el acceso administrativo:', error.message);
+      }
+    };
+
+    checkAdministratorRole();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const avatarSrc = userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent((authUser || 'Usuario').toString())}&background=2563eb&color=fff&bold=true&length=2`;
   const roleLabel = authUser && authUser !== 'invitado' ? 'Activo' : 'Invitado';
@@ -28,6 +58,17 @@ const Sidebar = () => {
           <span className="sidebar-role-badge">{roleLabel}</span>
         </div>
       </div>
+
+      {isAdministrator && (
+        <NavLink
+          to="/telegramMessages"
+          className={({ isActive }) => `sidebar-admin-action ${isActive ? 'active' : ''}`}
+        >
+          <FiSend className="sidebar-admin-icon" aria-hidden="true" />
+          <span>Mensajes Telegram</span>
+          <span className="sidebar-admin-badge">Admin</span>
+        </NavLink>
+      )}
 
       <div className="sidebar-section-title">Panel</div>
 

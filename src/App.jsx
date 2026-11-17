@@ -23,6 +23,7 @@ import SearchSolutions from './pages/searchSolutions';
 import SearchSolutionsNew from './pages/searchSolutionsNew';
 import Gestionar from './pages/enlaces/gestionar';
 import EarsTicketera from './pages/enlaces/earsTicketera';
+import TelegramMessages from './pages/telegramMessages';
 import AsistenteTelegram from './pages/asistenteTelegram';
 import HerramientasAIS from './pages/herramientasAIS/herramientasAIS';
 import VerificadorMGE8 from './pages/herramientasAIS/verificadorMGE8';
@@ -49,6 +50,7 @@ const AppLayout = () => {
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/asistenteTelegram" element={<AsistenteTelegram />} />
+          <Route path="/telegramMessages" element={<TelegramMessages />} />
           <Route path="/configuration" element={<Configuration />} />
           <Route path="/userManagement" element={<UserManagement />} />
 
