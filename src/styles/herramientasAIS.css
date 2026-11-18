@@ -2,6 +2,8 @@
   padding: 24px 28px 32px;
   box-sizing: border-box;
   min-height: 100vh;
+  min-width: 0;
+  overflow-x: hidden;
   background:
     radial-gradient(ellipse at top left, rgba(40, 100, 200, 0.10), transparent 30%),
     linear-gradient(180deg, #121820 0%, #10151b 100%);
@@ -191,7 +193,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 650px) {
   .ais-tools-container {
     padding: 16px 16px 20px;
   }

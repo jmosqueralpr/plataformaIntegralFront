@@ -267,36 +267,6 @@ const DashboardBaseAIS = () => {
                   >
                     {base.tipo_base?.toUpperCase() || 'TEMPORAL'}
                   </span>
-
-                  <span className="ais-base-status">
-                    {base.tipo_base?.toLowerCase() === 'permanente' ? 'Activa' : 'Ciclo'}
-                  </span>
-
-                  <div className="ais-card-actions">
-                    <button
-                      className="ais-edit-btn"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        openEditBaseModal(base);
-                      }}
-                      aria-label={`Editar ${base.nombre_base}`}
-                      title="Editar base"
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      className="ais-delete-btn"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        deleteBase(base);
-                      }}
-                      aria-label={`Eliminar ${base.nombre_base}`}
-                      title="Eliminar base"
-                    >
-                      ×
-                    </button>
-                  </div>
                 </div>
 
                 <h3 className="ais-base-name">{base.nombre_base}</h3>

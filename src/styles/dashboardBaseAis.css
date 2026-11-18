@@ -1,6 +1,8 @@
 .ais-dashboard-container {
   padding: 24px 20px 32px;
   min-height: 100vh;
+  min-width: 0;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(52, 97, 255, 0.15), transparent 26%),
     linear-gradient(180deg, #171b1f 0%, #202020 100%);
@@ -14,6 +16,8 @@
   width: 100%;
   margin-bottom: 22px;
   gap: 16px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .ais-dashboard-kicker {
@@ -56,9 +60,15 @@
 
 .ais-dashboard-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 24px;
+}
+
+@media (max-width: 650px) {
+  .ais-dashboard-summary {
+    grid-template-columns: 1fr;
+  }
 }
 
 .ais-dashboard-toolbar {
@@ -115,13 +125,15 @@
   font-size: 2rem;
   color: #f9fbfd;
   line-height: 1;
+  margin-bottom: 6px;
+  display: block;
 }
 
 .ais-summary-card small {
   color: #9ab0c6;
   font-size: 0.72rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
 }
 
 .ais-loading-state {
@@ -464,10 +476,35 @@ body.modal-open .footer {
   min-height: 110px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 650px) {
   .ais-dashboard-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .ais-dashboard-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .ais-summary-card {
+    padding: 12px 14px;
+    min-height: auto;
+  }
+
+  .ais-summary-label {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+
+  .ais-summary-card strong {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+  }
+
+  .ais-summary-card small {
+    font-size: 0.68rem;
+    margin-top: 1px;
   }
 
   .ais-base-meta,
