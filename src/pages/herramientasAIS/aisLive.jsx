@@ -67,6 +67,10 @@ const AisLive = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [connectionAction, setConnectionAction] = useState('');
+  const [showOnlyType8, setShowOnlyType8] = useState(false);
+  const [mmsiFilter, setMmsiFilter] = useState('');
+  const [paused, setPaused] = useState(false);
+  const pausedMessagesRef = useRef([]);
 
   useEffect(() => {
     const map = L.map(mapElementRef.current, { preferCanvas: true }).setView([-34.6, -58.38], 5);
@@ -178,6 +182,17 @@ const AisLive = () => {
     return counts;
   }, {});
 
+  const liveFilteredMessages = snapshot.messages
+    .filter((message) => (!showOnlyType8 || message.type === 8))
+    .filter((message) => (!mmsiFilter || String(message.mmsi || '').includes(mmsiFilter)))
+    .slice(0, 100);
+
+  if (!paused) {
+    pausedMessagesRef.current = liveFilteredMessages;
+  }
+
+  const filteredMessages = paused ? pausedMessagesRef.current : liveFilteredMessages;
+
   return (
     <div className="ais-live-page">
       <main className="ais-live-main">
@@ -253,38 +268,89 @@ const AisLive = () => {
                 {' '}tipo 21 ({messageCounts[21] || 0}). FI 1/31 se muestra decodificado cuando está presente.
               </p>
             </div>
+            <div className="ais-live-message-filters">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.76rem', color: '#aab8c7', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={showOnlyType8}
+                  onChange={(e) => setShowOnlyType8(e.target.checked)}
+                  style={{ accentColor: '#7dd3fc' }}
+                />
+                Solo mensajes tipo 8
+              </label>
+              <input
+                type="text"
+                placeholder="Filtrar por MMSI"
+                value={mmsiFilter}
+                onChange={(e) => setMmsiFilter(e.target.value)}
+                style={{
+                  padding: '6px 9px',
+                  fontSize: '0.76rem',
+                  border: '1px solid rgba(148, 163, 184, 0.18)',
+                  borderRadius: '8px',
+                  background: 'rgba(10, 17, 24, 0.42)',
+                  color: '#e8edf5',
+                  minWidth: '150px',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setPaused(!paused)}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.76rem',
+                  border: '1px solid rgba(96, 165, 250, 0.3)',
+                  borderRadius: '8px',
+                  background: paused ? 'rgba(34, 197, 94, 0.2)' : 'rgba(37, 99, 235, 0.2)',
+                  color: '#eaf5ff',
+                  font: 'inherit',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  marginLeft: 'auto',
+                }}
+              >
+                {paused ? 'Reanudar mensajes' : 'Pausar mensajes'}
+              </button>
+            </div>
           </div>
           {loading && <p className="ais-live-empty">Conectando con el servidor…</p>}
           {!loading && snapshot.messages.length === 0 && (
             <p className="ais-live-empty">Todavía no se recibieron mensajes 6, 8 o 21.</p>
           )}
-          {snapshot.messages.length > 0 && (
+          {filteredMessages.length > 0 && (
             <div className="ais-live-message-list">
-              {snapshot.messages.map((message) => (
-                <details className="ais-live-message" key={message.id}>
-                  <summary>
-                    <span className="ais-live-message-type">Tipo {message.type}</span>
-                    <span>MMSI {message.mmsi || '—'}</span>
-                    {message.dac !== null && message.dac !== undefined && (
-                      <span>DAC {message.dac} / FI {message.fi}</span>
+              {filteredMessages.map((message) => {
+                const targetName = snapshot.targets.find((t) => t.mmsi === message.mmsi)?.name;
+                return (
+                  <details className="ais-live-message" key={message.id}>
+                    <summary>
+                      <span className="ais-live-message-type">Tipo {message.type}</span>
+                      <span>MMSI {message.mmsi || '—'}</span>
+                      <span>Nombre {targetName || message.name || '—'}</span>
+                      {message.dac !== null && message.dac !== undefined && (
+                        <span>DAC {message.dac} / FI {message.fi}</span>
+                      )}
+                      <time>{formatDate(message.receivedAt)}</time>
+                    </summary>
+                    {message.type === 6 && <p>Destino MMSI {message.destinationMmsi}</p>}
+                    {message.fi31 && (
+                      <div className="ais-live-fi31" aria-label="Datos meteorológicos e hidrológicos FI 31">
+                        <strong>FI 31</strong>
+                        {fi31Fields.map(([key, label, unit]) => (
+                          Number.isFinite(message.fi31[key]) && (
+                            <span key={key}>{label}: {message.fi31[key]}{unit}</span>
+                          )
+                        ))}
+                      </div>
                     )}
-                    <time>{formatDate(message.receivedAt)}</time>
-                  </summary>
-                  {message.type === 6 && <p>Destino MMSI {message.destinationMmsi}</p>}
-                  {message.fi31 && (
-                    <div className="ais-live-fi31" aria-label="Datos meteorológicos e hidrológicos FI 31">
-                      <strong>FI 31</strong>
-                      {fi31Fields.map(([key, label, unit]) => (
-                        Number.isFinite(message.fi31[key]) && (
-                          <span key={key}>{label}: {message.fi31[key]}{unit}</span>
-                        )
-                      ))}
-                    </div>
-                  )}
-                  <pre>{message.rawSentences.join('\n')}</pre>
-                </details>
-              ))}
+                    <pre>{message.rawSentences.join('\n')}</pre>
+                  </details>
+                );
+              })}
             </div>
+          )}
+          {snapshot.messages.length > 0 && filteredMessages.length === 0 && (
+            <p className="ais-live-empty">No hay mensajes que coincidan con los filtros aplicados.</p>
           )}
         </section>
       </main>

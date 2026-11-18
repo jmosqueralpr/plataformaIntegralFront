@@ -352,3 +352,10 @@
     margin-left: 0;
   }
 }
+
+.ais-live-message-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
