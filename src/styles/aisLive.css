@@ -359,3 +359,10 @@
   gap: 12px;
   flex-wrap: wrap;
 }
+
+.ais-live-connection-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

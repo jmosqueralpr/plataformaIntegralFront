@@ -71,6 +71,8 @@ const AisLive = () => {
   const [mmsiFilter, setMmsiFilter] = useState('');
   const [paused, setPaused] = useState(false);
   const pausedMessagesRef = useRef([]);
+  const [customHost, setCustomHost] = useState('');
+  const [customPort, setCustomPort] = useState('');
 
   useEffect(() => {
     const map = L.map(mapElementRef.current, { preferCanvas: true }).setView([-34.6, -58.38], 5);
@@ -143,6 +145,8 @@ const AisLive = () => {
     };
   }, []);
 
+  const connectionActive = ['connected', 'connecting', 'reconnecting', 'error'].includes(snapshot.status);
+
   const centerMap = () => {
     const mapState = mapStateRef.current;
     const validTargets = snapshot.targets.filter((target) => (
@@ -153,16 +157,18 @@ const AisLive = () => {
     mapState.map.fitBounds(bounds, { padding: [24, 24], maxZoom: 12 });
   };
 
-  const connectionActive = ['connected', 'connecting', 'reconnecting', 'error'].includes(snapshot.status);
-
   const handleConnectionToggle = async () => {
     if (connectionAction) return;
     const action = connectionActive ? 'disconnect' : 'connect';
     setConnectionAction(action);
     try {
+      const resolvedHost = customHost || '190.210.40.127';
+      const resolvedPort = customPort || '3069';
       const response = await fetch(`${config.baseURL}/api/ais/${action}`, {
         method: 'POST',
         credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: action === 'connect' ? JSON.stringify({ host: resolvedHost, port: resolvedPort }) : undefined,
       });
       const body = await response.json();
       if (!response.ok) {
@@ -207,22 +213,58 @@ const AisLive = () => {
               <span className="ais-live-status-dot" />
               {statusLabels[snapshot.status] || 'Estado desconocido'}
             </div>
-            <button
-              type="button"
-              className="ais-live-connect-button"
-              onClick={handleConnectionToggle}
-              disabled={Boolean(connectionAction)}
-            >
-              {connectionAction
-                ? (connectionAction === 'connect' ? 'Conectando…' : 'Desconectando…')
-                : (connectionActive ? 'Desconectar entrada TCP' : 'Conectar entrada TCP')}
-            </button>
+            <div className="ais-live-connection-controls">
+              <input
+                type="text"
+                placeholder="IP (opcional)"
+                value={customHost}
+                onChange={(e) => setCustomHost(e.target.value)}
+                style={{
+                  padding: '6px 9px',
+                  fontSize: '0.76rem',
+                  border: '1px solid rgba(148, 163, 184, 0.18)',
+                  borderRadius: '8px',
+                  background: 'rgba(10, 17, 24, 0.42)',
+                  color: '#e8edf5',
+                  minWidth: '120px',
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Puerto (opcional)"
+                value={customPort}
+                onChange={(e) => setCustomPort(e.target.value)}
+                style={{
+                  padding: '6px 9px',
+                  fontSize: '0.76rem',
+                  border: '1px solid rgba(148, 163, 184, 0.18)',
+                  borderRadius: '8px',
+                  background: 'rgba(10, 17, 24, 0.42)',
+                  color: '#e8edf5',
+                  minWidth: '70px',
+                }}
+              />
+              <button
+                type="button"
+                className="ais-live-connect-button"
+                onClick={handleConnectionToggle}
+                disabled={Boolean(connectionAction)}
+              >
+                {connectionAction
+                  ? (connectionAction === 'connect' ? 'Conectando…' : 'Desconectando…')
+                  : (connectionActive ? 'Desconectar entrada TCP' : 'Conectar entrada TCP')}
+              </button>
+            </div>
           </div>
         </header>
 
-        <div className="ais-live-notice" role="status">
-          Fuente TCP: <code>{snapshot.sourceAddress}</code> · Conversor serial a 38400 baudios · Solo recepción.
-        </div>
+        {snapshot.status === 'connected' && snapshot.sourceAddress && (
+          <div className="ais-live-notice" role="status">
+            Fuente TCP:{' '}
+            <code>{snapshot.sourceAddress}</code>
+            · Conversor serial a 38400 baudios · Solo recepción.
+          </div>
+        )}
 
         {error && (
           <div className="ais-live-notice is-error" role="alert">
