@@ -1,0 +1,224 @@
+.ais-tools-container {
+  padding: 24px 28px 32px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top left, rgba(40, 100, 200, 0.10), transparent 30%),
+    linear-gradient(180deg, #121820 0%, #10151b 100%);
+  color: #e8edf5;
+  display: flex;
+  flex-direction: column;
+}
+
+.ais-tools-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ais-tools-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ais-tools-kicker {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: #7dd3fc;
+  font-weight: 700;
+}
+
+.ais-tools-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f4f7fb;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ais-tools-user-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ebf5ff;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.ais-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.ais-section-box {
+  background: linear-gradient(180deg, rgba(30, 39, 49, 0.92), rgba(22, 30, 39, 0.92));
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 16px;
+  padding: 20px 22px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.ais-section-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7dd3fc, #3b82f6, #2563eb);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.ais-section-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(125, 211, 252, 0.15);
+  border-color: rgba(125, 211, 252, 0.35);
+  background: linear-gradient(180deg, rgba(36, 46, 58, 0.95), rgba(26, 34, 44, 0.95));
+}
+
+.ais-section-box:hover::before {
+  transform: scaleX(1);
+}
+
+.ais-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ais-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ais-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(125, 211, 252, 0.12);
+  color: #7dd3fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(125, 211, 252, 0.15);
+}
+
+.ais-section-box:hover .ais-card-icon {
+  background: rgba(125, 211, 252, 0.2);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.ais-card-arrow {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.3);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.ais-section-box:hover .ais-card-arrow {
+  color: #7dd3fc;
+  transform: translate(3px, -3px);
+}
+
+.ais-title-card {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #f4f7fb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ais-text-card {
+  margin: 0;
+  color: #a3b3c2;
+  line-height: 1.5;
+  font-size: 0.82rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ais-tools-container {
+    padding: 18px 20px 24px;
+  }
+
+  .ais-tools-title {
+    font-size: 1.6rem;
+  }
+
+  .ais-tools-grid {
+    gap: 14px;
+  }
+
+  .ais-section-box {
+    min-height: 140px;
+    padding: 16px 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ais-tools-container {
+    padding: 16px 16px 20px;
+  }
+
+  .ais-tools-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .ais-tools-title {
+    font-size: 1.4rem;
+  }
+
+  .ais-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ais-section-box {
+    min-height: 130px;
+    padding: 14px 16px;
+  }
+
+  .ais-card-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+}

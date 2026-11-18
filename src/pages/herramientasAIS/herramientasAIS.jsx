@@ -1,7 +1,8 @@
 import { useContext, useEffect } from 'react';
-import '../../styles/dashboard.css';
 import { DashboardCard } from '../../components/dashboardCard';
 import AuthContext from '../../context/authContext';
+import { FiSearch, FiMonitor, FiCompass, FiDatabase } from 'react-icons/fi';
+import '../../styles/herramientasAIS.css';
 
 
 const HerramientasAIS = () => {
@@ -13,34 +14,37 @@ const HerramientasAIS = () => {
   
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div>
-          <p className="dashboard-kicker">Herramientas</p>
-          <h1 className="dashboard-title">Herramientas AIS</h1>
+    <div className="ais-tools-container">
+      <header className="ais-tools-header">
+        <div className="ais-tools-header-left">
+          <p className="ais-tools-kicker">Herramientas</p>
+          <h1 className="ais-tools-title">Herramientas AIS</h1>
         </div>
 
-        <div className="header-right">
-          <span>{authUser}</span>
-        </div>
+        <div className="ais-tools-user-badge">{authUser}</div>
       </header>
-      <main>
+
+      <main className="ais-tools-grid">
         <DashboardCard
+          Icon={FiSearch}
           title="Verificador de Message 8"
           link="verificadorMGE8"
           text="Analiza archivos TXT, identifica los MMSI que transmiten mensajes AIS tipo 8 y muestra datos reales decodificados de una trama de ejemplo."
         />
         <DashboardCard
+          Icon={FiMonitor}
           title="Monitor AIS en vivo"
           link="aisLive"
           text="Visualiza barcos, ATON y mensajes AIS 6, 8 y 21 recibidos desde una fuente NMEA 0183."
         />
         <DashboardCard
+          Icon={FiCompass}
           title="Conversor de coordenadas GPS"
           link="gpsConverter"
           text="Convierte coordenadas GPS entre formatos MTU AIS-C, Kanaton, grados decimales, DDM, DMS y NMEA."
         />
         <DashboardCard
+          Icon={FiDatabase}
           title="Información de Bases AIS"
           link="DashboardBaseAIS"
           text="Consultá y administrá la información de las bases AIS de la Antártida."

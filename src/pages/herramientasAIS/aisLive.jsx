@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/aisLive.css';
 import config from '../../config';
+import AuthContext from '../../context/authContext';
 
 const EMPTY_SNAPSHOT = {
   status: 'disconnected',
@@ -73,6 +75,28 @@ const AisLive = () => {
   const pausedMessagesRef = useRef([]);
   const [customHost, setCustomHost] = useState('');
   const [customPort, setCustomPort] = useState('');
+
+  const { isAuthenticated, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Si el usuario se desloguea, desconectar el AIS y redirigir al login
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const handleDisconnect = async () => {
+        try {
+          await fetch(`${config.baseURL}/api/ais/disconnect`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+        } catch (err) {
+          console.error('Error al desconectar AIS al desloguear:', err);
+        }
+        logout();
+        navigate('/');
+      };
+      handleDisconnect();
+    }
+  }, [isAuthenticated, logout, navigate]);
 
   useEffect(() => {
     const map = L.map(mapElementRef.current, { preferCanvas: true }).setView([-34.6, -58.38], 5);
