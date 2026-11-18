@@ -7,6 +7,7 @@ import Footer from './components/footer';
 import Sidebar from './components/sidebar';
 import { AuthProvider } from './context/authContext'; //El contexto para usuarios.
 import RouteChangeListener from './components/routeChangeListener';
+import ScrollToTop from './components/scrollToTop';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
@@ -98,6 +99,7 @@ const App = () => {
     <AuthProvider>
       <Router>
         <AppLayout />
+        <ScrollToTop />
       </Router>
       <ToastContainer position="bottom-center" autoClose={8000} />
     </AuthProvider>
