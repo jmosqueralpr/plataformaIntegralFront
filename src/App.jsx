@@ -1,5 +1,3 @@
-
-
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
@@ -10,7 +8,6 @@ import RouteChangeListener from './components/routeChangeListener';
 import ScrollToTop from './components/scrollToTop';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-
 
 //PAGES
 import Login from './pages/login';
@@ -43,13 +40,13 @@ const user = { name: 'Nuevo Usuario', loggedIn: 'True' };
 const AppLayout = () => {
   const location = useLocation();
   const isLoginRoute = location.pathname === '/';
-  const showSidebar = !isLoginRoute;
+  const showChrome = !isLoginRoute;
 
   return (
     <>
-      <Header userName={user.name} />
-      {showSidebar && <Sidebar />}
-      <div className={showSidebar ? 'main-container with-sidebar' : 'main-container login-main-container'}>
+      {showChrome && <Header userName={user.name} />}
+      {showChrome && <Sidebar />}
+      <div className={showChrome ? 'main-container with-sidebar' : 'main-container login-main-container'}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
@@ -89,7 +86,7 @@ const AppLayout = () => {
         </Routes>
         <RouteChangeListener />
       </div>
-      <Footer />
+      {showChrome && <Footer />}
     </>
   );
 };
