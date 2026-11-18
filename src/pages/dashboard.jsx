@@ -2,6 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import '../styles/dashboard.css';
 import { DashboardCard } from '../components/dashboardCard';
 import AuthContext from '../context/authContext';
+import {
+  FiSend,
+  FiSliders,
+  FiZap,
+  FiRadio,
+  FiLink,
+  FiCheckSquare,
+  FiClock,
+} from 'react-icons/fi';
 
 const dashboardTips = [
   'Tip: revisá primero el historial de eventos antes de hacer cambios importantes.',
@@ -39,7 +48,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <div>
+        <div className="dashboard-header-title">
           <p className="dashboard-kicker">Workspace</p>
           <h1 className="dashboard-title">Dashboard</h1>
         </div>
@@ -56,17 +65,53 @@ const Dashboard = () => {
         </div>
       )}
 
-      <main>
-        <DashboardCard className='main-container' title={'Asistente de Telegram'} link={'AsistenteTelegram'} text = {'Acceso al asistente de Telegram.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Configuración de usuario'} link={'Configuration'} text = {'Configurar los parámetros generales del usuario.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Centro de soluciones'} link={'searchSolutions'} text = {'Herramienta para que puedas ver y crear soluciones rápidas a tus problemas diarios.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Herramientas AIS'} link={'HerramientasAIS'} text = {'Herramientas varias para sistemas AIS.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Enlaces y Accesos'} link={'DashEnlaces'} text = {'Enlaces y accesos a los diferentes sistemas de DYB.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Task Manager'} link={'TaskManager'} text = {'Herramienta para que puedas administrar tus tareas diarias.'} ></DashboardCard>
-        <DashboardCard className='main-container' title={'Registro de Vencimientos'} link={'ExpirationTracker'} text = {'Herramienta para que puedas gestionar tus vencimientos y configurar avisos pro Telegram.'} ></DashboardCard>
+      <main className="dashboard-grid">
+        <DashboardCard
+          icon={FiSend}
+          title="Asistente de Telegram"
+          link="AsistenteTelegram"
+          text="Acceso al asistente de Telegram."
+        />
+        <DashboardCard
+          icon={FiSliders}
+          title="Configuración de usuario"
+          link="Configuration"
+          text="Configurar los parámetros generales del usuario."
+        />
+        <DashboardCard
+          icon={FiZap}
+          title="Centro de soluciones"
+          link="searchSolutions"
+          text="Herramienta para ver y crear soluciones rápidas a tus problemas diarios."
+        />
+        <DashboardCard
+          icon={FiRadio}
+          title="Herramientas AIS"
+          link="HerramientasAIS"
+          text="Herramientas varias para sistemas AIS."
+        />
+        <DashboardCard
+          icon={FiLink}
+          title="Enlaces y Accesos"
+          link="DashEnlaces"
+          text="Enlaces y accesos a los diferentes sistemas de DYB."
+        />
+        <DashboardCard
+          icon={FiCheckSquare}
+          title="Task Manager"
+          link="TaskManager"
+          text="Herramienta para administrar tus tareas diarias."
+        />
+        <DashboardCard
+          icon={FiClock}
+          title="Registro de Vencimientos"
+          link="ExpirationTracker"
+          text="Gestionar vencimientos y avisos por Telegram."
+        />
       </main>
     </div>
   );
 };
 
 export default Dashboard;
+
