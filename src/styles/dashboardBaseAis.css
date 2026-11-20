@@ -511,3 +511,127 @@ body.modal-open .footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   Export Modal
+========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(2, 6, 23, 0.74);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.export-modal {
+  width: min(480px, 100%);
+  background: linear-gradient(180deg, rgba(27, 35, 42, 0.98), rgba(17, 24, 31, 0.98));
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 24px 48px rgba(2, 8, 23, 0.42);
+  color: #e7ebef;
+}
+
+.modal-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7cc5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.export-message {
+  color: #a8b7c7;
+  font-size: 0.9rem;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.export-field {
+  margin-bottom: 20px;
+}
+
+.export-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #cfd3d6;
+  margin-bottom: 8px;
+}
+
+.export-select {
+  width: 100%;
+  background: rgba(11, 17, 22, 0.68);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: #e7e9ea;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.export-select:hover {
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.export-select:focus {
+  outline: none;
+  border-color: #59a8ff;
+  box-shadow: 0 0 0 3px rgba(89, 168, 255, 0.18);
+}
+
+.export-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.modal-actions .ais-btn-primary,
+.modal-actions .ais-btn-secondary {
+  min-width: 120px;
+}
+
+.ais-dashboard-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ais-btn-secondary {
+  background-color: transparent;
+  color: #e7ebef;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.ais-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.55);
+}
+
+.ais-btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

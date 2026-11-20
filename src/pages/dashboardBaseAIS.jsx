@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/authContext';
 import config from '../config';
 import { toast } from 'react-toastify';
+import * as XLSX from 'xlsx';
 
 import '../styles/dashboardBaseAIS.css';
 
@@ -13,6 +14,12 @@ const DashboardBaseAIS = () => {
   const [editingBaseId, setEditingBaseId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
+
+  // Export modal state
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportYear, setExportYear] = useState(new Date().getFullYear());
+  const [exportLoading, setExportLoading] = useState(false);
+  const [availableYears, setAvailableYears] = useState([]);
 
   const [newBase, setNewBase] = useState({
     nombre_base: '',
@@ -192,6 +199,164 @@ const DashboardBaseAIS = () => {
     }
   };
 
+  // Fetch available years from campaigns across all bases
+  const fetchAvailableYears = async () => {
+    try {
+      const yearSet = new Set();
+      for (const base of bases) {
+        const response = await fetch(`${config.baseURL}/api/base-anual/${base._id}`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (response.ok) {
+          const campaigns = await response.json();
+          campaigns.forEach(c => yearSet.add(c.anio));
+        }
+      }
+      const years = Array.from(yearSet).sort((a, b) => b - a);
+      setAvailableYears(years);
+      if (years.length > 0 && !years.includes(exportYear)) {
+        setExportYear(years[0]);
+      }
+    } catch (error) {
+      console.error('Error fetching available years:', error);
+    }
+  };
+
+  // Fetch all campaigns for a specific year across all bases
+  const fetchCampaignsByYear = async (year) => {
+    const allItems = [];
+    for (const base of bases) {
+      const response = await fetch(`${config.baseURL}/api/base-anual/${base._id}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        const campaigns = await response.json();
+        const campaign = campaigns.find(c => c.anio === year);
+        if (campaign && campaign.a_enviar && campaign.a_enviar.length > 0) {
+          campaign.a_enviar.forEach(item => {
+            allItems.push({
+              base: base.nombre_base,
+              elemento: item.nombre,
+              cantidad: item.cantidad || 1,
+            });
+          });
+        }
+      }
+    }
+    return allItems;
+  };
+
+  // Generate Excel export
+  const generateExcelExport = async () => {
+    if (!exportYear) {
+      toast.warning('Seleccioná un año');
+      return;
+    }
+
+    setExportLoading(true);
+    try {
+      const items = await fetchCampaignsByYear(exportYear);
+
+      if (items.length === 0) {
+        toast.warning(`No hay elementos a enviar para la campaña ${String(exportYear).slice(-2)}/${String(Number(String(exportYear).slice(-2)) + 1).toString().padStart(2, '0')}`);
+        setExportLoading(false);
+        return;
+      }
+
+      // Format year for title (e.g., 2025 -> "25/26")
+      const shortYear = String(exportYear).slice(-2);
+      const nextYear = Number(shortYear) + 1;
+      const campaignLabel = `${shortYear}/${String(nextYear).padStart(2, '0')}`;
+
+      // Items are sent at end of NEXT year (campaign 25/26 -> sent end of 2026)
+      const sendYear = exportYear + 1;
+      const title = `Enviar en ${sendYear} (${campaignLabel})`;
+
+      const aoa = [
+        [title, "", ""],
+        ["Base", "Elemento a enviar", "Cantidad"],
+      ];
+
+      items.forEach(item => {
+        aoa.push([item.base, item.elemento, item.cantidad]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+      ws["!cols"] = [
+        { wpx: 200 },  // Base
+        { wpx: 300 },  // Elemento a enviar
+        { wpx: 80 },   // Cantidad
+      ];
+
+      ws["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } },
+      ];
+
+      // Style title cell
+      const titleCell = ws["A1"];
+      if (titleCell) {
+        titleCell.s = {
+          font: { bold: true, sz: 14, color: { rgb: "1F2937" } },
+          alignment: { horizontal: "center", vertical: "center" },
+          fill: { patternType: "solid", fgColor: { rgb: "F3F4F6" } },
+        };
+      }
+
+      // Style header row
+      const headerStyle = {
+        font: { bold: true, sz: 11, color: { rgb: "374151" } },
+        fill: { patternType: "solid", fgColor: { rgb: "E5E7EB" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "9CA3AF" } },
+          bottom: { style: "thin", color: { rgb: "9CA3AF" } },
+          left: { style: "thin", color: { rgb: "9CA3AF" } },
+          right: { style: "thin", color: { rgb: "9CA3AF" } },
+        },
+      };
+
+      ["A2", "B2", "C2"].forEach((cell) => {
+        if (ws[cell]) ws[cell].s = headerStyle;
+      });
+
+      // Style data rows
+      items.forEach((_, index) => {
+        const rowIndex = index + 3;
+        const rowStyle = {
+          fill: { patternType: "solid", fgColor: { rgb: index % 2 === 0 ? "F9FAFB" : "FFFFFF" } },
+          border: {
+            top: { style: "thin", color: { rgb: "E5E7EB" } },
+            bottom: { style: "thin", color: { rgb: "E5E7EB" } },
+            left: { style: "thin", color: { rgb: "E5E7EB" } },
+            right: { style: "thin", color: { rgb: "E5E7EB" } },
+          },
+          alignment: { vertical: "center" },
+        };
+        ["A", "B", "C"].forEach((col) => {
+          const cellRef = `${col}${rowIndex}`;
+          if (ws[cellRef]) ws[cellRef].s = rowStyle;
+        });
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, `AEnviar_${exportYear}`);
+
+      XLSX.writeFile(wb, `elementos_a_enviar_${exportYear}.xlsx`);
+      setShowExportModal(false);
+      toast.success(`Excel de elementos a enviar (${campaignLabel}) generado correctamente.`);
+    } catch (error) {
+      console.error('Error generating Excel:', error);
+      toast.error('No se pudo generar el Excel');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   const filteredBases = bases.filter((base) => {
     const hayCoincidenciaTexto =
       !searchTerm ||
@@ -222,12 +387,24 @@ const DashboardBaseAIS = () => {
           <h1 className="ais-dashboard-title">Información de Bases AIS</h1>
         </div>
 
-        <button
-          className="ais-btn-primary"
-          onClick={openCreateBaseModal}
-        >
-          + Nueva Base
-        </button>
+        <div className="ais-dashboard-actions">
+          <button
+            className="ais-btn-secondary"
+            onClick={() => {
+              fetchAvailableYears();
+              setShowExportModal(true);
+            }}
+            disabled={exportLoading}
+          >
+            📊 Exportar a enviar
+          </button>
+          <button
+            className="ais-btn-primary"
+            onClick={openCreateBaseModal}
+          >
+            + Nueva Base
+          </button>
+        </div>
       </div>
 
       <div className="ais-dashboard-summary">
@@ -451,6 +628,50 @@ const DashboardBaseAIS = () => {
             <button className="ais-btn-primary" onClick={saveBase}>
               {editingBaseId ? 'Guardar cambios' : 'Crear Base'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Export Modal */}
+      {showExportModal && (
+        <div className="modal-overlay" onClick={() => setShowExportModal(false)}>
+          <div className="modal-content export-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-topbar">
+              <span className="modal-tag">Exportar a Excel</span>
+            </div>
+            <p className="export-message">
+              Seleccioná la campaña para exportar los elementos a enviar
+            </p>
+
+            <div className="export-field">
+              <label>Año de campaña</label>
+              <select
+                value={exportYear}
+                onChange={(e) => setExportYear(Number(e.target.value))}
+                disabled={exportLoading}
+                className="export-select"
+              >
+                {availableYears.map(year => (
+                  <option key={year} value={year}>
+                    {String(year).slice(-2)}/${String(Number(String(year).slice(-2)) + 1).toString().padStart(2, '0')}
+                  </option>
+                ))}
+                {availableYears.length === 0 && (
+                  <option value="" disabled>
+                    No hay campañas disponibles
+                  </option>
+                )}
+              </select>
+            </div>
+
+            <div className="modal-actions">
+              <button className="ais-btn-secondary" onClick={() => setShowExportModal(false)} disabled={exportLoading}>
+                Cancelar
+              </button>
+              <button className="ais-btn-primary" onClick={generateExcelExport} disabled={exportLoading || availableYears.length === 0}>
+                {exportLoading ? 'Generando...' : 'Exportar'}
+              </button>
+            </div>
           </div>
         </div>
       )}
