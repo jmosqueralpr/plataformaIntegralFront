@@ -281,6 +281,25 @@ const BaseAIS = () => {
 
         const data = await response.json();
         setCampaigns(data);
+
+        // Auto-crear campaña del año actual si no hay ninguna
+        if (data.length === 0) {
+          const currentYear = new Date().getFullYear();
+          try {
+            const createResponse = await fetch(`${config.baseURL}/api/base-anual`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ base_id: baseId, anio: currentYear })
+            });
+            if (createResponse.ok) {
+              const created = await createResponse.json();
+              setCampaigns([created]);
+            }
+          } catch (e) {
+            console.warn('No se pudo auto-crear campaña:', e);
+          }
+        }
       } catch (error) {
         console.error(error);
         toast.error('No se pudo cargar la base AIS');
@@ -521,15 +540,13 @@ const BaseAIS = () => {
       )}
 
       {/* RESUMEN ÚLTIMA CAMPAÑA */}
-      {campaigns.length > 0 && (
-          <CampaignSummary
-            campaigns={campaigns}
-            onSave={handleSaveCampaign}
-            onAdd={handleAddCampaign}
-            newYear={newYear}
-            setNewYear={setNewYear}
-          />
-        )}
+      <CampaignSummary
+        campaigns={campaigns}
+        onSave={handleSaveCampaign}
+        onAdd={handleAddCampaign}
+        newYear={newYear}
+        setNewYear={setNewYear}
+      />
 
 
       {/* HISTORIAL DE EVENTOS */}

@@ -24,7 +24,7 @@ const normalizeAEnviar = (val) => {
 
 const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
   const sortedCampaigns = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
-  const [campaign, setCampaign] = useState(sortedCampaigns[0] || null);
+  const [campaign, setCampaign] = useState(() => sortedCampaigns[0] || null);
   const [aEnviarItems, setAEnviarItems] = useState([]);
   const [newItemNombre, setNewItemNombre] = useState('');
   const [newItemCantidad, setNewItemCantidad] = useState(1);
@@ -37,7 +37,45 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
     setAEnviarItems(normalizeAEnviar(campaign?.a_enviar));
   }, [campaign]);
 
-  if (!campaigns?.length) return null;
+  // Si hay campañas pero campaign es null (estado inicial), no renderizar aún
+  if (campaigns?.length && !campaign) {
+    return <div className="base-info-card campaign-card">Cargando campaña...</div>;
+  }
+
+  const addCampaignButtonLabel = newYear
+    ? `+ Agregar campaña ${formatCampaignYearLabel(Number(newYear))}`
+    : '+ Agregar campaña';
+
+  if (!campaigns?.length) {
+    return (
+      <div className="base-info-card campaign-card campaign-empty">
+        <div className="campaign-header-row">
+          <div className="campaign-title-wrap">
+            <span className="campaign-eyebrow">Resumen anual</span>
+            <h3>Sin campañas creadas</h3>
+          </div>
+        </div>
+
+        <div className="campaign-empty-content">
+          <p>Esta base no tiene campañas registradas todavía.</p>
+          <div className="campaign-empty-actions">
+            <input
+              type="number"
+              placeholder="Año"
+              value={newYear}
+              min={2010}
+              max={new Date().getFullYear() + 1}
+              step={1}
+              onChange={(e) => setNewYear(e.target.value)}
+            />
+            <button className="ais-btn-primary campaign-add-button" onClick={onAdd}>
+              {addCampaignButtonLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getValue = (field, fallback = '') => {
     const value = campaign?.[field];
@@ -91,10 +129,6 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
   const handleSave = () => {
     if (onSave) onSave(buildPayload());
   };
-
-  const addCampaignButtonLabel = newYear
-    ? `+ Agregar campaña ${formatCampaignYearLabel(Number(newYear))}`
-    : '+ Agregar campaña';
 
   const confirmToggleEnviado = (nextValue) => {
     toast(
