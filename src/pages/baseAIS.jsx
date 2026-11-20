@@ -446,6 +446,30 @@ const BaseAIS = () => {
       }
     };
 
+    /* Eliminar campaña */
+    const confirmDeleteCampaign = async (campaignId) => {
+      try {
+        const response = await fetch(
+          `${config.baseURL}/api/base-anual/${campaignId}`,
+          {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error();
+        }
+
+        setCampaigns(prev => prev.filter(c => c._id !== campaignId));
+        toast.success('Campaña eliminada');
+      } catch (error) {
+        console.error(error);
+        toast.error('No se pudo eliminar la campaña');
+      }
+    };
+
     const handleAddCampaign = async () => {
       const year = Number(newYear);
       const currentYear = new Date().getFullYear();
@@ -544,6 +568,7 @@ const BaseAIS = () => {
         campaigns={campaigns}
         onSave={handleSaveCampaign}
         onAdd={handleAddCampaign}
+        onDelete={confirmDeleteCampaign}
         newYear={newYear}
         setNewYear={setNewYear}
       />

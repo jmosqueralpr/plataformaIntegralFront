@@ -22,7 +22,7 @@ const normalizeAEnviar = (val) => {
   return [];
 };
 
-const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
+const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYear }) => {
   const [campaign, setCampaign] = useState(null);
   const [aEnviarItems, setAEnviarItems] = useState([]);
   const [newItemNombre, setNewItemNombre] = useState('');
@@ -298,6 +298,47 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
           <button className="ais-btn-primary campaign-add-button" onClick={onAdd}>
             {addCampaignButtonLabel}
           </button>
+
+          {onDelete && (
+            <button
+              className="ais-btn-primary campaign-delete-button"
+              onClick={() => {
+                toast(
+                  ({ closeToast }) => (
+                    <div>
+                      <p style={{ marginBottom: 8 }}>
+                        <strong>¿Eliminar campaña {formatCampaignYearLabel(campaign.anio)}?</strong>
+                      </p>
+                      <p style={{ fontSize: 13, opacity: 0.85, marginBottom: 12 }}>
+                        ⚠️ Se perderán <strong>todos los datos</strong> de esta campaña:
+                        tareas, elementos a enviar, tareas ejecutadas/pendientes y contactos.
+                      </p>
+                      <p style={{ fontSize: 12, opacity: 0.7 }}>
+                        Esta acción <strong>no se puede deshacer</strong>.
+                      </p>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                        <button
+                          className="ais-btn-small red"
+                          onClick={() => {
+                            closeToast();
+                            onDelete(campaign._id);
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                        <button className="ais-btn-small" onClick={closeToast}>
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  ),
+                  { autoClose: false }
+                );
+              }}
+            >
+              Eliminar campaña
+            </button>
+          )}
         </div>
 
         <div className="actions-right">

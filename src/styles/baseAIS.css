@@ -32,6 +32,14 @@
   width: auto;
 }
 
+.ais-btn-small.red {
+  background-color: #dc3545;
+}
+
+.ais-btn-small.red:hover {
+  background-color: #c82333;
+}
+
 .ais-btn-small:hover {
   background-color: #218838;
 }
@@ -659,6 +667,24 @@
 
 .ais-btn-primary:hover {
   background-color: #0069d9;
+}
+
+.campaign-delete-button {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 8px 14px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.campaign-delete-button:hover {
+  background-color: #c82333;
 }
 
 @media (max-width: 600px) {
