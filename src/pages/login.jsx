@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 
 const Login = () => {
-  const { setAuthUser, login } = useContext(AuthContext);
+  const { setAuthUser, login, setExpirationSummary } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loadingMode, setLoadingMode] = useState('');
@@ -35,6 +35,8 @@ const Login = () => {
       const data = await response.json();
       setAuthUser(data.username);
       login();
+      setExpirationSummary(data.expirationSummary || null);
+
       navigate('/dashboard');
     } catch {
       toast.error('No se pudo conectar con el servicio de inicio de sesión.');
@@ -63,6 +65,8 @@ const Login = () => {
       const data = await response.json();
       setAuthUser(data.username);
       login();
+      setExpirationSummary(data.expirationSummary || null);
+
       navigate('/dashboard');
     } catch {
       toast.error('No se pudo conectar con el servicio de inicio de sesión.');

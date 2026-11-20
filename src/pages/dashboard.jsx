@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import '../styles/dashboard.css';
 import { DashboardCard } from '../components/dashboardCard';
 import AuthContext from '../context/authContext';
+import { useNavigate } from 'react-router-dom';
 import {
   FiSend,
   FiSliders,
@@ -11,6 +12,7 @@ import {
   FiCheckSquare,
   FiClock,
 } from 'react-icons/fi';
+import config from '../../src/config';
 
 const dashboardTips = [
   'Tip: revisá primero el historial de eventos antes de hacer cambios importantes.',
@@ -20,8 +22,13 @@ const dashboardTips = [
 ];
 
 const Dashboard = () => {
-  const { authUser } = useContext(AuthContext);
+  const { authUser, expirationSummary, setExpirationSummary, dismissedExpirationNotice, setDismissedExpirationNotice } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [tipsEnabled, setTipsEnabled] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [showFloating, setShowFloating] = useState(false);
+  const [urgentExpiration, setUrgentExpiration] = useState(null);
+  const [isVencido, setIsVencido] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -43,6 +50,68 @@ const Dashboard = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const loadExpirations = async () => {
+      let summary = expirationSummary;
+
+      if (!summary) {
+        try {
+          const res = await fetch(`${config.baseURL}/api/expirations/resumen`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            summary = {
+              vencidos: data.vencidos || [],
+              proximos: data.proximos || [],
+              proximoMasUrgente:
+                (data.vencidos?.length ? data.vencidos[0] : data.proximos?.[0]) || null,
+            };
+            setExpirationSummary(summary);
+          }
+        } catch (error) {
+          console.error('Error al cargar vencimientos:', error);
+        }
+      }
+
+      const vencidos = summary?.vencidos || [];
+      const proximos = summary?.proximos || [];
+      const vencido = vencidos.length > 0;
+      const urgent = vencido ? vencidos[0] : proximos.length > 0 ? proximos[0] : null;
+
+      setIsVencido(vencido);
+      setUrgentExpiration(urgent);
+      setShowBanner(Boolean(urgent));
+      // Solo mostrar el flotante si el usuario no lo ha descartado previamente
+      setShowFloating(Boolean(urgent) && !dismissedExpirationNotice);
+    };
+
+    loadExpirations();
+  }, [expirationSummary, setExpirationSummary]);
+
+  // Cierre automático del aviso flotante tras 7 segundos (y se guarda el descarte)
+  useEffect(() => {
+    if (!showFloating) return;
+    const timer = setTimeout(() => {
+      setShowFloating(false);
+      localStorage.setItem('dyb-dismissed-expiration-notice', 'true');
+      setDismissedExpirationNotice(true);
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, [showFloating, setDismissedExpirationNotice, dismissedExpirationNotice]);
+
+  const goToExpirations = () => {
+    navigate('/expirationTracker');
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
   const activeTip = tipsEnabled ? dashboardTips[Math.floor((Date.now() / 1000) % dashboardTips.length)] : null;
 
   return (
@@ -58,7 +127,30 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {activeTip && (
+      {urgentExpiration && showBanner && (
+        <div
+          className="dashboard-tip-banner dashboard-tip-banner--expiration"
+          role="status"
+          aria-live="polite"
+          onClick={goToExpirations}
+          style={{ cursor: 'pointer' }}
+        >
+          <span className="dashboard-tip-icon">{isVencido ? '⚠️' : '📆'}</span>
+          <span>
+            {isVencido
+              ? `⚠️ Vencido: ${urgentExpiration.title} (${formatDate(urgentExpiration.expirationDate)})`
+              : `📆 Próximo vencimiento: ${urgentExpiration.title} (${formatDate(urgentExpiration.expirationDate)})`}
+          </span>
+          <span className="dashboard-tip-action" onClick={(e) => {
+            e.stopPropagation();
+            goToExpirations();
+          }}>
+            Ir a vencimientos →
+          </span>
+        </div>
+      )}
+
+      {!urgentExpiration && activeTip && (
         <div className="dashboard-tip-banner" role="status" aria-live="polite">
           <span className="dashboard-tip-icon">✦</span>
           <span>{activeTip}</span>
@@ -109,6 +201,38 @@ const Dashboard = () => {
           text="Gestionar vencimientos y avisos por Telegram."
         />
       </main>
+
+      {/* Aviso flotante inferior derecho (una vez por sesión) */}
+      {showFloating && urgentExpiration && (
+        <div
+          className="expiration-notice"
+          onClick={goToExpirations}
+          role="alert"
+          aria-label="Vencimiento próximo"
+          style={{ cursor: 'pointer' }}
+        >
+          <div className="expiration-notice-content">
+            <span className="expiration-notice-icon">{isVencido ? '⚠️' : '📆'}</span>
+            <div className="expiration-notice-text">
+              <strong>{isVencido ? 'Vencimiento pendiente' : 'Próximo vencimiento'}</strong>
+              <span>{urgentExpiration.title}</span>
+              <span>{formatDate(urgentExpiration.expirationDate)}</span>
+            </div>
+          </div>
+          <button
+            className="expiration-notice-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              localStorage.setItem('dyb-dismissed-expiration-notice', 'true');
+              setDismissedExpirationNotice(true);
+              setShowFloating(false);
+            }}
+            aria-label="Cerrar aviso"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 };
