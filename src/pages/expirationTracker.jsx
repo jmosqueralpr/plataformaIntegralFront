@@ -43,10 +43,12 @@ const ExpirationTracker = () => {
   const [items, setItems] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [originalItem, setOriginalItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userSearchTerm, setUserSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [loading, setLoading] = useState(true);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
 
   const fetchExpirations = async () => {
     setLoading(true);
@@ -128,17 +130,67 @@ const ExpirationTracker = () => {
 
   const openModal = (item = null) => {
     if (!item) {
-      setSelectedItem({ ...emptyForm(currentUser), _id: null });
+      const newItem = { ...emptyForm(currentUser), _id: null };
+      setSelectedItem(newItem);
+      setOriginalItem(newItem);
       return;
     }
 
-    setSelectedItem({
+    const normalizedItem = {
       ...item,
       assignedTo: normalizeAssignedUsers(item.assignedTo),
+    };
+    setSelectedItem(normalizedItem);
+    setOriginalItem(normalizedItem);
+  };
+
+  const hasUnsavedChanges = () => {
+    if (!selectedItem || !originalItem) return false;
+
+    const fields = [
+      'title',
+      'description',
+      'expirationDate',
+      'expirationTime',
+      'notify7DaysBefore',
+      'notify30DaysBefore',
+      'notify90DaysBefore',
+      'assignedTo',
+    ];
+
+    return fields.some((field) => {
+      const a = selectedItem[field];
+      const b = originalItem[field];
+
+      if (Array.isArray(a) && Array.isArray(b)) {
+        return JSON.stringify(a.sort()) !== JSON.stringify(b.sort());
+      }
+
+      return a !== b;
     });
   };
 
-  const closeModal = () => setSelectedItem(null);
+  const handleCloseModal = () => {
+    if (hasUnsavedChanges()) {
+      setShowUnsavedDialog(true);
+      return;
+    }
+    setSelectedItem(null);
+    setOriginalItem(null);
+  };
+
+  const handleSaveAndExit = async () => {
+    try {
+      await submitExpiration();
+      // Cerrar ambos estados explícitamente después de guardar exitosamente
+      setShowUnsavedDialog(false);
+      setSelectedItem(null);
+      setOriginalItem(null);
+    } catch {
+      // submitExpiration ya muestra el toast de error.
+      // Mantener ambos abiertos para que el usuario pueda reintentar.
+    }
+  };
 
   const submitExpiration = async () => {
     if (!selectedItem?.title?.trim()) {
@@ -199,7 +251,8 @@ const ExpirationTracker = () => {
         toast.success('Vencimiento creado correctamente.');
       }
 
-      closeModal();
+      setOriginalItem(null);
+      handleCloseModal();
     } catch (error) {
       console.error('Error al guardar vencimiento:', error);
       toast.error(error.message || 'No se pudo guardar el vencimiento.');
@@ -221,7 +274,7 @@ const ExpirationTracker = () => {
       }
 
       setItems((prev) => prev.filter((item) => item._id !== id));
-      closeModal();
+      handleCloseModal();
       toast.info('Vencimiento eliminado.');
     } catch (error) {
       console.error('Error al eliminar vencimiento:', error);
@@ -312,9 +365,9 @@ const ExpirationTracker = () => {
       )}
 
       {selectedItem && (
-        <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && closeModal()}>
+        <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && handleCloseModal()}>
           <div className="expiration-modal-content">
-            <button type="button" className="modal-close" onClick={closeModal} aria-label="Cerrar">×</button>
+            <button type="button" className="modal-close" onClick={handleCloseModal} aria-label="Cerrar">×</button>
 
             <div className="modal-topbar">
               <span className="modal-tag">{selectedItem._id ? 'Editar vencimiento' : 'Nuevo vencimiento'}</span>
@@ -358,6 +411,24 @@ const ExpirationTracker = () => {
                 />
               </label>
             </div>
+
+            {selectedItem._id && selectedItem.updatedAt && (
+              <label className="field field-readonly">
+                <span>Última modificación</span>
+                <input
+                  type="text"
+                  value={new Date(selectedItem.updatedAt).toLocaleString('es-AR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                  readOnly
+                  disabled
+                />
+              </label>
+            )}
 
             <div className="toggle-grid">
               <label className="toggle-row">
@@ -427,7 +498,7 @@ const ExpirationTracker = () => {
             </div>
 
             <div className="modal-actions">
-              <button className="secondary-btn" onClick={closeModal}>Cancelar</button>
+              <button className="secondary-btn" onClick={handleCloseModal}>Cancelar</button>
               {selectedItem._id && (
                 <button className="danger-btn" onClick={() => deleteExpiration(selectedItem._id)}>
                   Eliminar
@@ -436,6 +507,25 @@ const ExpirationTracker = () => {
               <button className="primary-btn" onClick={submitExpiration}>
                 {selectedItem._id ? 'Guardar cambios' : 'Crear vencimiento'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Diálogo de cambios sin guardar */}
+      {showUnsavedDialog && (
+        <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && setShowUnsavedDialog(false)}>
+          <div className="expiration-modal-content unsaved-dialog">
+            <div className="modal-topbar">
+              <span className="modal-tag">Cambios sin guardar</span>
+            </div>
+            <p className="unsaved-message">
+              Hacé cambios que aún no se guardaron. ¿Querés guardarlos antes de salir?
+            </p>
+            <div className="modal-actions">
+              <button className="secondary-btn" onClick={() => { setShowUnsavedDialog(false); }}>Seguir editando</button>
+              <button className="secondary-btn" onClick={() => { setShowUnsavedDialog(false); setSelectedItem(null); setOriginalItem(null); }}>Descartar y salir</button>
+              <button className="primary-btn" onClick={handleSaveAndExit}>Guardar y salir</button>
             </div>
           </div>
         </div>

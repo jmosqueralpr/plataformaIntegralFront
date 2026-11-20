@@ -395,6 +395,25 @@
   margin-top: 18px;
 }
 
+.field-readonly input {
+  background: #1d2630;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  color: #9aa8ba;
+  cursor: not-allowed;
+}
+
+.unsaved-dialog {
+  max-width: 420px;
+  text-align: center;
+}
+
+.unsaved-message {
+  margin: 0 0 20px;
+  color: #edf2f7;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .primary-btn,
 .secondary-btn,
 .danger-btn {
