@@ -1,9 +1,36 @@
+import { useEffect, useRef } from 'react';
+
 const BaseInfoCard = ({ base, setBase, onSave }) => {
-  if (!base) return null;
+  const descripcionBaseRef = useRef(null);
+  const descripcionAisRxRef = useRef(null);
+  const descripcionAisTxRef = useRef(null);
 
   const handleChange = (field, value) => {
     setBase({ ...base, [field]: value });
   };
+
+  const resizeTextarea = (ref) => {
+    if (ref.current) {
+      ref.current.style.height = 'auto';
+      const scrollHeight = ref.current.scrollHeight;
+      ref.current.style.height = `${Math.max(50, scrollHeight)}px`;
+    }
+  };
+
+  const autoResize = (e) => {
+    const el = e.target;
+    el.style.height = 'auto';
+    const scrollHeight = el.scrollHeight;
+    el.style.height = `${Math.max(50, scrollHeight)}px`;
+  };
+
+  useEffect(() => {
+    resizeTextarea(descripcionBaseRef);
+    resizeTextarea(descripcionAisRxRef);
+    resizeTextarea(descripcionAisTxRef);
+  }, [base]);
+
+  if (!base) return null;
 
   const status = base.activa || base.estado || 'Activa';
 
@@ -41,9 +68,11 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
           <div className="field full">
             <label>Descripción</label>
             <textarea
+              ref={descripcionBaseRef}
               rows={2}
               value={base.descripcion_base || ''}
-              onChange={e => handleChange('descripcion_base', e.target.value)}
+              onChange={e => { handleChange('descripcion_base', e.target.value); autoResize(e); }}
+              onInput={autoResize}
             />
           </div>
         </div>
@@ -78,18 +107,22 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
           <div className="field full">
             <label>AIS RX</label>
             <textarea
+              ref={descripcionAisRxRef}
               rows={2}
               value={base.descripcion_ais_rx || ''}
-              onChange={e => handleChange('descripcion_ais_rx', e.target.value)}
+              onChange={e => { handleChange('descripcion_ais_rx', e.target.value); autoResize(e); }}
+              onInput={autoResize}
             />
           </div>
 
           <div className="field full">
             <label>AIS TX</label>
             <textarea
+              ref={descripcionAisTxRef}
               rows={2}
               value={base.descripcion_ais_tx || ''}
-              onChange={e => handleChange('descripcion_ais_tx', e.target.value)}
+              onChange={e => { handleChange('descripcion_ais_tx', e.target.value); autoResize(e); }}
+              onInput={autoResize}
             />
           </div>
         </div>

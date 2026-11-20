@@ -7,15 +7,37 @@ const formatCampaignYearLabel = (year) => {
   return `${shortYear}/${String(nextYear).padStart(2, '0')}`;
 };
 
-const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
-  if (!campaigns.length) return null;
+const normalizeAEnviar = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (!trimmed) return [];
+    return trimmed.split(/[\n;]+/).map(line => {
+      const clean = line.trim();
+      if (!clean) return null;
+      return { nombre: clean, cantidad: 1, preparado: false };
+    }).filter(Boolean);
+  }
+  return [];
+};
 
-  const sortedCampaigns = [...campaigns].sort((a, b) => b.anio - a.anio);
-  const [campaign, setCampaign] = useState(sortedCampaigns[0]);
+const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
+  const sortedCampaigns = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
+  const [campaign, setCampaign] = useState(sortedCampaigns[0] || null);
+  const [aEnviarItems, setAEnviarItems] = useState([]);
+  const [newItemNombre, setNewItemNombre] = useState('');
+  const [newItemCantidad, setNewItemCantidad] = useState(1);
 
   useEffect(() => {
-    setCampaign(sortedCampaigns[0]);
-  }, [campaigns]);
+    setCampaign(sortedCampaigns[0] || null);
+  }, [sortedCampaigns]);
+
+  useEffect(() => {
+    setAEnviarItems(normalizeAEnviar(campaign?.a_enviar));
+  }, [campaign]);
+
+  if (!campaigns?.length) return null;
 
   const getValue = (field, fallback = '') => {
     const value = campaign?.[field];
@@ -27,16 +49,39 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
     setCampaign((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleAEnviarChange = (index, field, value) => {
+    setAEnviarItems(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  };
+
+  const removeAEnviarItem = (index) => {
+    setAEnviarItems(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const addAEnviarItem = (e) => {
+    if (e) e.preventDefault();
+    const nombre = newItemNombre.trim();
+    if (!nombre) return;
+    setAEnviarItems(prev => [...prev, { nombre, cantidad: Number(newItemCantidad) || 1, preparado: false }]);
+    setNewItemNombre('');
+    setNewItemCantidad(1);
+  };
+
+  const handleNewItemKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      addAEnviarItem(e);
+    }
+  };
+
   const buildPayload = () => {
     const payload = {
       ...campaign,
       necesidades_campania: campaign.necesidades_campania ?? campaign.tareas_a_realizar ?? '',
-      a_enviar: campaign.a_enviar ?? campaign.elementos_entregados ?? '',
+      a_enviar: aEnviarItems,
       tareas_ejecutadas: campaign.tareas_ejecutadas ?? '',
       tareas_pendientes: campaign.tareas_pendientes ?? campaign.tareas_proxima_campania ?? '',
       enviado: Boolean(campaign.enviado),
       tareas_a_realizar: campaign.necesidades_campania ?? campaign.tareas_a_realizar ?? '',
-      elementos_entregados: campaign.a_enviar ?? campaign.elementos_entregados ?? '',
+      elementos_entregados: aEnviarItems,
       tareas_proxima_campania: campaign.tareas_pendientes ?? campaign.tareas_proxima_campania ?? '',
     };
 
@@ -96,50 +141,109 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
       </div>
 
       <div className="campaign-panels-grid">
-        <div className="campaign-panel">
-          <label>Necesidades de campaña</label>
-          <textarea
-            rows={3}
-            value={getValue('necesidades_campania', getValue('tareas_a_realizar'))}
-            onChange={(e) => handleChange('necesidades_campania', e.target.value)}
-          />
+        <div className="campaign-panel-column">
+          <div className="campaign-panel">
+            <label>Necesidades de campaña</label>
+            <textarea
+              rows={3}
+              value={getValue('necesidades_campania', getValue('tareas_a_realizar'))}
+              onChange={(e) => handleChange('necesidades_campania', e.target.value)}
+            />
+          </div>
+
+          <div className="campaign-panel">
+            <label>Tareas ejecutadas</label>
+            <textarea
+              rows={3}
+              value={getValue('tareas_ejecutadas')}
+              onChange={(e) => handleChange('tareas_ejecutadas', e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="campaign-panel">
-          <div className="campaign-panel-header">
-            <label>A enviar</label>
-            <div className="campaign-send-toggle">
-              <input
-                type="checkbox"
-                checked={Boolean(campaign.enviado)}
-                onChange={() => confirmToggleEnviado(!campaign.enviado)}
-              />
-              <span>Enviado</span>
+        <div className="campaign-panel-column">
+          <div className="campaign-panel">
+            <div className="campaign-panel-header">
+              <label>A enviar en {formatCampaignYearLabel(campaign.anio + 1)}</label>
+              <div className="campaign-send-toggle">
+                <input
+                  type="checkbox"
+                  checked={Boolean(campaign.enviado)}
+                  onChange={() => confirmToggleEnviado(!campaign.enviado)}
+                />
+                <span>Enviado</span>
+              </div>
+            </div>
+            <div className="a-enviar-list">
+              {aEnviarItems.length === 0 && (
+                <div className="a-enviar-empty">No hay ítems para enviar</div>
+              )}
+              {aEnviarItems.map((item, index) => (
+                <div key={index} className="a-enviar-item">
+                  <input
+                    type="checkbox"
+                    className="a-enviar-preparado"
+                    checked={item.preparado}
+                    onChange={(e) => handleAEnviarChange(index, 'preparado', e.target.checked)}
+                  />
+                  <input
+                    type="text"
+                    className="a-enviar-nombre"
+                    value={item.nombre}
+                    onChange={(e) => handleAEnviarChange(index, 'nombre', e.target.value)}
+                    onKeyDown={handleNewItemKeyDown}
+                  />
+                  <input
+                    type="number"
+                    className="a-enviar-cantidad"
+                    min="1"
+                    value={item.cantidad}
+                    onChange={(e) => handleAEnviarChange(index, 'cantidad', Number(e.target.value) || 1)}
+                    onKeyDown={handleNewItemKeyDown}
+                  />
+                  <button
+                    type="button"
+                    className="a-enviar-remove"
+                    onClick={() => removeAEnviarItem(index)}
+                    aria-label="Eliminar ítem"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <div className="a-enviar-add-row">
+                <input
+                  type="text"
+                  className="a-enviar-add-nombre"
+                  placeholder="Nombre del ítem"
+                  value={newItemNombre}
+                  onChange={(e) => setNewItemNombre(e.target.value)}
+                  onKeyDown={handleNewItemKeyDown}
+                />
+                <input
+                  type="number"
+                  className="a-enviar-add-cantidad"
+                  min="1"
+                  placeholder="Cant."
+                  value={newItemCantidad}
+                  onChange={(e) => setNewItemCantidad(Number(e.target.value) || 1)}
+                  onKeyDown={handleNewItemKeyDown}
+                />
+                <button type="button" className="ais-btn-small green a-enviar-add-btn" onClick={addAEnviarItem}>
+                  + Agregar
+                </button>
+              </div>
             </div>
           </div>
-          <textarea
-            rows={3}
-            value={getValue('a_enviar', getValue('elementos_entregados'))}
-            onChange={(e) => handleChange('a_enviar', e.target.value)}
-          />
-        </div>
 
-        <div className="campaign-panel">
-          <label>Tareas ejecutadas</label>
-          <textarea
-            rows={3}
-            value={getValue('tareas_ejecutadas')}
-            onChange={(e) => handleChange('tareas_ejecutadas', e.target.value)}
-          />
-        </div>
-
-        <div className="campaign-panel">
-          <label>Tareas pendientes</label>
-          <textarea
-            rows={3}
-            value={getValue('tareas_pendientes', getValue('tareas_proxima_campania'))}
-            onChange={(e) => handleChange('tareas_pendientes', e.target.value)}
-          />
+          <div className="campaign-panel">
+            <label>Tareas pendientes</label>
+            <textarea
+              rows={3}
+              value={getValue('tareas_pendientes', getValue('tareas_proxima_campania'))}
+              onChange={(e) => handleChange('tareas_pendientes', e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

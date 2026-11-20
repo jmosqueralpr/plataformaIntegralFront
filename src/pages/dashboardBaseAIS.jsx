@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/authContext';
 import config from '../config';
@@ -26,6 +26,33 @@ const DashboardBaseAIS = () => {
 
   const { authUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const descripcionBaseRef = useRef(null);
+  const descripcionAisRxRef = useRef(null);
+  const descripcionAisTxRef = useRef(null);
+
+  const resizeTextarea = (ref) => {
+    if (ref.current) {
+      ref.current.style.height = 'auto';
+      const scrollHeight = ref.current.scrollHeight;
+      ref.current.style.height = `${Math.max(50, scrollHeight)}px`;
+    }
+  };
+
+  const autoResize = (e) => {
+    const el = e.target;
+    el.style.height = 'auto';
+    const scrollHeight = el.scrollHeight;
+    el.style.height = `${Math.max(50, scrollHeight)}px`;
+  };
+
+  useEffect(() => {
+    if (showModal) {
+      resizeTextarea(descripcionBaseRef);
+      resizeTextarea(descripcionAisRxRef);
+      resizeTextarea(descripcionAisTxRef);
+    }
+  }, [showModal, newBase]);
 
   const fetchBases = async () => {
     setLoading(true);
@@ -351,13 +378,16 @@ const DashboardBaseAIS = () => {
             <div className="modal-field-block">
               <label htmlFor="baseDescripcion">Descripción</label>
               <textarea
+                ref={descripcionBaseRef}
                 id="baseDescripcion"
                 className="modal-text-box"
                 placeholder="Descripción general de la base"
                 value={newBase.descripcion_base}
-                onChange={(e) =>
-                  setNewBase({ ...newBase, descripcion_base: e.target.value })
-                }
+                onChange={(e) => {
+                  setNewBase({ ...newBase, descripcion_base: e.target.value });
+                  autoResize(e);
+                }}
+                onInput={autoResize}
               />
             </div>
 
@@ -392,26 +422,32 @@ const DashboardBaseAIS = () => {
             <div className="modal-field-block">
               <label htmlFor="baseRx">Descripción AIS RX</label>
               <textarea
+                ref={descripcionAisRxRef}
                 id="baseRx"
                 className="modal-text-box"
                 placeholder="Detalle del flujo de recepción"
                 value={newBase.descripcion_ais_rx}
-                onChange={(e) =>
-                  setNewBase({ ...newBase, descripcion_ais_rx: e.target.value })
-                }
+                onChange={(e) => {
+                  setNewBase({ ...newBase, descripcion_ais_rx: e.target.value });
+                  autoResize(e);
+                }}
+                onInput={autoResize}
               />
             </div>
 
             <div className="modal-field-block">
               <label htmlFor="baseTx">Descripción AIS TX</label>
               <textarea
+                ref={descripcionAisTxRef}
                 id="baseTx"
                 className="modal-text-box"
                 placeholder="Detalle del flujo de transmisión"
                 value={newBase.descripcion_ais_tx}
-                onChange={(e) =>
-                  setNewBase({ ...newBase, descripcion_ais_tx: e.target.value })
-                }
+                onChange={(e) => {
+                  setNewBase({ ...newBase, descripcion_ais_tx: e.target.value });
+                  autoResize(e);
+                }}
+                onInput={autoResize}
               />
             </div>
 
