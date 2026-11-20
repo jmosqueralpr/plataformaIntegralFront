@@ -211,10 +211,19 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYe
               onChange={(e) => handleChange('tareas_ejecutadas', e.target.value)}
             />
           </div>
+
+          <div className="campaign-panel">
+            <label>Tareas pendientes</label>
+            <textarea
+              rows={3}
+              value={getValue('tareas_pendientes', getValue('tareas_proxima_campania'))}
+              onChange={(e) => handleChange('tareas_pendientes', e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="campaign-panel-column">
-          <div className="campaign-panel">
+          <div className="campaign-panel a-enviar-panel">
             <div className="campaign-panel-header">
               <label>A enviar en {formatCampaignYearLabel(campaign.anio + 1)}</label>
               <div className="campaign-send-toggle">
@@ -286,15 +295,6 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYe
                 </button>
               </div>
             </div>
-          </div>
-
-          <div className="campaign-panel">
-            <label>Tareas pendientes</label>
-            <textarea
-              rows={3}
-              value={getValue('tareas_pendientes', getValue('tareas_proxima_campania'))}
-              onChange={(e) => handleChange('tareas_pendientes', e.target.value)}
-            />
           </div>
         </div>
       </div>
