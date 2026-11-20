@@ -313,9 +313,31 @@
   .campaign-empty-actions {
     flex-direction: column;
   }
-  .campaign-empty-actions input[type="number"] {
+  .campaign-empty-actions input[type="number"],
+  .campaign-empty-actions .year-select {
     width: 100%;
   }
+}
+
+.year-select {
+  background: rgba(11, 17, 22, 0.6);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: #eef3f7;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  min-width: 140px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.year-select:hover {
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.year-select:focus {
+  outline: none;
+  border-color: #59a8ff;
+  box-shadow: 0 0 0 3px rgba(89, 168, 255, 0.18);
 }
 
 .campaign-panel label {

@@ -71,15 +71,19 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYe
         <div className="campaign-empty-content">
           <p>Esta base no tiene campañas registradas todavía.</p>
           <div className="campaign-empty-actions">
-            <input
-              type="number"
-              placeholder="Año"
+            <select
               value={newYear}
-              min={2010}
-              max={new Date().getFullYear() + 1}
-              step={1}
               onChange={(e) => setNewYear(e.target.value)}
-            />
+              className="year-select"
+            >
+              {Array.from({ length: new Date().getFullYear() + 1 - 2010 }, (_, i) => 2010 + i)
+                .reverse()
+                .map(year => (
+                  <option key={year} value={year}>
+                    {formatCampaignYearLabel(year)}
+                  </option>
+                ))}
+            </select>
             <button className="ais-btn-primary campaign-add-button" onClick={onAdd}>
               {addCampaignButtonLabel}
             </button>
@@ -297,15 +301,19 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYe
 
       <div className="base-info-actions campaign-actions">
         <div className="actions-left">
-          <input
-            type="number"
-            placeholder="Año"
+          <select
             value={newYear}
-            min={2010}
-            max={new Date().getFullYear() + 1}
-            step={1}
             onChange={(e) => setNewYear(e.target.value)}
-          />
+            className="year-select"
+          >
+            {Array.from({ length: new Date().getFullYear() + 1 - 2010 }, (_, i) => 2010 + i)
+              .reverse()
+              .map(year => (
+                <option key={year} value={year}>
+                  {formatCampaignYearLabel(year)}
+                </option>
+              ))}
+          </select>
 
           <button className="ais-btn-primary campaign-add-button" onClick={onAdd}>
             {addCampaignButtonLabel}
