@@ -148,6 +148,20 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
+  min-width: 0;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .ais-base-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .ais-base-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
 }
 
 .ais-base-card {
@@ -159,6 +173,8 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
   position: relative;
+  min-width: 0;
+  width: 100%;
 }
 
 .ais-base-card:hover {
@@ -272,6 +288,8 @@
   color: #c0cad4;
   line-height: 1.5;
   font-size: 0.92rem;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .ais-base-meta {
@@ -296,6 +314,8 @@
   color: #edf6ff;
   font-size: 0.9rem;
   display: block;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .ais-base-footer {
@@ -509,6 +529,34 @@ body.modal-open .footer {
   .ais-base-meta,
   .modal-field-row {
     grid-template-columns: 1fr;
+  }
+
+  .ais-base-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ais-base-card {
+    padding: 16px;
+  }
+
+  .ais-base-name {
+    font-size: 1.15rem;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .ais-base-description {
+    min-height: auto;
+    font-size: 0.88rem;
+  }
+
+  .ais-base-status {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+
+  .ais-base-header {
+    flex-wrap: wrap;
   }
 }
 

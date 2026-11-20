@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 const formatCampaignYearLabel = (year) => {
@@ -27,10 +27,22 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, onDelete, newYear, setNewYe
   const [aEnviarItems, setAEnviarItems] = useState([]);
   const [newItemNombre, setNewItemNombre] = useState('');
   const [newItemCantidad, setNewItemCantidad] = useState(1);
+  const isInitialLoad = useRef(true);
+  const prevCampaignsLength = useRef(0);
 
   useEffect(() => {
     const sorted = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
-    setCampaign(sorted[0] || null);
+    
+    // Reset ref when campaigns becomes available (new base loaded)
+    if (prevCampaignsLength.current === 0 && sorted.length > 0) {
+      isInitialLoad.current = true;
+    }
+    prevCampaignsLength.current = sorted.length;
+
+    if (isInitialLoad.current) {
+      setCampaign(sorted[0] || null);
+      isInitialLoad.current = false;
+    }
   }, [campaigns]);
 
   useEffect(() => {
