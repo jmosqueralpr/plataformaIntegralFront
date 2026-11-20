@@ -368,16 +368,15 @@ const ExpirationTracker = () => {
       return dateA - dateB;
     });
 
-    const getRowColor = (item) => {
+const getRowColor = (item) => {
       if (!item.expirationDate) return "#FFFFFF";
       const expDate = new Date(`${item.expirationDate}T${item.expirationTime || "10:00"}`);
       expDate.setHours(0, 0, 0, 0);
       const diffDays = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-      if (diffDays < 0) return "#FDE9E9";
-      if (diffDays <= 10) return "#FFF7D6";
-      if (diffDays <= 30) return "#E7F3E7";
-      return "#F0F7F0";
+      if (diffDays < 0) return "#FFC7CE"; // Vencido - rojo
+      if (diffDays <= 10) return "#FFEB9C"; // Próximo a vencer (10 días) - amarillo
+      return "#C6EFCE"; // Más de 10 días - verde
     };
 
     const title = getExportTitle();
@@ -396,8 +395,8 @@ const ExpirationTracker = () => {
 
     const ws = XLSX.utils.aoa_to_sheet(aoa);
 
-    ws["!cols"] = [
-      { wpx: 18 },
+ws["!cols"] = [
+      { wpx: 20 },
       { wpx: 35 },
       { wpx: 45 },
     ];
