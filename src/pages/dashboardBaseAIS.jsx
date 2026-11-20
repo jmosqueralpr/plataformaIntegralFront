@@ -387,7 +387,6 @@ const DashboardBaseAIS = () => {
                   setNewBase({ ...newBase, descripcion_base: e.target.value });
                   autoResize(e);
                 }}
-                onInput={autoResize}
               />
             </div>
 
@@ -431,7 +430,6 @@ const DashboardBaseAIS = () => {
                   setNewBase({ ...newBase, descripcion_ais_rx: e.target.value });
                   autoResize(e);
                 }}
-                onInput={autoResize}
               />
             </div>
 
@@ -447,7 +445,6 @@ const DashboardBaseAIS = () => {
                   setNewBase({ ...newBase, descripcion_ais_tx: e.target.value });
                   autoResize(e);
                 }}
-                onInput={autoResize}
               />
             </div>
 

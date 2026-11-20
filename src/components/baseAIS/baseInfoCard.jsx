@@ -72,7 +72,6 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
               rows={2}
               value={base.descripcion_base || ''}
               onChange={e => { handleChange('descripcion_base', e.target.value); autoResize(e); }}
-              onInput={autoResize}
             />
           </div>
         </div>
@@ -111,7 +110,6 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
               rows={2}
               value={base.descripcion_ais_rx || ''}
               onChange={e => { handleChange('descripcion_ais_rx', e.target.value); autoResize(e); }}
-              onInput={autoResize}
             />
           </div>
 
@@ -122,7 +120,6 @@ const BaseInfoCard = ({ base, setBase, onSave }) => {
               rows={2}
               value={base.descripcion_ais_tx || ''}
               onChange={e => { handleChange('descripcion_ais_tx', e.target.value); autoResize(e); }}
-              onInput={autoResize}
             />
           </div>
         </div>

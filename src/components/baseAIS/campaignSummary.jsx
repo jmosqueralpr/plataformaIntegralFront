@@ -23,15 +23,15 @@ const normalizeAEnviar = (val) => {
 };
 
 const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
-  const sortedCampaigns = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
-  const [campaign, setCampaign] = useState(() => sortedCampaigns[0] || null);
+  const [campaign, setCampaign] = useState(null);
   const [aEnviarItems, setAEnviarItems] = useState([]);
   const [newItemNombre, setNewItemNombre] = useState('');
   const [newItemCantidad, setNewItemCantidad] = useState(1);
 
   useEffect(() => {
-    setCampaign(sortedCampaigns[0] || null);
-  }, [sortedCampaigns]);
+    const sorted = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
+    setCampaign(sorted[0] || null);
+  }, [campaigns]);
 
   useEffect(() => {
     setAEnviarItems(normalizeAEnviar(campaign?.a_enviar));
@@ -82,6 +82,8 @@ const CampaignSummary = ({ campaigns, onSave, onAdd, newYear, setNewYear }) => {
     if (value === undefined || value === null) return fallback;
     return value;
   };
+
+  const sortedCampaigns = [...(campaigns || [])].sort((a, b) => b.anio - a.anio);
 
   const handleChange = (field, value) => {
     setCampaign((prev) => ({ ...prev, [field]: value }));
