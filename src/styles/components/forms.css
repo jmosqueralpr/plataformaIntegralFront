@@ -1,0 +1,517 @@
+/* ========================================================================
+   FORMS - Componentes base de formularios
+   ========================================================================
+   Importar: @import './tokens.css';
+   Estructura recomendada:
+   <div class="field">
+     <label class="label" for="input-id">Label</label>
+     <input class="input" id="input-id" type="text">
+     <span class="field-hint">Ayuda opcional</span>
+     <span class="field-error">Error</span>
+   </div>
+   ======================================================================== */
+
+/* ----------------------------------------------------------------------
+   FIELD WRAPPER - Contenedor base label + input + ayuda/error
+   ---------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.field-inline > .label {
+  min-width: 140px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.field-row > .field {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------------------------------------------------------------------
+   LABEL
+   ---------------------------------------------------------------------- */
+.label {
+  display: block;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text-label);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
+}
+
+.label-optional::after {
+  content: " (opcional)";
+  font-weight: var(--font-normal);
+  text-transform: none;
+  color: var(--color-text-muted);
+}
+
+/* ----------------------------------------------------------------------
+   INPUT BASE - Estilos compartidos
+   ---------------------------------------------------------------------- */
+.input,
+.textarea,
+.select {
+  width: 100%;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text-primary);
+  line-height: var(--leading-normal);
+  transition: 
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.input:hover:not(:disabled):not(:read-only),
+.textarea:hover:not(:disabled):not(:read-only),
+.select:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-brand-glow);
+  background: var(--color-bg-tertiary);
+}
+
+.input:disabled,
+.textarea:disabled,
+.select:disabled,
+.input[readonly],
+.textarea[readonly] {
+  background: rgba(148, 163, 184, 0.05);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.input:read-only,
+.textarea:read-only {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* ----------------------------------------------------------------------
+   INPUT TYPES ESPECÍFICOS
+   ---------------------------------------------------------------------- */
+.input[type="date"],
+.input[type="time"],
+.input[type="datetime-local"],
+.input[type="month"],
+.input[type="week"] {
+  padding-right: var(--space-10); /* Espacio para picker icon */
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator,
+.input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.2);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.input[type="date"]:hover::-webkit-calendar-picker-indicator,
+.input[type="time"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------
+   TEXTAREA
+   ---------------------------------------------------------------------- */
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.textarea-sm {
+  min-height: 60px;
+}
+
+.textarea-lg {
+  min-height: 160px;
+}
+
+/* ----------------------------------------------------------------------
+   SELECT
+   ---------------------------------------------------------------------- */
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa8ba' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 16px;
+  padding-right: var(--space-10);
+}
+
+.select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ----------------------------------------------------------------------
+   CHECKBOX / RADIO
+   ---------------------------------------------------------------------- */
+.checkbox,
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+.checkbox input,
+.radio input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.checkbox-mark,
+.radio-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border-default);
+  background: var(--color-bg-tertiary);
+  flex-shrink: 0;
+  transition: 
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.checkbox-mark {
+  border-radius: var(--radius-sm);
+}
+
+.radio-mark {
+  border-radius: 50%;
+}
+
+.checkbox input:checked + .checkbox-mark {
+  background: var(--color-brand-500);
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 2px var(--color-brand-glow);
+}
+
+.checkbox input:checked + .checkbox-mark::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+
+.radio input:checked + .radio-mark {
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 2px var(--color-brand-glow);
+}
+
+.radio input:checked + .radio-mark::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-brand-500);
+}
+
+.checkbox input:focus-visible + .checkbox-mark,
+.radio input:focus-visible + .radio-mark {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+.checkbox input:disabled + .checkbox-mark,
+.radio input:disabled + .radio-mark {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border-default);
+  border: 1px solid var(--color-border-subtle);
+  transition: 
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--color-brand-500);
+  border-color: var(--color-brand-500);
+}
+
+.toggle input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* ----------------------------------------------------------------------
+   FIELD HELP / ERROR / HINT
+   ---------------------------------------------------------------------- */
+.field-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.field-error {
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.field-error::before {
+  content: "⚠";
+  font-size: var(--text-xs);
+}
+
+.field-success {
+  font-size: var(--text-sm);
+  color: var(--color-success);
+  margin-top: var(--space-1);
+}
+
+/* Input con error */
+.input-error,
+.textarea-error,
+.select-error {
+  border-color: var(--color-danger) !important;
+}
+
+.input-error:focus,
+.textarea-error:focus,
+.select-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* ----------------------------------------------------------------------
+   SEARCH INPUT (con icono)
+   ---------------------------------------------------------------------- */
+.search-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.search-input {
+  padding-left: var(--space-10) !important;
+}
+
+.search-input:focus + .search-icon {
+  color: var(--color-brand-500);
+}
+
+/* ----------------------------------------------------------------------
+   FILE INPUT
+   ---------------------------------------------------------------------- */
+.file-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-bg-tertiary);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: 
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.file-input:hover {
+  border-color: var(--color-brand-500);
+  background: var(--color-brand-glow);
+}
+
+.file-input input {
+  display: none;
+}
+
+.file-input-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-brand-500);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+}
+
+.file-input-filename {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------------
+   FORM ACTIONS (botones al final del form)
+   ---------------------------------------------------------------------- */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+  flex-wrap: wrap;
+}
+
+.form-actions-left {
+  justify-content: flex-start;
+}
+
+.form-actions-center {
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================================================
+   VERSIONADO - FORMS
+   ========================================================================
+   v1.0.0 (2026-11-24) - Versión inicial
+   - .field wrapper + .field-row responsive
+   - .label con uppercase opcional
+   - .input / .textarea / .select base + focus + disabled + error states
+   - .checkbox / .radio custom + toggle switch
+   - .field-hint / .field-error / .field-success
+   - .search-wrap con icono
+   - .file-input styled
+   - .form-actions responsive
+
+   PRÓXIMOS:
+   [ ] .input-masked para teléfonos, CUIT, etc.
+   [ ] .autocomplete / .combobox
+   [ ] .date-range picker
+   [ ] .color-picker
+   [ ] Validación visual inline (success state)
+
+   REGLAS:
+   - Usar SIEMPRE var(--token) 
+   - Estructura: .field > .label + .input + .field-hint/.field-error
+   - NO hardcodear colores, padding, border-radius
+   - Actualizar versionado al modificar
+   ======================================================================== */

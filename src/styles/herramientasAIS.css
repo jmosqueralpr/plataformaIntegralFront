@@ -1,79 +1,91 @@
+/* ========================================================================
+   HERRAMIENTAS AIS - Migración a Design System v1.0.0
+   ========================================================================
+   Usa: tokens.css + components/layout.css + components/cards.css + components/badges.css
+   Tokens: --color-*, --space-*, --radius-*, --shadow-*, --text-*, --z-*, --container-max
+   ======================================================================== */
+
 .ais-tools-container {
-  padding: 24px 28px 32px;
+  padding: var(--space-6) var(--space-7) var(--space-8);
   box-sizing: border-box;
   min-height: 100vh;
   min-width: 0;
   overflow-x: hidden;
-  background:
-    radial-gradient(ellipse at top left, rgba(40, 100, 200, 0.10), transparent 30%),
-    linear-gradient(180deg, #121820 0%, #10151b 100%);
-  color: #e8edf5;
+  background: 
+    radial-gradient(ellipse at top left, var(--color-info-glow), transparent 30%),
+    linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
 }
 
+/* Header - usa .page-header del Design System */
 .ais-tools-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .ais-tools-header-left {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2);
 }
 
 .ais-tools-kicker {
   margin: 0;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 11px;
-  color: #7dd3fc;
-  font-weight: 700;
+  font-size: var(--text-xs);
+  color: var(--color-info);
+  font-weight: var(--font-bold);
 }
 
 .ais-tools-title {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 800;
-  color: #f4f7fb;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
+/* User badge - usa .chip del Design System */
 .ais-tools-user-badge {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  padding: 7px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ebf5ff;
+  /* En JSX: class="chip chip-primary" */
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-4);
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
+/* Grid - usa .card-grid del Design System */
 .ais-tools-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
 }
 
+/* Section box - extiende .card-section del Design System */
 .ais-section-box {
-  background: linear-gradient(180deg, rgba(30, 39, 49, 0.92), rgba(22, 30, 39, 0.92));
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 16px;
-  padding: 20px 22px;
+  background: linear-gradient(180deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
   min-height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -85,86 +97,92 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7dd3fc, #3b82f6, #2563eb);
+  background: linear-gradient(90deg, var(--color-info), var(--color-brand-500), var(--color-brand-600));
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.25s ease;
+  transition: transform var(--transition-base) ease;
 }
 
 .ais-section-box:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(125, 211, 252, 0.15);
-  border-color: rgba(125, 211, 252, 0.35);
-  background: linear-gradient(180deg, rgba(36, 46, 58, 0.95), rgba(26, 34, 44, 0.95));
+  box-shadow: var(--shadow-xl), 0 0 0 1px var(--color-info-border);
+  border-color: var(--color-info-border);
+  background: linear-gradient(180deg, var(--color-bg-card-hover) 0%, var(--color-bg-tertiary) 100%);
 }
 
 .ais-section-box:hover::before {
   transform: scaleX(1);
 }
 
+/* Card header - usa .card-header del Design System */
 .ais-card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .ais-card-title-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   min-width: 0;
 }
 
+/* Card icon - usa .card-icon del Design System */
 .ais-card-icon {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
-  background: rgba(125, 211, 252, 0.12);
-  color: #7dd3fc;
+  border-radius: var(--radius-lg);
+  background: var(--color-info-glow);
+  color: var(--color-info);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: var(--text-xl);
   flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(125, 211, 252, 0.15);
+  box-shadow: var(--shadow-brand-sm);
 }
 
 .ais-section-box:hover .ais-card-icon {
-  background: rgba(125, 211, 252, 0.2);
-  color: #ffffff;
+  background: var(--color-info);
+  color: white;
   transform: scale(1.05);
+  transition: all var(--transition-fast);
 }
 
+/* Card arrow */
 .ais-card-arrow {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.3);
-  transition: all 0.25s ease;
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  transition: all var(--transition-base);
   flex-shrink: 0;
 }
 
 .ais-section-box:hover .ais-card-arrow {
-  color: #7dd3fc;
+  color: var(--color-info);
   transform: translate(3px, -3px);
 }
 
+/* Title card */
 .ais-title-card {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
   line-height: 1.3;
-  color: #f4f7fb;
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* Text card */
 .ais-text-card {
   margin: 0;
-  color: #a3b3c2;
-  line-height: 1.5;
-  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  font-size: var(--text-sm);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -176,51 +194,73 @@
 /* Responsive */
 @media (max-width: 900px) {
   .ais-tools-container {
-    padding: 18px 20px 24px;
+    padding: var(--space-4) var(--space-5) var(--space-6);
   }
 
   .ais-tools-title {
-    font-size: 1.6rem;
+    font-size: var(--text-xl);
   }
 
   .ais-tools-grid {
-    gap: 14px;
+    gap: var(--space-3);
   }
 
   .ais-section-box {
     min-height: 140px;
-    padding: 16px 18px;
+    padding: var(--space-4);
   }
 }
 
 @media (max-width: 650px) {
   .ais-tools-container {
-    padding: 16px 16px 20px;
+    padding: var(--space-4) var(--space-4) var(--space-5);
   }
 
   .ais-tools-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
+    gap: var(--space-3);
   }
 
   .ais-tools-title {
-    font-size: 1.4rem;
+    font-size: var(--text-xl);
   }
 
   .ais-tools-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .ais-section-box {
     min-height: 130px;
-    padding: 14px 16px;
+    padding: var(--space-3) var(--space-4);
   }
 
   .ais-card-icon {
     width: 30px;
     height: 30px;
-    font-size: 1rem;
+    font-size: var(--text-lg);
   }
 }
+
+/* ========================================================================
+   VERSIONADO - HERRAMIENTAS AIS
+   ========================================================================
+   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   - Container/background usa tokens
+   - Header -> .page-header pattern
+   - Grid -> .card-grid
+   - Cards -> .card + .card-section
+   - Icons -> .card-icon
+   - Responsive breakpoints consistentes: 900px, 650px
+   - Todos valores hardcoded -> var(--token)
+
+   PRÓXIMOS:
+   [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
+   [ ] Mover .ais-section-box::before a componente reutilizable
+
+   REGLAS:
+   - NO hardcodear colores, spacing, radius, shadows
+   - Usar var(--token) SIEMPRE
+   - Actualizar versionado al modificar
+   ======================================================================== */

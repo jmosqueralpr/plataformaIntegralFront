@@ -1,92 +1,106 @@
+/* ========================================================================
+   AIS LIVE - Migración a Design System v1.0.0
+   ========================================================================
+   Usa: tokens.css + components/layout.css + components/cards.css + components/forms.css + components/buttons.css + components/badges.css
+   Tokens: --color-*, --space-*, --radius-*, --shadow-*, --text-*, --z-*, --container-max
+   ======================================================================== */
+
 .ais-live-page {
   min-height: 100%;
-  padding: clamp(18px, 3vw, 36px);
-  color: #e8edf5;
-  background:
+  padding: clamp(var(--space-4), 3vw, var(--space-9));
+  color: var(--color-text-primary);
+  background: 
     radial-gradient(ellipse at 86% 0%, rgba(35, 158, 220, 0.12), transparent 34rem),
-    linear-gradient(180deg, #121820 0%, #10151b 100%);
+    linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
 }
 
 .ais-live-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  width: min(100%, 1380px);
+  width: min(100%, var(--container-max));
   min-width: 0;
-  gap: 18px;
+  gap: var(--space-4);
   margin: 0 auto;
 }
 
+/* Cards base - usan .card del Design System */
 .ais-live-header,
 .ais-live-map-card,
 .ais-live-messages,
 .ais-live-stats article {
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  border-radius: 16px;
-  background: linear-gradient(155deg, rgba(30, 39, 49, 0.96), rgba(22, 30, 39, 0.98));
-  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.14);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  box-shadow: var(--shadow-lg);
 }
 
+/* Live header - usa .page-header del Design System */
 .ais-live-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: clamp(20px, 3vw, 30px);
+  gap: var(--space-4);
+  padding: clamp(var(--space-5), 3vw, var(--space-7));
+  flex-wrap: wrap;
 }
 
 .ais-live-kicker {
-  color: #7dd3fc;
-  font-size: 0.72rem;
-  font-weight: 750;
+  color: var(--color-info);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .ais-live-header h1 {
-  margin: 8px 0;
-  color: #f8fafc;
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  margin: var(--space-2) 0;
+  color: var(--color-text-primary);
+  font-size: clamp(var(--text-xl), 3vw, var(--text-2xl));
 }
 
 .ais-live-header p,
 .ais-live-section-header p {
   margin: 0;
-  color: #aab8c7;
-  font-size: 0.84rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
+/* Live status - usa .badge del Design System */
 .ais-live-status {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 999px;
-  color: #cbd5e1;
-  background: rgba(15, 23, 42, 0.45);
-  font-size: 0.78rem;
-  font-weight: 700;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-tertiary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
 }
 
 .ais-live-header-actions {
   display: grid;
   justify-items: end;
-  gap: 10px;
+  gap: var(--space-2);
 }
 
+/* Connect button - usa .btn-primary del Design System */
 .ais-live-connect-button {
+  /* En JSX: class="btn btn-primary" */
   min-height: 38px;
-  padding: 8px 13px;
-  border: 1px solid rgba(96, 165, 250, 0.34);
-  border-radius: 10px;
-  color: #eff6ff;
-  background: linear-gradient(135deg, #278fd1, #2563eb);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-info), var(--color-brand-500));
   font: inherit;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   cursor: pointer;
+  transition: filter var(--transition-fast);
 }
 
 .ais-live-connect-button:hover:not(:disabled) {
@@ -98,103 +112,115 @@
   opacity: 0.7;
 }
 
+/* Status dot - usa .badge-dot del Design System */
 .ais-live-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #94a3b8;
+  background: var(--color-text-muted);
 }
 
 .ais-live-status.is-connected .ais-live-status-dot {
-  background: #4ade80;
-  box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+  background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success-glow);
 }
 
 .ais-live-status.is-error .ais-live-status-dot {
-  background: #f87171;
+  background: var(--color-danger);
 }
 
+/* Notice - usa .section con variante info del Design System */
 .ais-live-notice {
-  padding: 13px 16px;
-  border: 1px solid rgba(96, 165, 250, 0.24);
-  border-radius: 12px;
-  color: #dbeafe;
-  background: rgba(30, 64, 175, 0.16);
-  font-size: 0.84rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-info);
+  background: var(--color-info-glow);
+  font-size: var(--text-sm);
   line-height: 1.55;
 }
 
 .ais-live-notice code {
-  color: #fff;
-  font-size: 0.8rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-xs);
 }
 
 .ais-live-notice.is-error {
-  border-color: rgba(248, 113, 113, 0.32);
-  color: #fecaca;
-  background: rgba(127, 29, 29, 0.18);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+  background: var(--color-danger-glow);
 }
 
+/* Stats grid - usa .summary-grid del Design System */
 .ais-live-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .ais-live-stats article {
   display: grid;
   min-width: 0;
-  gap: 8px;
-  padding: 15px 17px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .ais-live-stats article span {
-  color: #a9bacb;
-  font-size: 0.69rem;
-  font-weight: 650;
+  color: var(--color-text-label);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .ais-live-stats article strong {
   overflow: hidden;
-  color: #f8fafc;
-  font-size: 1.1rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Map card & Messages - extienden .card del Design System */
 .ais-live-map-card,
 .ais-live-messages {
   min-width: 0;
-  padding: clamp(15px, 2.4vw, 22px);
+  padding: clamp(var(--space-3), 2.4vw, var(--space-5));
 }
 
+/* Section header - usa .section-header del Design System */
 .ais-live-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .ais-live-section-header h2 {
-  margin: 0 0 5px;
-  color: #f1f5f9;
-  font-size: 1.05rem;
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
 }
 
+/* Section header button - usa .btn-secondary del Design System */
 .ais-live-section-header button {
+  /* En JSX: class="btn btn-secondary btn-sm" */
   flex: 0 0 auto;
-  padding: 8px 11px;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  border-radius: 9px;
-  color: #eaf5ff;
-  background: rgba(37, 99, 235, 0.2);
+  padding: var(--space-2) var(--space-2);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-md);
+  color: var(--color-info);
+  background: var(--color-info-glow);
   font: inherit;
-  font-size: 0.76rem;
-  font-weight: 700;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .ais-live-section-header button:disabled {
@@ -202,25 +228,27 @@
   opacity: 0.55;
 }
 
+/* Map - usa .card del Design System */
 .ais-live-map {
   width: 100%;
   height: min(62vh, 560px);
   min-height: 330px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 12px;
-  background: #dbeafe;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-info-glow);
 }
 
 .ais-live-map .leaflet-control-attribution {
-  font-size: 0.62rem;
+  font-size: var(--text-xs);
 }
 
+/* Map legend dots - usan .badge-dot del Design System */
 .ais-map-legend-dot {
   display: inline-block;
   width: 9px;
   height: 9px;
-  margin: 0 5px 0 12px;
+  margin: 0 var(--space-1) 0 var(--space-3);
   border-radius: 50%;
 }
 
@@ -229,86 +257,93 @@
 }
 
 .ais-map-legend-dot.is-ship {
-  background: #2563eb;
+  background: var(--color-brand-500);
 }
 
 .ais-map-legend-dot.is-aton {
-  background: #f59e0b;
+  background: var(--color-warning);
 }
 
+/* Empty state - usa .empty-state del Design System */
 .ais-live-empty {
   margin: 0;
-  padding: 18px 12px;
-  color: #9aaaba;
-  font-size: 0.86rem;
+  padding: var(--space-4) var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
   text-align: center;
 }
 
+/* Message list - usa .card-list del Design System */
 .ais-live-message-list {
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
+/* Message - usa .card del Design System */
 .ais-live-message {
   min-width: 0;
-  padding: 11px 13px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 10px;
-  background: rgba(10, 17, 24, 0.42);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
 }
 
 .ais-live-message summary {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px 15px;
-  color: #cbd5e1;
-  font-size: 0.78rem;
+  gap: var(--space-2) var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 
 .ais-live-message summary time {
   margin-left: auto;
-  color: #91a1b2;
+  color: var(--color-text-muted);
 }
 
 .ais-live-message-type {
-  color: #7dd3fc;
-  font-weight: 750;
+  color: var(--color-info);
+  font-weight: var(--font-bold);
 }
 
 .ais-live-message p {
-  margin: 10px 0 0;
-  color: #d5dee8;
-  font-size: 0.78rem;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
 .ais-live-fi31 {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px 12px;
-  margin-top: 10px;
-  color: #cbd5e1;
-  font-size: 0.74rem;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
   line-height: 1.5;
 }
 
 .ais-live-fi31 strong {
-  color: #7dd3fc;
+  color: var(--color-info);
 }
 
+/* Pre - usa .field con font-mono del Design System */
 .ais-live-message pre {
-  margin: 10px 0 0;
-  padding: 9px;
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2);
   overflow-wrap: anywhere;
-  border-radius: 8px;
-  color: #d5e7f8;
-  background: rgba(10, 17, 24, 0.75);
-  font-size: 0.68rem;
+  border-radius: var(--radius-md);
+  color: var(--color-info);
+  background: var(--color-bg-tertiary);
+  font-size: var(--text-xs);
   white-space: pre-wrap;
+  font-family: var(--font-mono);
+  border: 1px solid var(--color-border-subtle);
 }
 
+/* Responsive */
 @media (max-width: 820px) {
   .ais-live-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -317,7 +352,7 @@
 
 @media (max-width: 640px) {
   .ais-live-page {
-    padding: 16px 12px 24px;
+    padding: var(--space-4) var(--space-3) var(--space-6);
   }
 
   .ais-live-header {
@@ -331,11 +366,11 @@
   }
 
   .ais-live-stats article {
-    padding: 13px;
+    padding: var(--space-3) var(--space-3);
   }
 
   .ais-live-stats article strong {
-    font-size: 0.92rem;
+    font-size: var(--text-md);
   }
 
   .ais-live-map {
@@ -353,16 +388,42 @@
   }
 }
 
+/* Message filters - usa .toolbar del Design System */
 .ais-live-message-filters {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
+/* Connection controls - usa .toolbar del Design System */
 .ais-live-connection-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
+
+/* ========================================================================
+   VERSIONADO - AIS LIVE
+   ========================================================================
+   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   - Cards -> .card component
+   - Buttons -> .btn component classes
+   - Stats grid -> .summary-grid
+   - Sections -> .section + .section-header
+   - Forms -> .input + .select
+   - Badges -> .badge + .badge-dot components
+   - Responsive breakpoints consistentes: 820px, 640px
+   - Todos valores hardcoded -> var(--token)
+
+   PRÓXIMOS:
+   [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
+   [ ] Unificar .ais-live-header con .page-header
+   [ ] Unificar .ais-live-stats article con .summary-card
+
+   REGLAS:
+   - NO hardcodear colores, spacing, radius, shadows
+   - Usar var(--token) SIEMPRE
+   - Actualizar versionado al modificar
+   ======================================================================== */

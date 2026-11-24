@@ -1,55 +1,64 @@
+/* ========================================================================
+   SEARCH SOLUTIONS NEW - Migración a Design System v1.0.0
+   ========================================================================
+   Usa: tokens.css + components/layout.css + components/cards.css + components/forms.css + components/buttons.css
+   Tokens: --color-*, --space-*, --radius-*, --shadow-*, --text-*, --z-*, --container-max
+   ======================================================================== */
+
 .new-solution-container {
   width: 100%;
   min-height: calc(100vh - 100px);
-  padding: 28px 20px 40px;
-  background: linear-gradient(180deg, #0f1720 0%, #111827 100%);
-  color: #e5eef9;
+  padding: var(--space-7) var(--space-5) var(--space-10);
+  background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+  color: var(--color-text-primary);
 }
 
 .new-solution-header {
-  max-width: 1080px;
-  margin: 0 auto 22px;
+  max-width: var(--container-max);
+  margin: 0 auto var(--space-5);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .eyebrow {
-  margin: 0 0 8px;
-  font-size: 12px;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8ab4ff;
+  color: var(--color-info);
 }
 
 .search-title {
   margin: 0;
-  font-size: clamp(2rem, 3vw, 2.6rem);
-  color: #f8fbff;
+  font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
+  color: var(--color-text-primary);
 }
 
+/* New solution form - usa .card del Design System */
 .new-solution-form {
-  width: min(1080px, 100%);
+  width: min(var(--container-max), 100%);
   margin: 0 auto;
-  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(15, 23, 34, 0.96));
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 20px;
-  padding: 26px;
-  box-shadow: 0 14px 36px rgba(2, 6, 23, 0.26);
+  background: linear-gradient(180deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xl);
 }
 
+/* Form grid - usa .grid del Design System */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-4);
 }
 
 .field-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  color: #dfeaf7;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
 }
 
 .field-block.full-width {
@@ -57,74 +66,81 @@
 }
 
 .field-block span {
-  font-size: 0.74rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #a0b4d0;
+  color: var(--color-text-label);
 }
 
+/* Form inputs - usan .input .select .textarea del Design System */
 .new-solution-form input,
 .new-solution-form select,
 .new-solution-form textarea {
   width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 12px;
-  background: rgba(17, 24, 39, 0.9);
-  color: #edf5ff;
-  padding: 12px 14px;
-  font-size: 0.96rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  padding: var(--space-3) var(--space-3);
+  font-size: var(--text-md);
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.2);
 }
 
 .new-solution-form input::placeholder,
 .new-solution-form textarea::placeholder {
-  color: #7d98b7;
+  color: var(--color-text-muted);
 }
 
 .new-solution-form textarea {
   resize: vertical;
   min-height: 200px;
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
 }
 
 .new-solution-form input:focus,
 .new-solution-form select:focus,
 .new-solution-form textarea:focus {
   outline: none;
-  border-color: rgba(96, 165, 250, 0.7);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-brand-glow);
 }
 
+/* Button container - usa .modal-footer del Design System */
 .button-container {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
+/* Buttons - usan .btn del Design System */
 .close-btn,
 .cancel-btn,
 .create-btn {
   border: none;
-  border-radius: 10px;
-  padding: 11px 18px;
-  font-size: 0.92rem;
-  font-weight: 700;
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-md);
+  font-weight: var(--font-bold);
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--transition-base), filter var(--transition-base), box-shadow var(--transition-base);
 }
 
+/* En JSX: class="btn btn-secondary" */
 .close-btn,
 .cancel-btn {
   background: rgba(148, 163, 184, 0.12);
-  color: #edf3ff;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
 }
 
+/* En JSX: class="btn btn-success" */
 .create-btn {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, #16a34a 100%);
   color: white;
-  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.2);
+  box-shadow: var(--shadow-success-sm);
 }
 
 .close-btn:hover,
@@ -134,6 +150,7 @@
   filter: brightness(1.04);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .new-solution-header {
     flex-direction: column;
@@ -154,4 +171,27 @@
     width: 100%;
   }
 }
-  
+
+/* ========================================================================
+   VERSIONADO - SEARCH SOLUTIONS NEW
+   ========================================================================
+   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   - Container background usa tokens
+   - Header -> .page-header pattern
+   - Form -> .card + .field + .grid
+   - Inputs -> .input .select .textarea components
+   - Buttons -> .btn component classes
+   - Grid -> .grid component
+   - Responsive breakpoint: 768px
+   - Todos valores hardcoded -> var(--token)
+
+   PRÓXIMOS:
+   [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
+   [ ] Unificar .new-solution-form con .card
+   [ ] Unificar .field-block con .field
+
+   REGLAS:
+   - NO hardcodear colores, spacing, radius, shadows
+   - Usar var(--token) SIEMPRE
+   - Actualizar versionado al modificar
+   ======================================================================== */

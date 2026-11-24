@@ -1,25 +1,33 @@
+/* ========================================================================
+   SIDEBAR - Migración a Design System v1.0.0
+   ========================================================================
+   Usa: tokens.css + components/layout.css + components/badges.css
+   Tokens: --sidebar-width, --header-height, --color-*, --space-*, --radius-*, --shadow-*, --z-sidebar
+   ======================================================================== */
+
 .sidebar {
   position: fixed;
-  top: 82px;
+  top: var(--header-height);
   left: 0;
   bottom: 55px;
-  width: 240px;
-  padding: 18px 14px 20px;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.90));
-  border-right: 1px solid rgba(148, 163, 184, 0.14);
-  box-shadow: 10px 0 30px rgba(15, 23, 42, 0.18);
-  z-index: 15;
+  width: var(--sidebar-width);
+  padding: var(--space-4) var(--space-3) var(--space-5);
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+  border-right: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-sidebar);
+  overflow-y: auto;
 }
 
 .sidebar-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 12px 14px;
-  margin-bottom: 16px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(148, 163, 184, 0.05));
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(135deg, var(--color-info-glow), var(--color-brand-glow));
+  border: 1px solid var(--color-info-border);
 }
 
 .sidebar-avatar {
@@ -27,43 +35,45 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(147, 197, 253, 0.65);
-  background: rgba(37, 99, 235, 0.2);
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+  border: 2px solid var(--color-info);
+  background: var(--color-brand-glow);
+  box-shadow: var(--shadow-brand-sm);
 }
 
 .sidebar-user-meta {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  gap: 2px;
+  gap: var(--space-1);
 }
 
 .sidebar-user-label {
-  font-size: 0.66rem;
+  font-size: var(--text-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: var(--color-info);
 }
 
 .sidebar-user-meta strong {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #f8fafc;
-  font-size: 0.92rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
 }
 
+/* Role badge - usa .badge-success del Design System */
 .sidebar-role-badge {
   display: inline-flex;
   align-self: flex-start;
-  margin-top: 2px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.12);
-  color: #86efac;
-  border: 1px solid rgba(134, 239, 172, 0.18);
-  font-size: 0.62rem;
+  margin-top: var(--space-1);
+  /* Clases compuestas en JSX: class="badge badge-success badge-sm" */
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-success-glow);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+  font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -71,47 +81,51 @@
 .sidebar-admin-action {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin: -5px 2px 14px;
-  padding: 10px 11px;
-  border: 1px solid rgba(125, 211, 252, 0.2);
-  border-radius: 12px;
-  color: #dbeafe;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.14), rgba(59, 130, 246, 0.08));
-  font-size: 0.82rem;
-  font-weight: 700;
+  gap: var(--space-2);
+  margin: calc(var(--space-1) * -1) var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-info);
+  background: linear-gradient(135deg, var(--color-info-glow), var(--color-brand-glow));
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   text-decoration: none;
-  transition: background 160ms ease, border-color 160ms ease;
+  transition: 
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .sidebar-admin-action:hover,
 .sidebar-admin-action.active {
-  border-color: rgba(125, 211, 252, 0.42);
-  color: #fff;
-  background: rgba(14, 165, 233, 0.2);
+  border-color: var(--color-info);
+  color: var(--color-text-primary);
+  background: var(--color-info-glow);
 }
 
 .sidebar-admin-icon {
   flex: 0 0 auto;
-  color: #7dd3fc;
+  color: var(--color-info);
 }
 
+/* Admin badge - usa .badge-primary del Design System */
 .sidebar-admin-badge {
   margin-left: auto;
-  padding: 3px 6px;
-  border-radius: 999px;
-  color: #bae6fd;
-  background: rgba(14, 165, 233, 0.16);
-  font-size: 0.59rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  /* Clases compuestas en JSX: class="badge badge-primary badge-sm" */
+  color: var(--color-info);
+  background: var(--color-info-glow);
+  font-size: var(--text-xs);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .sidebar-section-title {
-  padding: 2px 8px 10px;
-  color: #7dd3fc;
-  font-size: 0.68rem;
-  font-weight: 700;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  color: var(--color-info);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -119,19 +133,19 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  color: #dfe7f3;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  font-weight: var(--font-semibold);
+  transition: all var(--transition-base);
   border: 1px solid transparent;
 }
 
@@ -139,32 +153,34 @@
   width: 20px;
   display: inline-flex;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: var(--text-lg);
   opacity: 0.9;
 }
 
 .sidebar-link:hover,
 .sidebar-link.active {
-  background: rgba(59, 130, 246, 0.12);
-  border-color: rgba(96, 165, 250, 0.24);
-  color: #fff;
+  background: var(--color-info-glow);
+  border-color: var(--color-info-border);
+  color: var(--color-text-primary);
   transform: translateX(2px);
-  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.08);
+  box-shadow: inset 0 0 0 1px var(--color-info-border);
 }
 
+/* Responsive */
 @media (max-width: 900px) {
   .sidebar {
     position: static;
     width: 100%;
     bottom: auto;
     border-right: none;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    border-bottom: 1px solid var(--color-border-subtle);
     box-shadow: none;
   }
 
   .sidebar-nav {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-2);
   }
 }
 
@@ -173,3 +189,29 @@
     display: none;
   }
 }
+
+/* ========================================================================
+   VERSIONADO - SIDEBAR
+   ========================================================================
+   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   - Position top: var(--header-height)
+   - Width: var(--sidebar-width)
+   - Colors: var(--color-*)
+   - Spacing: var(--space-*)
+   - Radius: var(--radius-*)
+   - Shadows: var(--shadow-*)
+   - Z-index: var(--z-sidebar)
+   - Transitions: var(--transition-*)
+   - .sidebar-role-badge -> usar .badge.badge-success en JSX
+   - .sidebar-admin-badge -> usar .badge.badge-primary en JSX
+
+   PRÓXIMOS:
+   [ ] Eliminar estilos duplicados de badges y usar componentes base
+   [ ] Agregar soporte para collapsed sidebar
+   [ ] Soporte para tooltips en modo collapsed
+
+   REGLAS:
+   - NO hardcodear colores, spacing, radius, shadows
+   - Usar var(--token) SIEMPRE
+   - Actualizar versionado al modificar
+   ======================================================================== */

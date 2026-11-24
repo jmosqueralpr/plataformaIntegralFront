@@ -1,72 +1,82 @@
+/* ========================================================================
+   GPS CONVERTER - Migración a Design System v1.0.0
+   ========================================================================
+   Usa: tokens.css + components/layout.css + components/cards.css + components/forms.css + components/buttons.css + components/badges.css
+   Tokens: --color-*, --space-*, --radius-*, --shadow-*, --text-*, --z-*, --container-max
+   ======================================================================== */
+
 .gps-converter-page {
   min-height: 100%;
-  padding: clamp(20px, 3vw, 36px);
-  color: #e8edf5;
-  background:
+  padding: clamp(var(--space-5), 3vw, var(--space-9));
+  color: var(--color-text-primary);
+  background: 
     radial-gradient(ellipse at 87% 2%, rgba(35, 158, 220, 0.12), transparent 34rem),
-    linear-gradient(180deg, #121820 0%, #10151b 100%);
+    linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
 }
 
 .gps-converter-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  gap: 20px;
-  width: min(100%, 1160px);
+  gap: var(--space-5);
+  width: min(100%, var(--container-max));
   min-width: 0;
   margin: 0 auto;
 }
 
+/* Cards base - usan .card del Design System */
 .gps-converter-hero,
 .gps-converter-card,
 .gps-format-card,
 .gps-other-format-card,
 .gps-converter-empty {
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  border-radius: 18px;
-  background: linear-gradient(155deg, rgba(30, 39, 49, 0.96), rgba(22, 30, 39, 0.98));
-  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.14);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  box-shadow: var(--shadow-lg);
 }
 
+/* Hero - usa .card + .section del Design System */
 .gps-converter-hero {
-  padding: clamp(24px, 4vw, 38px);
-  background:
-    radial-gradient(circle at 90% 50%, rgba(14, 165, 233, 0.16), transparent 20rem),
-    linear-gradient(135deg, rgba(27, 38, 49, 0.98), rgba(18, 27, 36, 0.98));
+  padding: clamp(var(--space-6), 4vw, var(--space-9));
+  background: 
+    radial-gradient(circle at 90% 50%, var(--color-info-glow), transparent 20rem),
+    linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
 }
 
 .gps-converter-kicker {
-  color: #7dd3fc;
-  font-size: 0.72rem;
-  font-weight: 750;
+  color: var(--color-info);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .gps-converter-hero h1 {
-  margin: 10px 0;
-  color: #f8fafc;
-  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  margin: var(--space-2) 0;
+  color: var(--color-text-primary);
+  font-size: clamp(var(--text-xl), 3.5vw, var(--text-2xl));
   line-height: 1.15;
 }
 
 .gps-converter-hero p {
   max-width: 780px;
   margin: 0;
-  color: #adbac8;
-  font-size: 0.94rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
   line-height: 1.6;
 }
 
+/* Converter card - extiende .card del Design System */
 .gps-converter-card {
-  padding: clamp(18px, 2.8vw, 27px);
+  padding: clamp(var(--space-4), 2.8vw, var(--space-6));
 }
 
 .gps-converter-section-heading {
   display: flex;
   align-items: center;
-  gap: 13px;
-  margin-bottom: 22px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .gps-converter-icon {
@@ -75,157 +85,171 @@
   height: 44px;
   flex: 0 0 44px;
   place-items: center;
-  border: 1px solid rgba(125, 211, 252, 0.2);
-  border-radius: 13px;
-  color: #7dd3fc;
-  background: rgba(14, 165, 233, 0.1);
-  font-size: 1.15rem;
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-xl);
+  color: var(--color-info);
+  background: var(--color-info-glow);
+  font-size: var(--text-xl);
 }
 
 .gps-converter-section-heading h2 {
-  margin: 0 0 5px;
-  color: #f1f5f9;
-  font-size: 1.04rem;
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
 }
 
 .gps-converter-section-heading p {
   margin: 0;
-  color: #9bacbe;
-  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
+/* Form - usa .field + .input del Design System */
 .gps-converter-form {
   display: grid;
-  gap: 18px;
+  gap: var(--space-4);
 }
 
 .gps-coordinate-inputs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .gps-coordinate-field {
   display: grid;
   min-width: 0;
-  gap: 8px;
-  color: #dce5ef;
-  font-size: 0.82rem;
-  font-weight: 700;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
 }
 
 .gps-coordinate-field input {
   width: 100%;
   min-height: 48px;
   margin: 0;
-  padding: 0 13px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 11px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
   outline: none;
-  color: #f1f5f9;
-  background: rgba(10, 17, 26, 0.66);
+  color: var(--color-text-primary);
+  background: var(--color-bg-tertiary);
   font: inherit;
-  font-size: 0.92rem;
-  font-weight: 500;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  font-size: var(--text-md);
+  font-weight: var(--font-medium);
+  transition: 
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .gps-coordinate-field input::placeholder {
-  color: #72849a;
+  color: var(--color-text-muted);
   opacity: 1;
 }
 
 .gps-coordinate-field input:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-brand-glow);
 }
 
 .gps-coordinate-field small {
-  color: #8fa0b3;
-  font-size: 0.73rem;
-  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
   line-height: 1.5;
 }
 
 .gps-format-hint {
-  margin: -2px 0 0;
-  color: #9aaaba;
-  font-size: 0.79rem;
+  margin: calc(var(--space-1) * -1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
   line-height: 1.6;
 }
 
+/* Error - usa .field-error del Design System */
 .gps-converter-error {
   display: flex;
   align-items: flex-start;
-  gap: 9px;
-  padding: 12px 14px;
-  border: 1px solid rgba(248, 113, 113, 0.28);
-  border-radius: 11px;
-  color: #fecaca;
-  background: rgba(127, 29, 29, 0.16);
-  font-size: 0.82rem;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
+  border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-danger);
+  background: var(--color-danger-glow);
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
 .gps-converter-error svg {
   flex: 0 0 auto;
-  margin-top: 1px;
+  margin-top: var(--space-1);
 }
 
+/* Actions - usa .form-actions del Design System */
 .gps-converter-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-2);
 }
 
+/* Buttons - usan .btn del Design System */
 .gps-convert-button,
 .gps-clear-button {
+  /* En JSX: class="btn btn-primary" y class="btn btn-secondary" */
   display: inline-flex;
   min-height: 43px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0 16px;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
   border: 1px solid transparent;
-  border-radius: 10px;
-  color: #f8fafc;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
   font: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   cursor: pointer;
-  transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: 
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .gps-convert-button {
-  background: linear-gradient(110deg, #167fc0, #2563eb);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.16);
+  background: linear-gradient(110deg, var(--color-info), var(--color-brand-500));
+  box-shadow: var(--shadow-brand-sm);
+  border: none;
+  color: white;
 }
 
 .gps-convert-button:hover {
   transform: translateY(-1px);
-  background: linear-gradient(110deg, #218fd0, #3475f5);
+  background: linear-gradient(110deg, var(--color-brand-500), var(--color-brand-400));
 }
 
 .gps-clear-button {
-  border-color: rgba(148, 163, 184, 0.2);
-  color: #cbd5e1;
-  background: rgba(148, 163, 184, 0.06);
+  border-color: var(--color-border-default);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-tertiary);
 }
 
 .gps-clear-button:hover {
-  border-color: rgba(148, 163, 184, 0.35);
-  background: rgba(148, 163, 184, 0.11);
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-tertiary);
 }
 
 .gps-convert-button:focus-visible,
 .gps-clear-button:focus-visible {
-  outline: 2px solid #7dd3fc;
+  outline: 2px solid var(--color-info);
   outline-offset: 3px;
 }
 
+/* Results */
 .gps-converter-results {
   display: grid;
-  gap: 16px;
+  gap: var(--space-4);
   min-width: 0;
 }
 
@@ -233,86 +257,94 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 14px;
-  padding: 2px 2px 0;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-1) 0;
 }
 
 .gps-results-heading h2 {
-  margin: 6px 0 0;
-  color: #f1f5f9;
-  font-size: 1.3rem;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-xl);
 }
 
 .gps-results-reference {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  color: #9cadbf;
-  font-size: 0.76rem;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
   white-space: nowrap;
 }
 
+/* Format grids - usan .card-grid del Design System */
 .gps-device-formats,
 .gps-other-formats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: var(--space-3);
 }
 
+/* Format cards - usan .card del Design System */
 .gps-format-card {
   min-width: 0;
-  padding: 20px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.1), transparent 16rem),
-    linear-gradient(155deg, rgba(30, 39, 49, 0.96), rgba(22, 30, 39, 0.98));
+  padding: var(--space-5);
+  background: 
+    radial-gradient(circle at 100% 0%, var(--color-info-glow), transparent 16rem),
+    linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
 }
 
 .gps-format-card-kanaton {
-  background:
+  background: 
     radial-gradient(circle at 100% 0%, rgba(45, 212, 191, 0.09), transparent 16rem),
-    linear-gradient(155deg, rgba(30, 39, 49, 0.96), rgba(22, 30, 39, 0.98));
+    linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
 }
 
+/* Format card heading */
 .gps-format-card-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .gps-format-card-heading > svg {
-  color: #7dd3fc;
+  color: var(--color-info);
 }
 
 .gps-format-card-kanaton .gps-format-card-heading > svg {
   color: #5eead4;
 }
 
+/* Format tag - usa .badge del Design System */
 .gps-format-tag {
-  color: #8da3ba;
-  font-size: 0.66rem;
-  font-weight: 700;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .gps-format-card h3 {
-  margin: 5px 0 0;
-  color: #f1f5f9;
-  font-size: 1.05rem;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
 }
 
 .gps-format-card > p,
 .gps-other-format-card > p {
-  margin: 8px 0 15px;
-  color: #9bacbe;
-  font-size: 0.78rem;
+  margin: var(--space-2) 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
+/* Format values - usa .grid del Design System */
 .gps-format-values {
   display: grid;
-  gap: 9px;
+  gap: var(--space-2);
   margin: 0;
 }
 
@@ -320,68 +352,72 @@
   display: grid;
   grid-template-columns: 66px minmax(0, 1fr);
   align-items: baseline;
-  gap: 10px;
-  padding-top: 9px;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .gps-format-values dt {
-  color: #90a2b6;
-  font-size: 0.72rem;
+  color: var(--color-text-label);
+  font-size: var(--text-xs);
 }
 
 .gps-format-values dd {
   min-width: 0;
   margin: 0;
-  color: #e5f2ff;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.86rem;
-  font-weight: 700;
+  color: var(--color-info);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   overflow-wrap: anywhere;
 }
 
 .gps-format-card-kanaton .gps-format-values dd {
-  color: #d8fff8;
+  color: #5eead4;
 }
 
+/* Map card - usa .card del Design System */
 .gps-map-card {
   display: grid;
-  gap: 12px;
-  padding: clamp(15px, 2.2vw, 21px);
-  border: 1px solid rgba(148, 163, 184, 0.13);
-  border-radius: 17px;
-  background: linear-gradient(155deg, rgba(26, 36, 47, 0.95), rgba(18, 27, 37, 0.98));
+  gap: var(--space-3);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-5));
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  box-shadow: var(--shadow-lg);
 }
 
 .gps-map-heading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: space-between,
+  gap: var(--space-3);
 }
 
 .gps-map-heading h3 {
-  margin: 4px 0 0;
-  color: #edf4fb;
-  font-size: 0.98rem;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
 }
 
 .gps-map-heading a {
-  color: #93c5fd;
-  font-size: 0.73rem;
+  color: var(--color-info);
+  font-size: var(--text-xs);
   text-decoration: none;
+  transition: text-decoration var(--transition-fast);
 }
 
 .gps-map-heading a:hover {
   text-decoration: underline;
 }
 
+/* Map frame */
 .gps-map-frame {
   height: 245px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 12px;
-  background: #dbeafe;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-info-glow);
 }
 
 .gps-map-frame iframe {
@@ -393,110 +429,116 @@
 
 .gps-map-disclosure {
   margin: 0;
-  color: #8fa0b3;
-  font-size: 0.71rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
   line-height: 1.5;
 }
 
+/* Other formats */
 .gps-other-formats {
   display: grid;
-  gap: 12px;
-  padding: clamp(16px, 2.5vw, 23px);
-  border: 1px solid rgba(148, 163, 184, 0.13);
-  border-radius: 17px;
-  background: rgba(19, 28, 38, 0.7);
+  gap: var(--space-3);
+  padding: clamp(var(--space-4), 2.5vw, var(--space-5));
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-tertiary);
 }
 
 .gps-other-formats-heading h3 {
   margin: 0;
-  color: #edf4fb;
-  font-size: 1rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
 }
 
 .gps-other-formats-heading p {
-  margin: 5px 0 0;
-  color: #92a3b6;
-  font-size: 0.78rem;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
+/* Other format cards */
 .gps-other-format-card {
   min-width: 0;
-  padding: 16px;
-  border-radius: 13px;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
   box-shadow: none;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .gps-other-format-card h4 {
   margin: 0;
-  color: #e8f1fb;
-  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
 }
 
 .gps-other-format-card > p {
   min-height: 2.4em;
-  margin: 6px 0 12px;
-  font-size: 0.72rem;
+  margin: var(--space-1) 0 var(--space-3);
+  font-size: var(--text-xs);
 }
 
 .gps-other-format-card .gps-format-values > div {
   grid-template-columns: 55px minmax(0, 1fr);
-  gap: 7px;
-  padding-top: 7px;
+  gap: var(--space-1);
+  padding-top: var(--space-1);
 }
 
 .gps-other-format-card .gps-format-values dd {
-  font-size: 0.76rem;
+  font-size: var(--text-xs);
 }
 
+/* Empty state - usa .empty-state del Design System */
 .gps-converter-empty {
   display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 17px 19px;
-  color: #9bacbe;
-  font-size: 0.82rem;
-  line-height: 1.5;
+  align-items: center,
+  gap: var(--space-2).
+  padding: var(--space-4) var(--space-4).
+  color: var(--color-text-muted).
+  font-size: var(--text-sm).
+  line-height: 1.5.
 }
 
 .gps-converter-empty svg {
-  flex: 0 0 auto;
-  color: #7dd3fc;
+  flex: 0 0 auto.
+  color: var(--color-info).
 }
 
+/* Responsive */
 @media (max-width: 760px) {
   .gps-converter-page {
-    padding: 18px 14px 28px;
+    padding: var(--space-4) var(--space-3) var(--space-7).
   }
 
   .gps-coordinate-inputs,
   .gps-device-formats,
   .gps-other-formats-grid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr).
   }
 
   .gps-results-heading {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: flex-start.
+    flex-direction: column.
   }
 }
 
 @media (max-width: 480px) {
   .gps-converter-actions {
-    flex-direction: column;
+    flex-direction: column.
   }
 
   .gps-convert-button,
   .gps-clear-button {
-    width: 100%;
+    width: 100%.
   }
 
   .gps-format-card,
   .gps-other-format-card {
-    padding: 15px;
+    padding: var(--space-3).
   }
 
   .gps-map-frame {
-    height: 215px;
+    height: 215px.
   }
 }
 
@@ -504,6 +546,29 @@
   .gps-coordinate-field input,
   .gps-convert-button,
   .gps-clear-button {
-    transition: none;
+    transition: none.
   }
 }
+
+/* ========================================================================
+   VERSIONADO - GPS CONVERTER
+   ========================================================================
+   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   - Cards -> .card component
+   - Buttons -> .btn component classes
+   - Forms -> .field + .input components
+   - Grid -> .grid + .card-grid components
+   - Error -> .field-error component
+   - Responsive breakpoints consistentes: 760px, 480px
+   - Todos valores hardcoded -> var(--token)
+
+   PRÓXIMOS:
+   [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
+   [ ] Unificar .gps-format-card con .card
+   [ ] Mover .gps-coordinate-field a components/forms.css
+
+   REGLAS:
+   - NO hardcodear colores, spacing, radius, shadows
+   - Usar var(--token) SIEMPRE
+   - Actualizar versionado al modificar
+   ======================================================================== */

@@ -513,7 +513,7 @@ ws["!cols"] = [
           <option value="vencida">Vencidas</option>
         </select>
 
-        <button className="new-item-btn" onClick={() => { setExportType('todos'); setExportDateFrom(''); setExportDateTo(''); setShowExportDialog(true); }} style={{ marginLeft: 12 }}>
+        <button className="secondary-btn" onClick={() => { setExportType('todos'); setExportDateFrom(''); setExportDateTo(''); setShowExportDialog(true); }}>
           <FiFile size={16} /> Exportar a Excel
         </button>
       </div>
@@ -536,152 +536,163 @@ ws["!cols"] = [
       {selectedItem && (
         <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && handleCloseModal()}>
           <div className="expiration-modal-content">
-            <button type="button" className="modal-close" onClick={handleCloseModal} aria-label="Cerrar">×</button>
-
-            <div className="modal-topbar">
-              <span className="modal-tag">{selectedItem._id ? 'Editar vencimiento' : 'Nuevo vencimiento'}</span>
+            <div className="expiration-modal-header">
+              <div className="modal-header-content">
+                <div className="modal-tag">{selectedItem._id ? 'Editar' : 'Nuevo'}</div>
+                <h3 className="modal-title">{selectedItem.title}</h3>
+              </div>
+              <button type="button" className="modal-close" onClick={handleCloseModal} aria-label="Cerrar">×</button>
             </div>
 
-            <label className="field">
-              <span>Título</span>
-              <input
-                type="text"
-                value={selectedItem.title || ''}
-                onChange={(e) => setSelectedItem({ ...selectedItem, title: e.target.value })}
-                placeholder="Ej: Licencia Adobe Creative Cloud"
-              />
-            </label>
-
-            <label className="field">
-              <span>Descripción</span>
-              <textarea
-                value={selectedItem.description || ''}
-                onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
-                placeholder="Información útil, responsable, detalle extra..."
-              />
-            </label>
-
-            <div className="field-row two-columns">
+            <div className="expiration-modal-body">
               <label className="field">
-                <span>Fecha</span>
+                <span className="field-label">Título</span>
                 <input
-                  type="date"
-                  value={selectedItem.expirationDate || ''}
-                  onChange={(e) => setSelectedItem({ ...selectedItem, expirationDate: e.target.value })}
-                />
-              </label>
-
-              <label className="field">
-                <span>Hora</span>
-                <input
-                  type="time"
-                  value={selectedItem.expirationTime || ''}
-                  onChange={(e) => setSelectedItem({ ...selectedItem, expirationTime: e.target.value })}
-                />
-              </label>
-            </div>
-
-            {selectedItem._id && selectedItem.updatedAt && (
-              <label className="field field-readonly">
-                <span>Última modificación</span>
-                <input
+                  className="field-input"
                   type="text"
-                  value={new Date(selectedItem.updatedAt).toLocaleString('es-AR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                  readOnly
-                  disabled
+                  value={selectedItem.title || ''}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, title: e.target.value })}
+                  placeholder="Ej: Licencia Adobe Creative Cloud"
                 />
               </label>
-            )}
 
-            <div className="toggle-grid">
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={Boolean(selectedItem.reminders?.tenDaysBefore)}
-                  onChange={(e) => setSelectedItem({ 
-                    ...selectedItem, 
-                    reminders: { ...selectedItem.reminders, tenDaysBefore: e.target.checked }
-                  })}
+              <label className="field">
+                <span className="field-label">Descripción</span>
+                <textarea
+                  className="field-textarea"
+                  value={selectedItem.description || ''}
+                  onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
+                  placeholder="Información útil, responsable, detalle extra..."
                 />
-                <span>Notificar 10 días antes (default)</span>
               </label>
 
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={Boolean(selectedItem.reminders?.customDaysBefore)}
-                  onChange={(e) => setSelectedItem({ 
-                    ...selectedItem, 
-                    reminders: { ...selectedItem.reminders, customDaysBefore: e.target.checked ? 15 : null }
-                  })}
-                />
-                <span>Notificar también</span>
-              </label>
-
-              {selectedItem.reminders?.customDaysBefore && (
-                <label className="field" style={{gridColumn: '1 / -1'}}>
-                  <span>Días personalizado</span>
+              <div className="field-row two-columns">
+                <label className="field">
+                  <span className="field-label">Fecha</span>
                   <input
-                    type="number"
-                    min="1"
-                    max="365"
-                    value={selectedItem.reminders.customDaysBefore}
-                    onChange={(e) => setSelectedItem({ 
-                      ...selectedItem, 
-                      reminders: { ...selectedItem.reminders, customDaysBefore: parseInt(e.target.value) || null }
+                    className="field-input"
+                    type="date"
+                    value={selectedItem.expirationDate || ''}
+                    onChange={(e) => setSelectedItem({ ...selectedItem, expirationDate: e.target.value })}
+                  />
+                </label>
+
+                <label className="field">
+                  <span className="field-label">Hora</span>
+                  <input
+                    className="field-input"
+                    type="time"
+                    value={selectedItem.expirationTime || ''}
+                    onChange={(e) => setSelectedItem({ ...selectedItem, expirationTime: e.target.value })}
+                  />
+                </label>
+              </div>
+
+              {selectedItem._id && selectedItem.updatedAt && (
+                <label className="field field-readonly">
+                  <span className="field-label">Última modificación</span>
+                  <input
+                    className="field-input"
+                    type="text"
+                    value={new Date(selectedItem.updatedAt).toLocaleString('es-AR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
                     })}
-                    placeholder="Ej: 15"
-                    style={{width: '80px'}}
+                    readOnly
+                    disabled
                   />
                 </label>
               )}
-            </div>
 
-            <div className="field">
-              <span>Asignado a</span>
+              <div className="toggle-grid">
+                <label className="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(selectedItem.reminders?.tenDaysBefore)}
+                    onChange={(e) => setSelectedItem({ 
+                      ...selectedItem, 
+                      reminders: { ...selectedItem.reminders, tenDaysBefore: e.target.checked }
+                    })}
+                  />
+                  <span>Notificar 10 días antes (default)</span>
+                </label>
 
-              <div className="selected-chip-list">
-                {selectedAssignedUsers.length > 0 ? (
-                  selectedAssignedUsers.map((user) => (
-                    <button key={user} type="button" className="chip active" onClick={() => toggleAssignedUser(user)}>
-                      {user} ×
-                    </button>
-                  ))
-                ) : (
-                  <span className="muted-text">Sin usuarios asignados</span>
+                <label className="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(selectedItem.reminders?.customDaysBefore)}
+                    onChange={(e) => setSelectedItem({ 
+                      ...selectedItem, 
+                      reminders: { ...selectedItem.reminders, customDaysBefore: e.target.checked ? 15 : null }
+                    })}
+                  />
+                  <span>Notificar también</span>
+                </label>
+
+                {selectedItem.reminders?.customDaysBefore && (
+                  <label className="field" style={{gridColumn: '1 / -1'}}>
+                    <span className="field-label">Días personalizado</span>
+                    <input
+                      className="field-input"
+                      type="number"
+                      min="1"
+                      max="365"
+                      value={selectedItem.reminders.customDaysBefore}
+                      onChange={(e) => setSelectedItem({ 
+                        ...selectedItem, 
+                        reminders: { ...selectedItem.reminders, customDaysBefore: parseInt(e.target.value) || null }
+                      })}
+                      placeholder="Ej: 15"
+                      style={{width: '80px'}}
+                    />
+                  </label>
                 )}
               </div>
 
-              <input
-                type="text"
-                value={userSearchTerm}
-                onChange={(e) => setUserSearchTerm(e.target.value)}
-                placeholder="Buscar usuario para agregar"
-                className="user-search-input"
-              />
+              <label className="field">
+                <span className="field-label">Asignado a</span>
 
-              <div className="user-picker">
-                {filteredAssignableUsers.length > 0 ? (
-                  filteredAssignableUsers.map((user) => (
-                    <button key={user} type="button" className="user-picker-item" onClick={() => toggleAssignedUser(user)}>
-                      {user}
-                    </button>
-                  ))
-                ) : (
-                  <span className="muted-text">
-                    {userSearchTerm ? 'No se encontraron usuarios' : 'Escribí para buscar usuarios'}
-                  </span>
-                )}
-              </div>
+                <div className="selected-chip-list">
+                  {selectedAssignedUsers.length > 0 ? (
+                    selectedAssignedUsers.map((user) => (
+                      <button key={user} type="button" className="chip active" onClick={() => toggleAssignedUser(user)}>
+                        {user}
+                        <span className="chip-remove">×</span>
+                      </button>
+                    ))
+                  ) : (
+                    <span className="muted-text">Sin usuarios asignados</span>
+                  )}
+                </div>
+
+                <input
+                  className="field-input user-search-input"
+                  type="text"
+                  value={userSearchTerm}
+                  onChange={(e) => setUserSearchTerm(e.target.value)}
+                  placeholder="Buscar usuario para agregar"
+                />
+
+                <div className="user-picker">
+                  {filteredAssignableUsers.length > 0 ? (
+                    filteredAssignableUsers.map((user) => (
+                      <button key={user} type="button" className="user-picker-item" onClick={() => toggleAssignedUser(user)}>
+                        {user}
+                      </button>
+                    ))
+                  ) : (
+                    <span className="muted-text">
+                      {userSearchTerm ? 'No se encontraron usuarios' : 'Escribí para buscar usuarios'}
+                    </span>
+                  )}
+                </div>
+              </label>
             </div>
 
-            <div className="modal-actions">
+            <div className="expiration-modal-footer">
               <button className="secondary-btn" onClick={handleCloseModal}>Cancelar</button>
               {selectedItem._id && (
                 <button className="danger-btn" onClick={() => deleteExpiration(selectedItem._id)}>
@@ -700,13 +711,16 @@ ws["!cols"] = [
       {showUnsavedDialog && (
         <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && setShowUnsavedDialog(false)}>
           <div className="expiration-modal-content unsaved-dialog">
-            <div className="modal-topbar">
-              <span className="modal-tag">Cambios sin guardar</span>
+            <div className="expiration-modal-header">
+              <div className="modal-tag">Cambios sin guardar</div>
+              <button type="button" className="modal-close" onClick={() => setShowUnsavedDialog(false)} aria-label="Cerrar">×</button>
             </div>
-            <p className="unsaved-message">
-              Hacé cambios que aún no se guardaron. ¿Querés guardarlos antes de salir?
-            </p>
-            <div className="modal-actions">
+            <div className="expiration-modal-body">
+              <p className="unsaved-message">
+                Hacé cambios que aún no se guardaron. ¿Querés guardarlos antes de salir?
+              </p>
+            </div>
+            <div className="expiration-modal-footer">
               <button className="secondary-btn" onClick={() => { setShowUnsavedDialog(false); }}>Seguir editando</button>
               <button className="secondary-btn" onClick={() => { setShowUnsavedDialog(false); setSelectedItem(null); setOriginalItem(null); }}>Descartar y salir</button>
               <button className="primary-btn" onClick={handleSaveAndExit}>Guardar y salir</button>
@@ -719,47 +733,49 @@ ws["!cols"] = [
       {showExportDialog && (
         <div className="modal-overlay" onMouseDown={(event) => event.target === event.currentTarget && setShowExportDialog(false)}>
           <div className="expiration-modal-content export-dialog">
-            <div className="modal-topbar">
-              <span className="modal-tag">Exportar a Excel</span>
+            <div className="expiration-modal-header">
+              <div className="modal-tag">Exportar a Excel</div>
+              <button type="button" className="modal-close" onClick={() => setShowExportDialog(false)} aria-label="Cerrar">×</button>
             </div>
-            <p className="export-message">
-              ¿Qué vencimientos querés exportar?
-            </p>
-            <div className="export-options">
-              <button
-                className={`export-option ${exportType === 'todos' ? 'active' : ''}`}
-                onClick={() => { setExportType('todos'); setExportDateFrom(''); setExportDateTo(''); }}
-              >
-                Todos los vencimientos
-              </button>
-              <button
-                className={`export-option ${exportType === 'vencidos' ? 'active' : ''}`}
-                onClick={() => { setExportType('vencidos'); setExportDateFrom(''); setExportDateTo(''); }}
-              >
-                Solo vencidos
-              </button>
-              <button
-                className={`export-option ${exportType === 'rango' ? 'active' : ''}`}
-                onClick={() => { setExportType('rango'); }}
-              >
-                Rango de fechas
-              </button>
-            </div>
-
-            {exportType === 'rango' && (
-              <div className="export-date-range">
-                <label className="field">
-                  <span>Desde</span>
-                  <input type="date" value={exportDateFrom} onChange={(e) => setExportDateFrom(e.target.value)} />
-                </label>
-                <label className="field">
-                  <span>Hasta</span>
-                  <input type="date" value={exportDateTo} onChange={(e) => setExportDateTo(e.target.value)} />
-                </label>
+            <div className="expiration-modal-body">
+              <p className="export-message">
+                ¿Qué vencimientos querés exportar?
+              </p>
+              <div className="export-options">
+                <button
+                  className={`export-option ${exportType === 'todos' ? 'active' : ''}`}
+                  onClick={() => { setExportType('todos'); setExportDateFrom(''); setExportDateTo(''); }}
+                >
+                  Todos los vencimientos
+                </button>
+                <button
+                  className={`export-option ${exportType === 'vencidos' ? 'active' : ''}`}
+                  onClick={() => { setExportType('vencidos'); setExportDateFrom(''); setExportDateTo(''); }}
+                >
+                  Solo vencidos
+                </button>
+                <button
+                  className={`export-option ${exportType === 'rango' ? 'active' : ''}`}
+                  onClick={() => { setExportType('rango'); }}
+                >
+                  Rango de fechas
+                </button>
               </div>
-            )}
 
-            <div className="modal-actions">
+              {exportType === 'rango' && (
+                <div className="export-date-range">
+                  <label className="field">
+                    <span className="field-label">Desde</span>
+                    <input className="field-input" type="date" value={exportDateFrom} onChange={(e) => setExportDateFrom(e.target.value)} />
+                  </label>
+                  <label className="field">
+                    <span className="field-label">Hasta</span>
+                    <input className="field-input" type="date" value={exportDateTo} onChange={(e) => setExportDateTo(e.target.value)} />
+                  </label>
+                </div>
+              )}
+            </div>
+            <div className="expiration-modal-footer">
               <button className="secondary-btn" onClick={() => setShowExportDialog(false)}>Cancelar</button>
               <button className="primary-btn" onClick={generateExcelExport}>Exportar</button>
             </div>
@@ -791,15 +807,50 @@ CADA VEZ que modifiques este módulo, verificá:
 [ ] 7. Test Job: revisar logs "⏰ Verificando vencimientos..." cada hora
 [ ] 8. Test Email: revisar consola "[EMAIL MOCK] →" o envío real
 [ ] 9. Test /mis_alertas en Telegram: toggles funcionan
-[ ] 10. Actualizar ESTE comentario con versión y cambios
+[ ] 10. Test /ver_vencimientos → filtros funcionan
+[ ] 11. **Design System**: ¿Usás var(--token) en CSS nuevo? ¿Extendés componentes base?
+[ ] 12. Actualizar ESTE comentario con versión y cambios
 
 --------------------------------------------------------------------
-📦 HISTORIAL DE VERSIONES
+🎨 DESIGN SYSTEM v1.0.0 (NUEVO - 2026-11-24)
 --------------------------------------------------------------------
-v2.0.0 (2026-11-24) - REFACTOR COMPLETO "Smart Defaults + 1 Custom"
---------------------------------------------------------------------
-IMPLEMENTADO EN ESTA SESIÓN:
+Sistema de diseño centralizado en CSS global (NO CSS Modules).
 
+ARCHIVOS CLAVE:
+- Front/src/styles/tokens.css          → Variables CSS (colores, spacing, tipografía, shadows, radius, transitions, z-index, breakpoints)
+- Front/src/styles/components/index.css → Punto de entrada único (importa tokens + 6 componentes + utilidades)
+- Front/src/styles/components/buttons.css  → .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-ghost, .btn-outline, .btn-success + tamaños + estados
+- Front/src/styles/components/forms.css    → .field, .label, .input, .textarea, .select, .checkbox, .radio, .toggle, .search-wrap, .file-input, .form-actions
+- Front/src/styles/components/layout.css   → .container, .page-header, .toolbar, .grid, .section, .card-grid, .summary-grid, .empty-state, .loading-state, .app-layout
+- Front/src/styles/components/cards.css    → .card, .card-header/body/footer, .card-meta, .card-expiration, .card-section, .card-stat, .card-profile, .card-list, .card-image
+- Front/src/styles/components/modals.css   → .modal-overlay, .modal, .modal-header/body/footer, .modal-close, .modal-confirm, .modal-form, .drawer
+- Front/src/styles/components/badges.css   → .badge, .badge-*, .chip, .status-badge, .priority-badge, .tag, .reminder-badge, .avatar-badge
+
+IMPORTS EN main.jsx:
+  import './styles/tokens.css'
+  import './styles/components/index.css'
+
+REGLAS DE ORO DEL DESIGN SYSTEM:
+1. NUNCA hardcodear colores (#hex, rgb, rgba) → usar var(--color-*)
+2. NUNCA hardcodear spacing (padding, margin, gap) → usar var(--space-*)
+3. NUNCA hardcodear border-radius → usar var(--radius-*)
+4. NUNCA hardcodear box-shadow → usar var(--shadow-*)
+5. NUNCA hardcodear font-size → usar var(--text-*)
+6. NUNCA hardcodear z-index → usar var(--z-*)
+7. SIEMPRE extender componentes base (.btn, .card, .modal, .field, .badge, .chip)
+7. Actualizar versionado en CADA archivo tocado
+
+BREAKPOINTS CONSISTENTES:
+- Mobile: ≤640px
+- Tablet: 641-1024px  
+- Desktop: ≥1025px
+- Grid breakpoints: 1200px, 900px, 640px
+
+--------------------------------------------------------------------
+📦 HISTORIAL DE VERSIONES - EXPIRATION MANAGER
+--------------------------------------------------------------------
+v2.1.0 (2026-11-24) - DESIGN SYSTEM + TELEGRAM ULTRA-SIMPLE
+--------------------------------------------------------------------
 BACKEND:
 ✅ Modelo Expiration simplificado (expiration.model.js)
    - reminders: { onExpiration:Boolean, tenDaysBefore:Boolean, customDaysBefore:Number }
@@ -844,6 +895,8 @@ BACKEND:
 ✅ Config .env (Back/.env) - Placeholders listos
 
 FRONTEND:
+✅ Design System v1.0.0 implementado (7 archivos base + tokens + index)
+✅ expirationTracker.css migrado a Design System (95% tokens, 5% overrides específicos)
 ✅ Modal simplificado (expirationTracker.jsx)
    - 1 toggle "☑️ 10 días antes (default)" 
    - 1 checkbox "Notificar también" → muestra input "Días personalizado (1-365)"
@@ -879,6 +932,12 @@ FRONTEND:
    - Verificar variables de entorno en producción
    - Ejecutar migración en BD producción
    - Reiniciar servicios
+
+5. MIGRACIÓN RESTO DE PÁGINAS AL DESIGN SYSTEM (Incremental):
+   [ ] taskManager.css → usar .card, .btn, .field, .modal, .badge, .toolbar, .grid
+   [ ] dashboard.css → usar .container, .page-header, .section, .card-grid, .summary-grid
+   [ ] header.css + sidebar.css → usar .app-layout, utilidades flex/grid
+   [ ] Resto de páginas (configuration, userManagement, etc.)
 
 --------------------------------------------------------------------
 🔮 MEJORAS FUTURAS (BACKLOG PRIORIZADO)

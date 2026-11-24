@@ -46,7 +46,7 @@ const AppLayout = () => {
     <>
       {showChrome && <Header userName={user.name} />}
       {showChrome && <Sidebar />}
-      <div className={showChrome ? 'main-container with-sidebar' : 'main-container login-main-container'}>
+      <main className={showChrome ? 'app-main with-sidebar' : 'login-main-container'}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
@@ -85,7 +85,7 @@ const AppLayout = () => {
           <Route path="/BaseAIS/:baseId" element={<BaseAIS />} />
         </Routes>
         <RouteChangeListener />
-      </div>
+      </main>
       {showChrome && <Footer />}
     </>
   );

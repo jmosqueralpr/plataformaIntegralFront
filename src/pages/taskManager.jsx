@@ -494,213 +494,200 @@ const TaskManager = () => {
 
       {selectedTask && (
         <div
-          className="modalOverlay"
+          className="modal-overlay"
           onMouseDown={(e) => {
-            if (e.target.classList.contains('modalOverlay')) {
+            if (e.target.classList.contains('modal-overlay')) {
               closeModal();
             }
           }}
         >
-          <div className="modalContent">
-            <button type="button" className="task-modal-close" onClick={closeModal} aria-label="Cerrar">
-              ×
-            </button>
-
-            <div className="modal-header">
-              <div>
-                <p className="modal-eyebrow">
-                  {isNewTask ? 'Nueva tarea' : 'Detalle de tarea'}
-                </p>
-                <h2 className="modal-title">
-                  {isNewTask ? 'Crear tarea' : 'Editar tarea'}
-                </h2>
+          <div className="task-modal-content">
+            <div className="task-modal-header">
+              <div className="task-modal-header-content">
+                <div className="modal-tag">{isNewTask ? 'Nueva' : 'Editar'}</div>
+                <h3 className="task-modal-title">{selectedTask.title || 'Nueva tarea'}</h3>
               </div>
-              <div className="task-modal-header-actions">
-                <span className={`priority-pill priority-${(selectedTask.importance || 'media').toLowerCase()}`}>
-                  {selectedTask.importance || 'Media'}
-                </span>
-                <span className={`status-pill status-${(selectedTask.status || 'no-iniciada').toLowerCase().replace(/\s+/g, '-')}`}>
-                  {selectedTask.status || 'No iniciada'}
-                </span>
-              </div>
+              <button type="button" className="task-modal-close" onClick={closeModal} aria-label="Cerrar">×</button>
             </div>
 
-            <div className="task-modal-summary">
-              <div className="task-modal-summary-item">
-                <span className="task-modal-summary-label">Creador</span>
-                <strong>{selectedTask.creator || authUser || 'Sin creador'}</strong>
-              </div>
-              <div className="task-modal-summary-item">
-                <span className="task-modal-summary-label">Asignados</span>
-                <strong>{(selectedTask.assignedTo || []).length ? selectedTask.assignedTo.join(', ') : 'Sin asignados'}</strong>
-              </div>
-              <div className="task-modal-summary-item">
-                <span className="task-modal-summary-label">Recordatorio</span>
-                <strong>
-                  {selectedTask.notifyAssignedDate
-                    ? `${selectedTask.notifyAssignedDate}${selectedTask.notifyAssignedTime ? ` · ${selectedTask.notifyAssignedTime}` : ''}`
-                    : 'Sin fecha'}
-                </strong>
-              </div>
-            </div>
-
-            <div className="modal-form-grid">
-              <label className="field-wrap field-full">
-                <span>Título</span>
-                <input
-                  type="text"
-                  className="modal-text-box"
-                  placeholder="Agregar título"
-                  value={selectedTask.title}
-                  onChange={(e) => setSelectedTask({ ...selectedTask, title: e.target.value })}
-                />
-              </label>
-
-              <label className="field-wrap field-full">
-                <span>Descripción</span>
-                <textarea
-                  className="modal-text-box modal-textarea"
-                  placeholder="Agregar descripción"
-                  maxLength="1200"
-                  rows="6"
-                  value={selectedTask.description}
-                  onChange={(e) => setSelectedTask({ ...selectedTask, description: e.target.value })}
-                />
-              </label>
-
-              <div className="field-row">
-                <label className="field-wrap">
-                  <span>Estado</span>
-                  <select
-                    className="modal-text-box state-select"
-                    value={selectedTask.status}
-                    onChange={(e) => setSelectedTask({ ...selectedTask, status: e.target.value })}
-                  >
-                    <option value="No iniciada">No iniciada</option>
-                    <option value="En proceso">En proceso</option>
-                    <option value="Finalizada">Finalizada</option>
-                  </select>
-                </label>
-
-                <label className="field-wrap">
-                  <span>Importancia</span>
-                  <select
-                    className={`modal-text-box importance-${(selectedTask.importance || 'media').toLowerCase()}`}
-                    value={selectedTask.importance}
-                    onChange={(e) => setSelectedTask({ ...selectedTask, importance: e.target.value })}
-                  >
-                    <option value="Urgente">Urgente</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Media">Media</option>
-                    <option value="Baja">Baja</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="toggle-row">
-                <label className="toggle-field">
-                  <input
-                    type="checkbox"
-                    checked={selectedTask.sendWhatsAppOwner}
-                    onChange={(e) =>
-                      setSelectedTask({ ...selectedTask, sendWhatsAppOwner: e.target.checked })
-                    }
-                  />
-                  <span>Notificar al creador</span>
-                </label>
-
-                <label className="toggle-field">
-                  <input
-                    type="checkbox"
-                    checked={selectedTask.sendWhatsAppAssignedTo}
-                    onChange={(e) =>
-                      setSelectedTask({ ...selectedTask, sendWhatsAppAssignedTo: e.target.checked })
-                    }
-                  />
-                  <span>Notificar a asignados</span>
-                </label>
-              </div>
-
-              <label className="field-wrap field-full">
-                <span>Recordatorio</span>
-                <div className="date-time-container">
-                  <input
-                    type="date"
-                    className="modal-date-time-input"
-                    value={selectedTask.notifyAssignedDate || ''}
-                    onChange={(e) =>
-                      setSelectedTask({ ...selectedTask, notifyAssignedDate: e.target.value })
-                    }
-                  />
-                  <input
-                    type="time"
-                    className="modal-date-time-input"
-                    value={selectedTask.notifyAssignedTime || ''}
-                    onChange={(e) =>
-                      setSelectedTask({ ...selectedTask, notifyAssignedTime: e.target.value })
-                    }
-                  />
+            <div className="task-modal-body">
+              <div className="task-modal-summary">
+                <div className="task-modal-summary-item">
+                  <span className="task-modal-summary-label">Creador</span>
+                  <strong>{selectedTask.creator || authUser || 'Sin creador'}</strong>
                 </div>
-              </label>
-
-              <div className="field-wrap field-full">
-                <span>Asignado a</span>
-                <div className="assigned-list">
-                  {(selectedTask.assignedTo || []).map((user) => (
-                    <span key={user} className="assigned-pill">
-                      {user}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = (selectedTask.assignedTo || []).filter((u) => u !== user);
-                          setSelectedTask({ ...selectedTask, assignedTo: updated });
-                        }}
-                        aria-label={`Quitar a ${user}`}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
+                <div className="task-modal-summary-item">
+                  <span className="task-modal-summary-label">Asignados</span>
+                  <strong>{(selectedTask.assignedTo || []).length ? selectedTask.assignedTo.join(', ') : 'Sin asignados'}</strong>
                 </div>
+                <div className="task-modal-summary-item">
+                  <span className="task-modal-summary-label">Recordatorio</span>
+                  <strong>
+                    {selectedTask.notifyAssignedDate
+                      ? `${selectedTask.notifyAssignedDate}${selectedTask.notifyAssignedTime ? ` · ${selectedTask.notifyAssignedTime}` : ''}`
+                      : 'Sin fecha'}
+                  </strong>
+                </div>
+              </div>
 
-                <div className="assigned-input-wrap">
+              <div className="modal-form-grid">
+                <label className="field-wrap field-full">
+                  <span>Título</span>
                   <input
-                    id="assigned-user-input"
                     type="text"
                     className="modal-text-box"
-                    placeholder="Asignar usuario"
-                    list="assigned-users-list"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        addAssignedUser();
-                      }
-                    }}
+                    placeholder="Agregar título"
+                    value={selectedTask.title}
+                    onChange={(e) => setSelectedTask({ ...selectedTask, title: e.target.value })}
                   />
-                  <button type="button" className="modal-btn-secondary" onClick={addAssignedUser}>
-                    Agregar
-                  </button>
+                </label>
+
+                <label className="field-wrap field-full">
+                  <span>Descripción</span>
+                  <textarea
+                    className="modal-text-box modal-textarea"
+                    placeholder="Agregar descripción"
+                    maxLength="1200"
+                    rows="6"
+                    value={selectedTask.description}
+                    onChange={(e) => setSelectedTask({ ...selectedTask, description: e.target.value })}
+                  />
+                </label>
+
+                <div className="field-row">
+                  <label className="field-wrap">
+                    <span>Estado</span>
+                    <select
+                      className="modal-text-box state-select"
+                      value={selectedTask.status}
+                      onChange={(e) => setSelectedTask({ ...selectedTask, status: e.target.value })}
+                    >
+                      <option value="No iniciada">No iniciada</option>
+                      <option value="En proceso">En proceso</option>
+                      <option value="Finalizada">Finalizada</option>
+                    </select>
+                  </label>
+
+                  <label className="field-wrap">
+                    <span>Importancia</span>
+                    <select
+                      className={`modal-text-box importance-${(selectedTask.importance || 'media').toLowerCase()}`}
+                      value={selectedTask.importance}
+                      onChange={(e) => setSelectedTask({ ...selectedTask, importance: e.target.value })}
+                    >
+                      <option value="Urgente">Urgente</option>
+                      <option value="Alta">Alta</option>
+                      <option value="Media">Media</option>
+                      <option value="Baja">Baja</option>
+                    </select>
+                  </label>
                 </div>
 
-                <datalist id="assigned-users-list">
-                  {assignedUsers.map((user) => (
-                    <option key={user} value={user} />
-                  ))}
-                </datalist>
+                <div className="toggle-row">
+                  <label className="toggle-field">
+                    <input
+                      type="checkbox"
+                      checked={selectedTask.sendWhatsAppOwner}
+                      onChange={(e) =>
+                        setSelectedTask({ ...selectedTask, sendWhatsAppOwner: e.target.checked })
+                      }
+                    />
+                    <span>Notificar al creador</span>
+                  </label>
+
+                  <label className="toggle-field">
+                    <input
+                      type="checkbox"
+                      checked={selectedTask.sendWhatsAppAssignedTo}
+                      onChange={(e) =>
+                        setSelectedTask({ ...selectedTask, sendWhatsAppAssignedTo: e.target.checked })
+                      }
+                    />
+                    <span>Notificar a asignados</span>
+                  </label>
+                </div>
+
+                <label className="field-wrap field-full">
+                  <span>Recordatorio</span>
+                  <div className="date-time-container">
+                    <input
+                      type="date"
+                      className="modal-date-time-input"
+                      value={selectedTask.notifyAssignedDate || ''}
+                      onChange={(e) =>
+                        setSelectedTask({ ...selectedTask, notifyAssignedDate: e.target.value })
+                      }
+                    />
+                    <input
+                      type="time"
+                      className="modal-date-time-input"
+                      value={selectedTask.notifyAssignedTime || ''}
+                      onChange={(e) =>
+                        setSelectedTask({ ...selectedTask, notifyAssignedTime: e.target.value })
+                      }
+                    />
+                  </div>
+                </label>
+
+                <div className="field-wrap field-full">
+                  <span>Asignado a</span>
+                  <div className="assigned-list">
+                    {(selectedTask.assignedTo || []).map((user) => (
+                      <span key={user} className="assigned-pill">
+                        {user}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (selectedTask.assignedTo || []).filter((u) => u !== user);
+                            setSelectedTask({ ...selectedTask, assignedTo: updated });
+                          }}
+                          aria-label={`Quitar a ${user}`}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="assigned-input-wrap">
+                    <input
+                      id="assigned-user-input"
+                      type="text"
+                      className="modal-text-box"
+                      placeholder="Asignar usuario"
+                      list="assigned-users-list"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addAssignedUser();
+                        }
+                      }}
+                    />
+                    <button type="button" className="modal-btn-secondary" onClick={addAssignedUser}>
+                      Agregar
+                    </button>
+                  </div>
+
+                  <datalist id="assigned-users-list">
+                    {assignedUsers.map((user) => (
+                      <option key={user} value={user} />
+                    ))}
+                  </datalist>
+                </div>
               </div>
             </div>
 
-            <div className="modal-actions">
-              <button type="button" className="modal-btn-secondary" onClick={closeModal}>
+            <div className="task-modal-footer">
+              <button type="button" className="secondary-btn" onClick={closeModal}>
                 Cancelar
               </button>
-              <button type="button" className="modal-btn" onClick={handleUpdateCreate}>
+              <button type="button" className="primary-btn" onClick={handleUpdateCreate}>
                 {isNewTask ? 'Crear tarea' : 'Guardar cambios'}
               </button>
               {selectedTask?._id && (
                 <button
                   type="button"
-                  className="modal-btn modal-btn-delete"
+                  className="danger-btn"
                   onClick={() => deleteTask(selectedTask._id)}
                 >
                   Eliminar tarea
