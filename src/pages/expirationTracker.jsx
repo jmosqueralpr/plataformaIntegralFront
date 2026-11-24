@@ -12,9 +12,11 @@ const emptyForm = (currentUser) => ({
   description: '',
   expirationDate: '',
   expirationTime: '10:00',
-  notify7DaysBefore: true,
-  notify30DaysBefore: false,
-  notify90DaysBefore: false,
+  reminders: {
+    onExpiration: true,
+    tenDaysBefore: true,
+    customDaysBefore: null
+  },
   assignedTo: currentUser ? [currentUser] : [],
 });
 
@@ -158,9 +160,7 @@ const ExpirationTracker = () => {
       'description',
       'expirationDate',
       'expirationTime',
-      'notify7DaysBefore',
-      'notify30DaysBefore',
-      'notify90DaysBefore',
+      'reminders',
       'assignedTo',
     ];
 
@@ -170,6 +170,10 @@ const ExpirationTracker = () => {
 
       if (Array.isArray(a) && Array.isArray(b)) {
         return JSON.stringify(a.sort()) !== JSON.stringify(b.sort());
+      }
+
+      if (field === 'reminders' && typeof a === 'object' && typeof b === 'object') {
+        return JSON.stringify(a) !== JSON.stringify(b);
       }
 
       return a !== b;
@@ -209,14 +213,18 @@ const ExpirationTracker = () => {
       return;
     }
 
+    const reminders = selectedItem.reminders || { onExpiration: true, tenDaysBefore: true, customDaysBefore: null };
+
     const payload = {
       title: selectedItem.title.trim(),
       description: selectedItem.description || '',
       expirationDate: selectedItem.expirationDate,
       expirationTime: selectedItem.expirationTime || '10:00',
-      notify7DaysBefore: Boolean(selectedItem.notify7DaysBefore),
-      notify30DaysBefore: Boolean(selectedItem.notify30DaysBefore),
-      notify90DaysBefore: Boolean(selectedItem.notify90DaysBefore),
+      reminders: {
+        onExpiration: reminders.onExpiration ?? true,
+        tenDaysBefore: reminders.tenDaysBefore ?? true,
+        customDaysBefore: reminders.customDaysBefore ?? null
+      },
       assignedTo: normalizeAssignedUsers(selectedItem.assignedTo).length
         ? normalizeAssignedUsers(selectedItem.assignedTo)
         : [currentUser],
@@ -595,29 +603,44 @@ ws["!cols"] = [
               <label className="toggle-row">
                 <input
                   type="checkbox"
-                  checked={Boolean(selectedItem.notify7DaysBefore)}
-                  onChange={(e) => setSelectedItem({ ...selectedItem, notify7DaysBefore: e.target.checked })}
+                  checked={Boolean(selectedItem.reminders?.tenDaysBefore)}
+                  onChange={(e) => setSelectedItem({ 
+                    ...selectedItem, 
+                    reminders: { ...selectedItem.reminders, tenDaysBefore: e.target.checked }
+                  })}
                 />
-                <span>Notificar 7 días antes</span>
+                <span>Notificar 10 días antes (default)</span>
               </label>
 
               <label className="toggle-row">
                 <input
                   type="checkbox"
-                  checked={Boolean(selectedItem.notify30DaysBefore)}
-                  onChange={(e) => setSelectedItem({ ...selectedItem, notify30DaysBefore: e.target.checked })}
+                  checked={Boolean(selectedItem.reminders?.customDaysBefore)}
+                  onChange={(e) => setSelectedItem({ 
+                    ...selectedItem, 
+                    reminders: { ...selectedItem.reminders, customDaysBefore: e.target.checked ? 15 : null }
+                  })}
                 />
-                <span>Notificar 30 días antes</span>
+                <span>Notificar también</span>
               </label>
 
-              <label className="toggle-row">
-                <input
-                  type="checkbox"
-                  checked={Boolean(selectedItem.notify90DaysBefore)}
-                  onChange={(e) => setSelectedItem({ ...selectedItem, notify90DaysBefore: e.target.checked })}
-                />
-                <span>Notificar 90 días antes</span>
-              </label>
+              {selectedItem.reminders?.customDaysBefore && (
+                <label className="field" style={{gridColumn: '1 / -1'}}>
+                  <span>Días personalizado</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={selectedItem.reminders.customDaysBefore}
+                    onChange={(e) => setSelectedItem({ 
+                      ...selectedItem, 
+                      reminders: { ...selectedItem.reminders, customDaysBefore: parseInt(e.target.value) || null }
+                    })}
+                    placeholder="Ej: 15"
+                    style={{width: '80px'}}
+                  />
+                </label>
+              )}
             </div>
 
             <div className="field">
@@ -751,78 +774,131 @@ export default ExpirationTracker;
 
 /*
 ====================================================================
-EXPIRATION MANAGER - PLAN DE IMPLEMENTACIÓN Y MEJORAS
+EXPIRATION MANAGER - DOCUMENTACIÓN TÉCNICA Y VERSIONADO
 ====================================================================
 
-ESTADO ACTUAL:
-- Funciona con Telegram bot (recordatorios 7/30/90 días)
-- 7 flags booleanos duplicados en modelo (notifyX + notifiedX)
-- Frontend: modal completo con 3 checkboxes separados
-- Sin email, solo Telegram
+--------------------------------------------------------------------
+📋 CHECKLIST OBLIGATORIO AL TRABAJAR EN EXPIRATION TRACKER
+--------------------------------------------------------------------
+CADA VEZ que modifiques este módulo, verificá:
+
+[ ] 1. Backend compila sin errores (npm run dev en Back/)
+[ ] 2. Frontend compila sin errores (npm run dev en Front/)
+[ ] 3. Migración de BD considerada si cambia modelo (scripts/migrate-*.js)
+[ ] 4. Variables .env actualizadas en Back/.env (SMTP, MONGO, etc.)
+[ ] 5. Tests manuales: crear/editar/borrar vencimiento en Front
+[ ] 6. Test Telegram: /crear_vencimiento → flujo completo → confirmación
+[ ] 7. Test Job: revisar logs "⏰ Verificando vencimientos..." cada hora
+[ ] 8. Test Email: revisar consola "[EMAIL MOCK] →" o envío real
+[ ] 9. Test /mis_alertas en Telegram: toggles funcionan
+[ ] 10. Actualizar ESTE comentario con versión y cambios
 
 --------------------------------------------------------------------
-IMPLEMENTACIÓN INMEDIATA (PRÓXIMA SESIÓN):
+📦 HISTORIAL DE VERSIONES
 --------------------------------------------------------------------
-1. BACKEND - Modelo simplificado (expiration.model.js):
+v2.0.0 (2026-11-24) - REFACTOR COMPLETO "Smart Defaults + 1 Custom"
+--------------------------------------------------------------------
+IMPLEMENTADO EN ESTA SESIÓN:
+
+BACKEND:
+✅ Modelo Expiration simplificado (expiration.model.js)
    - reminders: { onExpiration:Boolean, tenDaysBefore:Boolean, customDaysBefore:Number }
-   - sentReminders: [{ type, sentAt, channel, recipients }]  // log unificado
-   - Migración in-place: script transforma 7 flags → 3 campos nuevos
+   - sentReminders[]: log unificado { type, sentAt, channel, recipients }
+   - Eliminados 7 flags duplicados (notifyX + notifiedX)
 
-2. BACKEND - Job unificado (expirationsReminder.jobs.js):
-   - checkReminders(task, now) evalúa 3 casos: vencido, 10d, custom
-   - Envía Telegram + Email en paralelo
-   - Mantiene cron horario existente
+✅ Schema Zod actualizado (expiration.schema.js)
 
-3. BACKEND - Servicio Email (services/email/email.service.js):
-   - nodemailer con SMTP (Gmail/Brevo/etc)
+✅ Controller + Routes (expiration.controller.js / expiration.routes.js)
+   - CRUD adaptado a nueva estructura reminders
+   - NUEVO: GET/PUT /api/users/me/notification-preferences
+
+✅ User model: notificationPreferences { telegram:Boolean, email:Boolean }
+
+✅ Servicio Email NUEVO (services/email/email.service.js)
+   - Nodemailer con SMTP (Gmail/Brevo/Outlook/etc)
    - MOCK automático si SMTP_PASS=PENDIENTE_APP_PASSWORD
-   - Plantilla HTML simple + texto plano
+   - Plantilla HTML responsive + texto plano
 
-4. BACKEND - API Preferencias (nuevo):
-   - GET/PUT /api/users/me/notification-preferences
-   - { telegram:Boolean, email:Boolean } por usuario
+✅ Job unificado (services/telegram/jobs/expirationsReminder.jobs.js)
+   - checkReminders(task, now): evalúa 3 casos (vencido, 10d, custom)
+   - Envía Telegram + Email en paralelo según preferencias usuario
+   - Actualiza sentReminders atomically
 
-5. TELEGRAM BOT - Flujo mínimo (telegram.js):
-   - Crear: Título → Descripción(opc) → Fecha → Hora(default) → 
-     Botones [✅ 10d on/off] [✏️ Personalizado: N] → Asignados → Confirmar
-   - /mis_alertas: lista con botones toggle Telegram/Email por tarea
-   - /ver_vencimientos: paginado con filtros [Hoy] [7d] [30d] [Vencidos]
+✅ Telegram Bot (services/telegram/telegram.js)
+   - Flujo CREAR ULTRA-SIMPLE: **3 pasos**
+     Título → Desc(opc, `-`) → Fecha (AAAAMMDD) → **✅ Auto-creado**
+     - Asigna automáticamente al usuario que lo crea
+     - Sin hora (auto 10:00)
+     - Sin config recordatorios (default: 10d + al vencer)
+     - Sin confirmación (crea directo)
+     - Formato fecha: 8 dígitos (ej: 20251231)
+   - NUEVO comando /mis_alertas: lista con toggles Telegram/Email por tarea
+   - NUEVO /ver_vencimientos: paginado con filtros inline [Vencidos][Próximos][Activos][Todos]
+   - Callback exp_alerts_<id> + exp_toggle_tg/email_<id>
+   - Eliminados: callbacks exp_remind_*, confirm_expiration_create, cancel_expiration_create, step assignees
 
-6. FRONTEND (expirationTracker.jsx):
-   - Modal: 1 toggle "☑️ 10 días antes" + 1 input "📅 Otro: ___ días"
-   - Badges en lista: "10d • 15d" / "Solo 10d" / "Solo vencimiento"
-   - Selector de canales en tabla/edición (iconos Telegram/Email)
+✅ Script migración (scripts/migrate-expirations.js)
+   - Transforma notify7/30/90 + notified* → reminders + sentReminders
+   - Idempotente, con backup recomendado
 
-7. CONFIG .env (Back/.env) - PLACEHOLDER LISTO:
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USER=alertas.plataforma.integral@gmail.com
-   SMTP_PASS=PENDIENTE_APP_PASSWORD
-   EMAIL_FROM="Plataforma Integral <alertas.plataforma.integral@gmail.com>"
+✅ Config .env (Back/.env) - Placeholders listos
+
+FRONTEND:
+✅ Modal simplificado (expirationTracker.jsx)
+   - 1 toggle "☑️ 10 días antes (default)" 
+   - 1 checkbox "Notificar también" → muestra input "Días personalizado (1-365)"
+   - Validación payload adapta reminders object
+
+✅ ExpirationCard (ExpirationCard.jsx)
+   - Badge "Alertas: 10d • 15d" / "10d" / "venc"
 
 --------------------------------------------------------------------
-PARA CONTINUAR EN OTRA SESIÓN:
+⏭️ PRÓXIMOS PASOS (PENDIENTES PARA PRÓXIMA SESIÓN)
 --------------------------------------------------------------------
-1. Ejecutar migración: node scripts/migrate-expirations.js (backup antes)
-2. Poner App Password real en .env → reiniciar backend
-3. Probar: crear vencimiento por Telegram → verificar email mock en consola
-4. Ajustar plantilla email si hace falta
-5. Deploy
+1. EJECUTAR MIGRACIÓN BD:
+   cd Back && node scripts/migrate-expirations.js
+   (Hacer backup mongodump antes)
+
+2. CONFIGURAR EMAIL REAL:
+   - Crear/usar Gmail: alertas.plataforma.integral@gmail.com
+   - Activar 2FA → Generar App Password (16 chars)
+   - Editar Back/.env: SMTP_PASS=tu_app_password_sin_espacios
+   - Reiniciar backend
+
+3. TESTING COMPLETO:
+   [ ] Crear vencimiento por Front → verificar BD
+   [ ] Crear vencimiento por Telegram → flujo **3 pasos**: Título → Desc(`-`) → AAAAMMDD → ✅ Auto (asigna a uno mismo)
+   [ ] Verificar job logs: "⏰ Verificando..." + "✅ Recordatorio X enviado"
+   [ ] Verificar email mock en consola: "[EMAIL MOCK] → user@domain | Asunto"
+   [ ] Probar /mis_alertas en Telegram → toggles persisten
+   [ ] Probar /ver_vencimientos → filtros funcionan
+   [ ] Editar vencimiento existente → reminders se actualizan
+   [ ] Borrar vencimiento → limpieza OK
+
+4. DEPLOY:
+   - Verificar variables de entorno en producción
+   - Ejecutar migración en BD producción
+   - Reiniciar servicios
 
 --------------------------------------------------------------------
-MEJORAS FUTURAS (BACKLOG):
+🔮 MEJORAS FUTURAS (BACKLOG PRIORIZADO)
 --------------------------------------------------------------------
+ALTA:
 [ ] Recordatorios recurrentes (ej: "cada lunes hasta que se resuelva")
-[ ] Escalamiento: si no se marca "visto" en 24h → reenviar + cc a manager
-[ ] Webhooks: callbacks de email (open/click/bounce) via Brevo/SendGrid
-[ ] Digest diario/semanal opcional (resumen de vencimientos de la semana)
-[ ] Integración Calendar (ICS attach en email + Google/Outlook link)
-[ ] Multi-idioma plantillas (ES/EN/PT)
-[ ] Métricas: dashboard de entregabilidad, tasas de apertura, tasks resueltas vs vencidas
+[ ] Escalamiento: si no "visto" en 24h → reenviar + cc manager
+[ ] Digest semanal opcional (resumen vencimientos de la semana)
+
+MEDIA:
+[ ] Webhooks email (open/click/bounce) via Brevo/SendGrid
+[ ] Integración Calendar (ICS attach + Google/Outlook link)
+[ ] Métricas dashboard: entregabilidad, aperturas, resueltas vs vencidas
 [ ] Slack/Teams webhook como canal extra
 [ ] Reglas por tipo: "licencias 30d", "servicios 7d", "dominios 60d"
+
+BAJA:
+[ ] Multi-idioma plantillas (ES/EN/PT)
 [ ] Adjuntar PDF/contrato en recordatorio (Multer + GridFS)
-[ ] Approval flow: "¿Renovar licencia X?" → botones Sí/No → webhook a sistema externo
+[ ] Approval flow: "¿Renovar licencia X?" → botones Sí/No → webhook externo
 
 ====================================================================
 */

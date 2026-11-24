@@ -1,7 +1,6 @@
 import '../styles/expirationTracker.css';
 
 const ExpirationCard = ({ item, onClick }) => {
-  // Combina fecha y hora en un solo Date
   const isExpired = (() => {
     if (!item.expirationDate) return false;
 
@@ -11,12 +10,19 @@ const ExpirationCard = ({ item, onClick }) => {
     const expirationDateTime = new Date(year, month - 1, day, hour, minute);
     return expirationDateTime < new Date();
   })();
+
   const expirationDate = item.expirationDate
     ? (() => {
         const [year, month, day] = item.expirationDate.split('-').map(Number);
         return new Date(year, month - 1, day);
       })()
     : null;
+
+  const reminders = item.reminders || { onExpiration: true, tenDaysBefore: true, customDaysBefore: null };
+  const reminderParts = [];
+  if (reminders.tenDaysBefore) reminderParts.push('10d');
+  if (reminders.customDaysBefore) reminderParts.push(`${reminders.customDaysBefore}d`);
+  const reminderBadge = reminderParts.length ? reminderParts.join(' • ') : (reminders.onExpiration ? 'venc' : '');
 
   return (
     <div className="expiration-box" onClick={onClick}>
@@ -31,13 +37,19 @@ const ExpirationCard = ({ item, onClick }) => {
             ) : (
               <>
                 {expirationDate.toLocaleDateString()}
-                {` ${item.expirationTime || '10:00'}`}
+                {' '}{item.expirationTime || '10:00'}
               </>
             )
           ) : (
             'Sin fecha'
           )}
         </p>
+
+        {reminderBadge && (
+          <p className="expiration-meta-item reminder-badge">
+            <strong>Alertas:</strong> {reminderBadge}
+          </p>
+        )}
 
         <p className="expiration-meta-item">
           <strong>Asignados:</strong>{' '}
