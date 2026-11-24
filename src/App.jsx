@@ -43,51 +43,53 @@ const AppLayout = () => {
   const showChrome = !isLoginRoute;
 
   return (
-    <>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {showChrome && <Header userName={user.name} />}
-      {showChrome && <Sidebar />}
-      <main className={showChrome ? 'app-main with-sidebar' : 'login-main-container'}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/asistenteTelegram" element={<AsistenteTelegram />} />
-          <Route path="/telegramMessages" element={<TelegramMessages />} />
-          <Route path="/configuration" element={<Configuration />} />
-          <Route path="/userManagement" element={<UserManagement />} />
+      <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+        {showChrome && <Sidebar />}
+        <main className={showChrome ? 'app-main with-sidebar' : 'login-main-container'} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/asistenteTelegram" element={<AsistenteTelegram />} />
+            <Route path="/telegramMessages" element={<TelegramMessages />} />
+            <Route path="/configuration" element={<Configuration />} />
+            <Route path="/userManagement" element={<UserManagement />} />
 
-          <Route path="/gestorDeContraseñas" element={<GestorDeContraseñas />} />
+            <Route path="/gestorDeContraseñas" element={<GestorDeContraseñas />} />
 
-          <Route path="/taskManager" element={<TaskManager />} />
-          <Route path="/expirationTracker" element={<ExpirationTracker />} />
-          <Route path="/searchSolutions" element={<SearchSolutions />} />
-          <Route path="/searchSolutionsNew" element={<SearchSolutionsNew />} />
-          {/* Herramientas AIS */}
-          <Route path="/herramientasAIS" element={<HerramientasAIS />} />
-          <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
-          <Route
-            path="/aisLive"
-            element={(
-              <Suspense fallback={<div role="status">Cargando monitor AIS…</div>}>
-                <AisLive />
-              </Suspense>
-            )}
-          />
-          <Route path="/gpsConverter" element={<GPSConverter />} />
-          {/* Accesos y Enlaces */}
-          <Route path="/dashEnlaces" element={<DashEnlaces />} />
-          <Route path="/Gestionar" element={<Gestionar />} />
-          <Route path="/earsTicketera" element={<EarsTicketera />} />
-          <Route path="/comprasDYB" element={<ComprasDyb />} />
-          <Route path="/comprasEmepa" element={<ComprasEmepa />} />
-          <Route path="/DropboxBackup" element={<DropboxBackup />} />
+            <Route path="/taskManager" element={<TaskManager />} />
+            <Route path="/expirationTracker" element={<ExpirationTracker />} />
+            <Route path="/searchSolutions" element={<SearchSolutions />} />
+            <Route path="/searchSolutionsNew" element={<SearchSolutionsNew />} />
+            {/* Herramientas AIS */}
+            <Route path="/herramientasAIS" element={<HerramientasAIS />} />
+            <Route path="/verificadorMGE8" element={<VerificadorMGE8 />} />
+            <Route
+              path="/aisLive"
+              element={(
+                <Suspense fallback={<div role="status">Cargando monitor AIS…</div>}>
+                  <AisLive />
+                </Suspense>
+              )}
+            />
+            <Route path="/gpsConverter" element={<GPSConverter />} />
+            {/* Accesos y Enlaces */}
+            <Route path="/dashEnlaces" element={<DashEnlaces />} />
+            <Route path="/Gestionar" element={<Gestionar />} />
+            <Route path="/earsTicketera" element={<EarsTicketera />} />
+            <Route path="/comprasDYB" element={<ComprasDyb />} />
+            <Route path="/comprasEmepa" element={<ComprasEmepa />} />
+            <Route path="/DropboxBackup" element={<DropboxBackup />} />
 
-          <Route path="/DashboardBaseAIS" element={<DashboardBaseAIS />} />
-          <Route path="/BaseAIS/:baseId" element={<BaseAIS />} />
-        </Routes>
-        <RouteChangeListener />
-      </main>
+            <Route path="/DashboardBaseAIS" element={<DashboardBaseAIS />} />
+            <Route path="/BaseAIS/:baseId" element={<BaseAIS />} />
+          </Routes>
+          <RouteChangeListener />
+        </main>
+      </div>
       {showChrome && <Footer />}
-    </>
+    </div>
   );
 };
 

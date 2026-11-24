@@ -6,7 +6,8 @@
    ======================================================================== */
 
 .header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: var(--z-header);
   display: flex;
   flex: 0 0 auto;
