@@ -748,3 +748,81 @@ ws["!cols"] = [
 };
 
 export default ExpirationTracker;
+
+/*
+====================================================================
+EXPIRATION MANAGER - PLAN DE IMPLEMENTACIÓN Y MEJORAS
+====================================================================
+
+ESTADO ACTUAL:
+- Funciona con Telegram bot (recordatorios 7/30/90 días)
+- 7 flags booleanos duplicados en modelo (notifyX + notifiedX)
+- Frontend: modal completo con 3 checkboxes separados
+- Sin email, solo Telegram
+
+--------------------------------------------------------------------
+IMPLEMENTACIÓN INMEDIATA (PRÓXIMA SESIÓN):
+--------------------------------------------------------------------
+1. BACKEND - Modelo simplificado (expiration.model.js):
+   - reminders: { onExpiration:Boolean, tenDaysBefore:Boolean, customDaysBefore:Number }
+   - sentReminders: [{ type, sentAt, channel, recipients }]  // log unificado
+   - Migración in-place: script transforma 7 flags → 3 campos nuevos
+
+2. BACKEND - Job unificado (expirationsReminder.jobs.js):
+   - checkReminders(task, now) evalúa 3 casos: vencido, 10d, custom
+   - Envía Telegram + Email en paralelo
+   - Mantiene cron horario existente
+
+3. BACKEND - Servicio Email (services/email/email.service.js):
+   - nodemailer con SMTP (Gmail/Brevo/etc)
+   - MOCK automático si SMTP_PASS=PENDIENTE_APP_PASSWORD
+   - Plantilla HTML simple + texto plano
+
+4. BACKEND - API Preferencias (nuevo):
+   - GET/PUT /api/users/me/notification-preferences
+   - { telegram:Boolean, email:Boolean } por usuario
+
+5. TELEGRAM BOT - Flujo mínimo (telegram.js):
+   - Crear: Título → Descripción(opc) → Fecha → Hora(default) → 
+     Botones [✅ 10d on/off] [✏️ Personalizado: N] → Asignados → Confirmar
+   - /mis_alertas: lista con botones toggle Telegram/Email por tarea
+   - /ver_vencimientos: paginado con filtros [Hoy] [7d] [30d] [Vencidos]
+
+6. FRONTEND (expirationTracker.jsx):
+   - Modal: 1 toggle "☑️ 10 días antes" + 1 input "📅 Otro: ___ días"
+   - Badges en lista: "10d • 15d" / "Solo 10d" / "Solo vencimiento"
+   - Selector de canales en tabla/edición (iconos Telegram/Email)
+
+7. CONFIG .env (Back/.env) - PLACEHOLDER LISTO:
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=alertas.plataforma.integral@gmail.com
+   SMTP_PASS=PENDIENTE_APP_PASSWORD
+   EMAIL_FROM="Plataforma Integral <alertas.plataforma.integral@gmail.com>"
+
+--------------------------------------------------------------------
+PARA CONTINUAR EN OTRA SESIÓN:
+--------------------------------------------------------------------
+1. Ejecutar migración: node scripts/migrate-expirations.js (backup antes)
+2. Poner App Password real en .env → reiniciar backend
+3. Probar: crear vencimiento por Telegram → verificar email mock en consola
+4. Ajustar plantilla email si hace falta
+5. Deploy
+
+--------------------------------------------------------------------
+MEJORAS FUTURAS (BACKLOG):
+--------------------------------------------------------------------
+[ ] Recordatorios recurrentes (ej: "cada lunes hasta que se resuelva")
+[ ] Escalamiento: si no se marca "visto" en 24h → reenviar + cc a manager
+[ ] Webhooks: callbacks de email (open/click/bounce) via Brevo/SendGrid
+[ ] Digest diario/semanal opcional (resumen de vencimientos de la semana)
+[ ] Integración Calendar (ICS attach en email + Google/Outlook link)
+[ ] Multi-idioma plantillas (ES/EN/PT)
+[ ] Métricas: dashboard de entregabilidad, tasas de apertura, tasks resueltas vs vencidas
+[ ] Slack/Teams webhook como canal extra
+[ ] Reglas por tipo: "licencias 30d", "servicios 7d", "dominios 60d"
+[ ] Adjuntar PDF/contrato en recordatorio (Multer + GridFS)
+[ ] Approval flow: "¿Renovar licencia X?" → botones Sí/No → webhook a sistema externo
+
+====================================================================
+*/
