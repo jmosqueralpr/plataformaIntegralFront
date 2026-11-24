@@ -8,6 +8,7 @@ import './styles/components/layout.css'
 import './styles/components/cards.css'
 import './styles/components/modals.css'
 import './styles/components/badges.css'
+import './styles/login.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
