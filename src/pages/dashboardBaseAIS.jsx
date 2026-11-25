@@ -396,7 +396,7 @@ const DashboardBaseAIS = () => {
             }}
             disabled={exportLoading}
           >
-            📊 Exportar a enviar
+            Exportar
           </button>
           <button
             className="ais-btn-primary"
