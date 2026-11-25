@@ -287,6 +287,104 @@
 }
 
 /* ----------------------------------------------------------------------
+   COMPACT VIEW
+   ---------------------------------------------------------------------- */
+.expiration-box-compact {
+  min-height: 120px;
+}
+
+.expiration-box-compact .expiration-card-header {
+  padding: var(--space-3) var(--space-4) var(--space-1);
+}
+
+.expiration-box-compact .expiration-title {
+  font-size: var(--text-lg);
+  min-height: auto;
+}
+
+.expiration-meta-compact {
+  padding: var(--space-2) var(--space-4) var(--space-3);
+}
+
+.expiration-meta-compact .expiration-meta-item {
+  margin: 0;
+}
+
+/* Compact view toggle */
+.compact-view-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--transition-fast);
+}
+
+.compact-view-toggle:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.compact-view-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--color-border-default);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  border: 1px solid var(--color-border-default);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--color-text-muted);
+  border-radius: 50%;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.compact-view-toggle input:checked + .toggle-slider {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.compact-view-toggle input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+  background: white;
+}
+
+.compact-view-toggle input:focus-visible + .toggle-slider {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* Compact view wrapper */
+.compact-view-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.compact-view-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------------
    LOADING / EMPTY STATE
    ---------------------------------------------------------------------- */
 .expiration-loading,
@@ -852,6 +950,10 @@
   }
 
   .expiration-summary {
+    display: none;
+  }
+
+  .expiration-tracker-main {
     grid-template-columns: 1fr;
   }
 

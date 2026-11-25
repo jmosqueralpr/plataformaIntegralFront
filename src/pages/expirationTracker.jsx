@@ -57,6 +57,10 @@ const ExpirationTracker = () => {
   const [exportType, setExportType] = useState('todos');
   const [exportDateFrom, setExportDateFrom] = useState('');
   const [exportDateTo, setExportDateTo] = useState('');
+  const [compactView, setCompactView] = useState(() => {
+    const saved = localStorage.getItem('expiration-compact-view');
+    return saved === 'true';
+  });
 
   const fetchExpirations = async () => {
     setLoading(true);
@@ -103,6 +107,10 @@ const ExpirationTracker = () => {
     fetchExpirations();
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('expiration-compact-view', compactView.toString());
+  }, [compactView]);
 
   const getStatus = (item) => {
     if (!item.expirationDate) return 'sin-fecha';
@@ -513,6 +521,18 @@ ws["!cols"] = [
           <option value="vencida">Vencidas</option>
         </select>
 
+        <div className="compact-view-wrapper">
+          <span className="compact-view-label">Vista compacta</span>
+          <label className="compact-view-toggle" title={compactView ? 'Vista completa' : 'Vista compacta'}>
+            <input
+              type="checkbox"
+              checked={compactView}
+              onChange={(e) => setCompactView(e.target.checked)}
+            />
+            <span className="toggle-slider"></span>
+          </label>
+        </div>
+
         <button className="secondary-btn" onClick={() => { setExportType('todos'); setExportDateFrom(''); setExportDateTo(''); setShowExportDialog(true); }}>
           <FiFile size={16} /> Exportar a Excel
         </button>
@@ -528,7 +548,7 @@ ws["!cols"] = [
       ) : (
         <div className="expiration-tracker-main">
           {filteredItems.map((item) => (
-            <ExpirationCard key={item._id} item={item} onClick={() => openModal(item)} />
+            <ExpirationCard key={item._id} item={item} onClick={() => openModal(item)} compact={compactView} />
           ))}
         </div>
       )}

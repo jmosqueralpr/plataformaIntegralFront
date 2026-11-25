@@ -1,6 +1,6 @@
 import '../styles/expirationTracker.css';
 
-const ExpirationCard = ({ item, onClick }) => {
+const ExpirationCard = ({ item, onClick, compact = false }) => {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -70,6 +70,40 @@ const ExpirationCard = ({ item, onClick }) => {
   // Encontrar el próximo pendiente
   const nextPending = reminderSchedule.find(r => !sentTypes.has(r.type));
   const allSent = reminderSchedule.every(r => sentTypes.has(r.type));
+
+  // Formatear fecha de vencimiento para vista compacta
+  const formatExpirationDate = () => {
+    if (!item.expirationDate) return 'Sin fecha';
+    const [year, month, day] = item.expirationDate.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    const formattedDate = date.toLocaleDateString();
+    const time = item.expirationTime || '10:00';
+    return isExpired ? 'Vencida' : `${formattedDate} ${time}`;
+  };
+
+  if (compact) {
+    return (
+      <div 
+        className="expiration-box expiration-box-compact" 
+        onClick={onClick}
+        style={{ '--urgency-color': urgencyColor }}
+      >
+        <div className="expiration-days-badge" style={{ background: urgencyColor }}>
+          {daysBadgeText}
+        </div>
+        <div className="expiration-card-header">
+          <h2 className="expiration-title">{item.title}</h2>
+          {isExpired && <span className="expiration-status-badge expired-badge">Vencida</span>}
+        </div>
+        <div className="expiration-meta expiration-meta-compact">
+          <div className="expiration-meta-item">
+            <span className="expiration-meta-label">Vence:</span>
+            <span className="expiration-meta-value">{formatExpirationDate()}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
