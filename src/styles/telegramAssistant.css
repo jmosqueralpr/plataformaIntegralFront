@@ -1,5 +1,5 @@
-/* ========================================================================
-   TELEGRAM ASSISTANT - Migración a Design System v1.0.0
+﻿/* ========================================================================
+   TELEGRAM ASSISTANT - MigraciÃ³n a Design System v1.0.0
    ========================================================================
    Usa: tokens.css + components/layout.css + components/cards.css + components/buttons.css + components/badges.css
    Tokens: --color-*, --space-*, --radius-*, --shadow-*, --text-*, --z-*, --container-max
@@ -30,7 +30,7 @@
   display: flex;
   min-height: 270px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   overflow: hidden;
   padding: clamp(var(--space-7), 5vw, var(--space-13));
   border: 1px solid var(--color-border-default);
@@ -373,13 +373,13 @@
   margin: var(--space-5) 0 0;
   color: var(--color-text-muted);
   font-size: var(--text-sm);
-  line-height: 1.5.
+  line-height: 1.5;
 }
 
 .telegram-security-note svg {
   flex: 0 0 auto;
-  margin-top: var(--space-1).
-  color: var(--color-success).
+  margin-top: var(--space-1);
+  color: var(--color-success);
 }
 
 /* QR Card */
@@ -388,219 +388,280 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-6);
-  text-align: center.
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
 }
 
 .telegram-qr-heading h2 {
-  font-size: var(--text-lg).
+  font-size: var(--text-lg);
 }
 
 .telegram-qr-heading p {
-  margin: var(--space-2) 0 var(--space-4).
-  color: var(--color-text-muted).
-  font-size: var(--text-md).
-  line-height: 1.5.
+  margin: var(--space-2) 0 var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+  line-height: 1.5;
 }
 
 .telegram-qr-link {
-  display: block.
-  padding: var(--space-2).
-  border: 1px solid var(--color-border-subtle).
-  border-radius: var(--radius-xl).
-  background: white.
+  display: block;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: white;
 }
 
 .telegram-qr-link img {
-  display: block.
-  width: min(100%, 190px).
-  height: auto.
-  border-radius: var(--radius-md).
+  display: block;
+  width: min(100%, 190px);
+  height: auto;
+  border-radius: var(--radius-md);
 }
 
 /* Text link - usa .btn-ghost del Design System */
 .telegram-text-link {
-  display: inline-flex.
-  align-items: center.
-  gap: var(--space-1).
-  margin-top: var(--space-4).
-  color: var(--color-info).
-  font-size: var(--text-md).
-  font-weight: var(--font-semibold).
-  text-decoration: none.
-  transition: color var(--transition-fast).
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+  color: var(--color-info);
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 /* En JSX: class="btn btn-ghost" */
 .telegram-text-link:hover {
-  color: var(--color-info).
+  color: var(--color-info);
 }
 
 /* Steps card */
 .telegram-steps-card {
-  padding: clamp(var(--space-5), 3.5vw, var(--space-8)).
+  padding: clamp(var(--space-5), 3.5vw, var(--space-8));
 }
 
 .telegram-steps-heading {
-  margin-bottom: var(--space-5).
+  margin-bottom: var(--space-5);
 }
 
 .telegram-steps {
-  display: grid.
-  grid-template-columns: repeat(3, minmax(0, 1fr)).
-  gap: var(--space-4).
-  margin: 0.
-  padding: 0.
-  list-style: none.
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .telegram-steps li {
-  display: flex.
-  gap: var(--space-3).
-  padding: var(--space-3).
-  border: 1px solid var(--color-border-subtle).
-  border-radius: var(--radius-xl).
-  background: var(--color-bg-tertiary).
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-tertiary);
 }
 
 .telegram-step-number {
-  color: var(--color-info).
-  font-size: var(--text-sm).
-  font-weight: var(--font-bold).
-  letter-spacing: 0.06em.
+  color: var(--color-info);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.06em;
 }
 
 .telegram-steps h3,
 .telegram-capability h3 {
-  margin: 0.
-  color: var(--color-text-primary).
-  font-size: var(--text-md).
-  font-weight: var(--font-bold).
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-md);
+  font-weight: var(--font-bold);
 }
 
 .telegram-steps p,
 .telegram-capability p {
-  margin: var(--space-1) 0 0.
-  color: var(--color-text-muted).
-  font-size: var(--text-sm).
-  line-height: 1.5.
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
 }
 
 /* Capabilities grid - usa .grid del Design System */
 .telegram-capabilities {
-  display: grid.
-  grid-template-columns: repeat(3, minmax(0, 1fr)).
-  gap: var(--space-3).
-  padding: var(--space-1) var(--space-1).
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-1);
 }
 
 .telegram-capability {
-  display: flex.
-  align-items: flex-start.
-  gap: var(--space-3).
-  padding: var(--space-3).
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
 }
 
 .telegram-capability > svg {
-  flex: 0 0 auto.
-  margin-top: var(--space-1).
-  color: var(--color-info).
-  font-size: var(--text-lg).
+  flex: 0 0 auto;
+  margin-top: var(--space-1);
+  color: var(--color-info);
+  font-size: var(--text-lg);
 }
 
 /* Responsive */
 @media (max-width: 760px) {
   .telegram-hero-copy {
-    max-width: 100%.
+    max-width: 100%;
+    text-align: center;
   }
 
   .telegram-hero-mark {
-    display: none.
+    display: none;
   }
 
   .telegram-setup-grid {
-    grid-template-columns: 1fr.
+    grid-template-columns: 1fr;
+  }
+
+  .telegram-qr-link img {
+    width: min(100%, 180px);
   }
 
   .telegram-qr-card {
-    padding: var(--space-6).
+    padding: var(--space-5) var(--space-4);
   }
 
   .telegram-steps {
-    grid-template-columns: 1fr.
+    grid-template-columns: 1fr;
   }
 
   .telegram-capabilities {
-    grid-template-columns: 1fr.
-    gap: var(--space-1).
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
   }
 
   .telegram-capability {
-    padding: var(--space-2) var(--space-1).
+    padding: var(--space-4);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .telegram-capability > svg {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
   }
 }
 
 @media (max-width: 480px) {
   .telegram-page {
-    padding: var(--space-4) var(--space-3) var(--space-7).
+    padding: var(--space-4) var(--space-3) var(--space-7);
   }
 
   .telegram-layout {
-    gap: var(--space-3).
+    gap: var(--space-4);
   }
 
   .telegram-hero {
-    min-height: auto.
-    padding: var(--space-6) var(--space-5).
-    border-radius: var(--radius-2xl).
+    min-height: auto;
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--radius-2xl);
+    text-align: center;
   }
 
   .telegram-hero-copy > p {
-    max-width: 95%.
-    font-size: var(--text-md).
+    max-width: 100%;
+    font-size: var(--text-sm);
   }
 
   .telegram-hero-actions {
-    align-items: flex-start.
-    flex-direction: column.
-    gap: var(--space-2).
-    margin-top: var(--space-5).
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    justify-content: center;
   }
 
   .telegram-open-button {
-    width: 100%.
+    width: 100%;
+    justify-content: center;
+  }
+
+  .telegram-bot-handle {
+    display: block;
+    text-align: center;
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
   }
 
   .telegram-card,
   .telegram-steps-card {
-    border-radius: var(--radius-xl).
+    border-radius: var(--radius-xl);
   }
 
   .telegram-link-card,
   .telegram-steps-card {
-    padding: var(--space-5) var(--space-4).
+    padding: var(--space-5) var(--space-4);
   }
 
   .telegram-card-description {
-    margin: var(--space-4) 0.
+    margin: var(--space-4) 0;
   }
 
   .telegram-code-panel {
-    padding: var(--space-3).
+    padding: var(--space-3);
+  }
+
+  .telegram-qr-card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .telegram-steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .telegram-steps li {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-3);
+  }
+
+  .telegram-steps h3 {
+    font-size: var(--text-sm);
+  }
+
+  .telegram-capabilities {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: 0;
+  }
+
+  .telegram-capability {
+    padding: var(--space-3);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .telegram-capability > svg {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
+    font-size: var(--text-xl);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .telegram-open-button,
   .telegram-primary-button {
-    transition: none.
+    transition: none;
   }
 }
 
 /* ========================================================================
    VERSIONADO - TELEGRAM ASSISTANT
    ========================================================================
-   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
+   v1.0.0 (2026-11-24) - MigraciÃ³n a Design System v1.0.0
    - Hero -> .card + .section
    - Buttons -> .btn component classes
    - Cards -> .card component
@@ -610,7 +671,7 @@
    - Responsive breakpoints consistentes: 760px, 480px
    - Todos valores hardcoded -> var(--token)
 
-   PRÓXIMOS:
+   PRÃ“XIMOS:
    [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
    [ ] Unificar .telegram-hero con .card + .section
    [ ] Mover .telegram-code-panel a components/forms.css
@@ -620,3 +681,6 @@
    - Usar var(--token) SIEMPRE
    - Actualizar versionado al modificar
    ======================================================================== */
+
+
+
