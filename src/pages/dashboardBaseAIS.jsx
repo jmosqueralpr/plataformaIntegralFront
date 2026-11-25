@@ -17,6 +17,7 @@ const DashboardBaseAIS = () => {
 
   // Export modal state
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showExportSubmenu, setShowExportSubmenu] = useState(false);
   const [exportYear, setExportYear] = useState(new Date().getFullYear());
   const [exportLoading, setExportLoading] = useState(false);
   const [availableYears, setAvailableYears] = useState([]);
@@ -250,6 +251,105 @@ const DashboardBaseAIS = () => {
     return allItems;
   };
 
+  // Generate Excel export for all bases info
+  const exportBasesInfo = async () => {
+    setExportLoading(true);
+    try {
+      const aoa = [
+        ["Información de Bases AIS", "", "", "", "", ""],
+        ["Nombre de Base", "Descripción de la base", "Tipo de Base", "Contacto (Nombre y número)", "Sistema AIS tx", "Sistema AIS rx"],
+      ];
+
+      bases.forEach(base => {
+        const contacto = `${base.nombre_comunicante || ''} ${base.tel_comunicante || ''}`.trim() || '-';
+        aoa.push([
+          base.nombre_base || '',
+          base.descripcion_base || '',
+          base.tipo_base || '',
+          contacto,
+          base.descripcion_ais_tx || '',
+          base.descripcion_ais_rx || '',
+        ]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+      ws["!cols"] = [
+        { wpx: 200 },  // Nombre de Base
+        { wpx: 250 },  // Descripción de la base
+        { wpx: 100 },  // Tipo de Base
+        { wpx: 180 },  // Contacto
+        { wpx: 200 },  // Sistema AIS tx
+        { wpx: 200 },  // Sistema AIS rx
+      ];
+
+      ws["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+      ];
+
+      // Style title cell
+      const titleCell = ws["A1"];
+      if (titleCell) {
+        titleCell.s = {
+          font: { bold: true, sz: 14, color: { rgb: "1F2937" } },
+          alignment: { horizontal: "center", vertical: "center" },
+          fill: { patternType: "solid", fgColor: { rgb: "F3F4F6" } },
+        };
+      }
+
+      // Style header row
+      const headerStyle = {
+        font: { bold: true, sz: 11, color: { rgb: "374151" } },
+        fill: { patternType: "solid", fgColor: { rgb: "E5E7EB" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "9CA3AF" } },
+          bottom: { style: "thin", color: { rgb: "9CA3AF" } },
+          left: { style: "thin", color: { rgb: "9CA3AF" } },
+          right: { style: "thin", color: { rgb: "9CA3AF" } },
+        },
+      };
+
+      const headerRange = XLSX.utils.decode_range(ws["!ref"] || "A1");
+      const lastCol = String.fromCharCode(65 + headerRange.e.c);
+      for (let c = 0; c <= headerRange.e.c; c++) {
+        const cellRef = `${String.fromCharCode(65 + c)}2`;
+        if (ws[cellRef]) ws[cellRef].s = headerStyle;
+      }
+
+      // Style data rows
+      bases.forEach((_, index) => {
+        const rowIndex = index + 3;
+        const rowStyle = {
+          fill: { patternType: "solid", fgColor: { rgb: index % 2 === 0 ? "F9FAFB" : "FFFFFF" } },
+          border: {
+            top: { style: "thin", color: { rgb: "E5E7EB" } },
+            bottom: { style: "thin", color: { rgb: "E5E7EB" } },
+            left: { style: "thin", color: { rgb: "E5E7EB" } },
+            right: { style: "thin", color: { rgb: "E5E7EB" } },
+          },
+          alignment: { vertical: "center" },
+        };
+        for (let c = 0; c <= headerRange.e.c; c++) {
+          const cellRef = `${String.fromCharCode(65 + c)}${rowIndex}`;
+          if (ws[cellRef]) ws[cellRef].s = rowStyle;
+        }
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, `Bases_Informacion`);
+
+      XLSX.writeFile(wb, `bases_ais_informacion.xlsx`);
+      setShowExportSubmenu(false);
+      toast.success(`Excel de información de bases generado correctamente.`);
+    } catch (error) {
+      console.error('Error generating bases Excel:', error);
+      toast.error('No se pudo generar el Excel de bases');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   // Generate Excel export
   const generateExcelExport = async () => {
     if (!exportYear) {
@@ -391,8 +491,7 @@ const DashboardBaseAIS = () => {
           <button
             className="ais-btn-secondary"
             onClick={() => {
-              fetchAvailableYears();
-              setShowExportModal(true);
+              setShowExportSubmenu(true);
             }}
             disabled={exportLoading}
           >
@@ -628,6 +727,49 @@ const DashboardBaseAIS = () => {
             <button className="ais-btn-primary" onClick={saveBase}>
               {editingBaseId ? 'Guardar cambios' : 'Crear Base'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Export Submenu */}
+      {showExportSubmenu && (
+        <div className="modal-overlay" onClick={() => setShowExportSubmenu(false)}>
+          <div className="modal-content export-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-topbar">
+              <span className="modal-tag">Exportar a Excel</span>
+            </div>
+            <p className="export-message">
+              Seleccioná qué información querés exportar
+            </p>
+
+            <div className="modal-actions" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)', width: '100%' }}>
+              <button
+                className="ais-btn-primary"
+                style={{ minWidth: 200 }}
+                onClick={() => {
+                  setShowExportSubmenu(false);
+                  exportBasesInfo();
+                }}
+                disabled={exportLoading}
+              >
+                {exportLoading ? 'Generando...' : 'Exportar información de las bases'}
+              </button>
+              <button
+                className="ais-btn-primary"
+                style={{ minWidth: 200 }}
+                onClick={() => {
+                  setShowExportSubmenu(false);
+                  fetchAvailableYears();
+                  setShowExportModal(true);
+                }}
+                disabled={exportLoading}
+              >
+                Exportar campaña específica (por año)
+              </button>
+              <button className="ais-btn-secondary" style={{ minWidth: 200 }} onClick={() => setShowExportSubmenu(false)}>
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}
