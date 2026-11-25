@@ -481,7 +481,7 @@ ws["!cols"] = [
           <h1 className="expiration-title-header">Vencimientos</h1>
         </div>
 
-        <button className="new-item-btn" onClick={() => openModal()}>
+        <button className="btn btn-primary btn-lg" onClick={() => openModal()}>
           + Nuevo vencimiento
         </button>
       </div>
