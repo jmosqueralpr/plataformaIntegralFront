@@ -12,15 +12,6 @@
   color: var(--color-text-primary);
 }
 
-/* Eyebrow/Kicker */
-.eyebrow {
-  margin: 0 0 var(--space-1);
-  font-size: var(--text-xs);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-info);
-}
-
 /* ----------------------------------------------------------------------
    HEADER DE PÁGINA
    ---------------------------------------------------------------------- */
@@ -42,13 +33,6 @@
   margin-left: calc(-1 * var(--space-5));
   margin-right: calc(-1 * var(--space-5));
   margin-top: calc(-1 * var(--space-6));
-}
-
-.expiration-title-header {
-  margin: 0;
-  font-size: var(--text-3xl);
-  color: var(--color-text-primary);
-  font-weight: var(--font-bold);
 }
 
 /* ----------------------------------------------------------------------

@@ -363,12 +363,12 @@ const TaskManager = () => {
     <div className="task-manager-container">
       <header className="task-header">
         <div>
-          <p className="task-kicker">Panel operativo</p>
-          <h1 className="task-title">Gestor de tareas</h1>
+          <p className="eyebrow">Panel operativo</p>
+          <h1 className="expiration-title-header">Gestor de tareas</h1>
         </div>
         <button
           type="button"
-          className="new-task-btn"
+          className="btn btn-primary btn-lg"
           onClick={() => openModal(getDefaultTask())}
         >
           + Nueva tarea

@@ -20,20 +20,6 @@
   margin-bottom: var(--space-5);
 }
 
-.eyebrow {
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-xs);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-info);
-}
-
-.solutions-title {
-  margin: 0;
-  font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
-  color: var(--color-text-primary);
-}
-
 /* New solution button - usa .btn-success del Design System */
 .new-solution-btn {
   /* En JSX: class="btn btn-success" */

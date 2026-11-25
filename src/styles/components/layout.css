@@ -76,6 +76,22 @@
   flex-shrink: 0;
 }
 
+/* Encabezado de página compartido (eyebrow + título) */
+.eyebrow {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-info);
+}
+
+.expiration-title-header {
+  margin: 0;
+  font-size: var(--text-3xl);
+  color: var(--color-text-primary);
+  font-weight: var(--font-bold);
+}
+
 /* ----------------------------------------------------------------------
    TOOLBAR - Barra de herramientas (búsqueda, filtros, acciones)
    ---------------------------------------------------------------------- */

@@ -169,10 +169,10 @@ const SearchSolutions = () => {
       <header className="solutions-header">
         <div>
           <p className="eyebrow">Base de conocimiento</p>
-          <h1 className="solutions-title">Soluciones técnicas</h1>
+          <h1 className="expiration-title-header">Soluciones técnicas</h1>
         </div>
 
-        <button className="new-solution-btn" onClick={() => navigate('/searchSolutionsNew')}>
+        <button className="btn btn-primary btn-lg" onClick={() => navigate('/searchSolutionsNew')}>
           + Nueva solución
         </button>
       </header>
