@@ -405,22 +405,200 @@
 }
 
 /* ========================================================================
+   FUENTES AIS MÚLTIPLES - Gestión de estaciones receptoras
+   ======================================================================== */
+
+/* Sección de fuentes */
+.ais-live-sources {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(155deg, var(--color-bg-card) 0%, var(--color-bg-secondary) 100%);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(var(--space-3), 2.4vw, var(--space-5));
+}
+
+.ais-live-sources .ais-live-section-header {
+  margin-bottom: var(--space-4);
+}
+
+/* Lista de fuentes */
+.ais-sources-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* Tarjeta de fuente individual */
+.ais-source-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
+  min-width: 0;
+}
+
+/* Header de la tarjeta (nombre, modo, estado, acciones) */
+.ais-source-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ais-source-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.ais-source-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.ais-source-mode {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+}
+
+.ais-source-mode-tcp-client {
+  background: var(--color-info-glow);
+  color: var(--color-info);
+}
+
+.ais-source-mode-tcp-server {
+  background: var(--color-success-glow);
+  color: var(--color-success);
+}
+
+.ais-source-mode-udp-server {
+  background: var(--color-warning-glow);
+  color: var(--color-warning);
+}
+
+.ais-source-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+}
+
+.ais-source-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+
+.ais-source-status.is-connected .ais-source-status-dot {
+  background: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success-glow);
+}
+
+.ais-source-status.is-connecting .ais-source-status-dot,
+.ais-source-status.is-reconnecting .ais-source-status-dot {
+  background: var(--color-warning);
+  box-shadow: 0 0 8px var(--color-warning-glow);
+}
+
+.ais-source-status.is-error .ais-source-status-dot {
+  background: var(--color-danger);
+}
+
+.ais-source-status.is-disconnected .ais-source-status-dot {
+  background: var(--color-text-muted);
+}
+
+.ais-source-address {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Acciones de la tarjeta */
+.ais-source-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.ais-source-btn {
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.ais-source-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.ais-source-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Meta información de la fuente */
+.ais-source-meta {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: var(--space-2);
+}
+
+/* Formulario para agregar fuente */
+.ais-add-source-form {
+  margin-bottom: var(--space-4);
+}
+
+/* Responsive para fuentes */
+@media (max-width: 640px) {
+  .ais-source-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ais-source-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .ais-source-meta {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
+
+/* ========================================================================
    VERSIONADO - AIS LIVE
    ========================================================================
-   v1.0.0 (2026-11-24) - Migración a Design System v1.0.0
-   - Cards -> .card component
-   - Buttons -> .btn component classes
-   - Stats grid -> .summary-grid
-   - Sections -> .section + .section-header
-   - Forms -> .input + .select
-   - Badges -> .badge + .badge-dot components
-   - Responsive breakpoints consistentes: 820px, 640px
-   - Todos valores hardcoded -> var(--token)
+   v1.1.0 (2026-11-25) - Soporte de múltiples fuentes AIS
+   - Sección de fuentes AIS con tabla de estaciones receptoras
+   - Modos: tcp-client, tcp-server, udp-server
+   - Conectar/desconectar por fuente individualmente
+   - Agregar/eliminar fuentes desde el frontend
+   - Persistencia de configuración en el backend
 
    PRÓXIMOS:
-   [ ] Eliminar estilos duplicados y usar clases compuestas en JSX
-   [ ] Unificar .ais-live-header con .page-header
-   [ ] Unificar .ais-live-stats article con .summary-card
+   [ ] Salidas de datos configurables (TCP, UDP, WebSocket, archivos)
+   [ ] WebSocket para datos en tiempo real (reemplazar polling)
+   [ ] Trazado de rutas (tracks) y geofencing
 
    REGLAS:
    - NO hardcodear colores, spacing, radius, shadows

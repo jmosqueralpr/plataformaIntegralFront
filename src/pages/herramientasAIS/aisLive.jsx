@@ -47,6 +47,12 @@ const fi31Fields = [
   ['salinity', 'Salinidad', ''],
 ];
 
+const modeLabels = {
+  'tcp-client': 'Cliente TCP',
+  'tcp-server': 'Servidor TCP',
+  'udp-server': 'Servidor UDP',
+};
+
 const formatDate = (value) => {
   if (!value) return '—';
   return new Intl.DateTimeFormat('es-AR', {
@@ -73,8 +79,15 @@ const AisLive = () => {
   const [mmsiFilter, setMmsiFilter] = useState('');
   const [paused, setPaused] = useState(false);
   const pausedMessagesRef = useRef([]);
-  const [customHost, setCustomHost] = useState('');
-  const [customPort, setCustomPort] = useState('');
+  const [sources, setSources] = useState([]);
+  const [sourcesLoading, setSourcesLoading] = useState(false);
+  const [showAddSource, setShowAddSource] = useState(false);
+  const [newSource, setNewSource] = useState({
+    name: '',
+    mode: 'tcp-client',
+    host: '190.210.40.127',
+    port: '3069',
+  });
 
   const { isAuthenticated, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -98,6 +111,7 @@ const AisLive = () => {
     }
   }, [isAuthenticated, logout, navigate]);
 
+  // Mapa Leaflet
   useEffect(() => {
     const map = L.map(mapElementRef.current, { preferCanvas: true }).setView([-34.6, -58.38], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -113,6 +127,7 @@ const AisLive = () => {
     };
   }, []);
 
+  // Renderizar marcadores en el mapa
   useEffect(() => {
     const mapState = mapStateRef.current;
     if (!mapState) return;
@@ -133,6 +148,7 @@ const AisLive = () => {
     });
   }, [snapshot.targets]);
 
+  // Cargar snapshot agregado (compatibilidad con frontend actual)
   useEffect(() => {
     let active = true;
     let requestPending = false;
@@ -169,6 +185,27 @@ const AisLive = () => {
     };
   }, []);
 
+  // Cargar lista de fuentes AIS
+  useEffect(() => {
+    const fetchSources = async () => {
+      setSourcesLoading(true);
+      try {
+        const response = await fetch(`${config.baseURL}/api/ais/sources`, {
+          credentials: 'include',
+        });
+        if (!response.ok) throw new Error('No se pudieron cargar las fuentes AIS');
+        const data = await response.json();
+        setSources(data || []);
+      } catch (err) {
+        console.error('Error cargando fuentes AIS:', err);
+        setSources([]);
+      } finally {
+        setSourcesLoading(false);
+      }
+    };
+    fetchSources();
+  }, []);
+
   const connectionActive = ['connected', 'connecting', 'reconnecting', 'error'].includes(snapshot.status);
 
   const centerMap = () => {
@@ -181,13 +218,45 @@ const AisLive = () => {
     mapState.map.fitBounds(bounds, { padding: [24, 24], maxZoom: 12 });
   };
 
+  // Conectar/desconectar una fuente específica
+  const handleSourceConnectionToggle = async (source) => {
+    if (connectionAction) return;
+    const action = source.status === 'connected' || source.status === 'connecting' || source.status === 'reconnecting' || source.status === 'error' ? 'disconnect' : 'connect';
+    setConnectionAction(action);
+    try {
+      const response = await fetch(`${config.baseURL}/api/ais/sources/${source.sourceId}/${action}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.message || `No se pudo ${action} la fuente AIS.`);
+      }
+      setSnapshot(body);
+      setError('');
+      // Refrescar lista de fuentes para mostrar el nuevo estado
+      const sourcesResp = await fetch(`${config.baseURL}/api/ais/sources`, {
+        credentials: 'include',
+      });
+      if (sourcesResp.ok) {
+        const sourcesData = await sourcesResp.json();
+        setSources(sourcesData || []);
+      }
+    } catch (requestError) {
+      setError(requestError.message || `No se pudo ${action} la fuente AIS.`);
+    } finally {
+      setConnectionAction('');
+    }
+  };
+
+  // Conectar/desconectar fuente principal (legacy, para compatibilidad)
   const handleConnectionToggle = async () => {
     if (connectionAction) return;
     const action = connectionActive ? 'disconnect' : 'connect';
     setConnectionAction(action);
     try {
-      const resolvedHost = customHost || '190.210.40.127';
-      const resolvedPort = customPort || '3069';
+      const resolvedHost = '190.210.40.127';
+      const resolvedPort = '3069';
       const response = await fetch(`${config.baseURL}/api/ais/${action}`, {
         method: 'POST',
         credentials: 'include',
@@ -203,6 +272,72 @@ const AisLive = () => {
     } catch (requestError) {
       setError(requestError.message || 'No se pudo cambiar el estado de la conexión AIS.');
     } finally {
+      setConnectionAction('');
+    }
+  };
+
+  // Agregar nueva fuente AIS
+  const handleAddSource = async (e) => {
+    e.preventDefault();
+    if (connectionAction) return;
+    setConnectionAction('adding');
+    try {
+      const response = await fetch(`${config.baseURL}/api/ais/sources`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newSource.name || `Fuente AIS ${newSource.host}:${newSource.port}`,
+          mode: newSource.mode,
+          host: newSource.host,
+          port: newSource.port,
+        }),
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.message || 'No se pudo crear la fuente AIS.');
+      }
+      setShowAddSource(false);
+      setNewSource({ name: '', mode: 'tcp-client', host: '190.210.40.127', port: '3069' });
+      setConnectionAction('');
+      // Refrescar lista
+      const sourcesResp = await fetch(`${config.baseURL}/api/ais/sources`, {
+        credentials: 'include',
+      });
+      if (sourcesResp.ok) {
+        const sourcesData = await sourcesResp.json();
+        setSources(sourcesData || []);
+      }
+    } catch (requestError) {
+      setError(requestError.message || 'No se pudo crear la fuente AIS.');
+      setConnectionAction('');
+    }
+  };
+
+  // Eliminar una fuente AIS
+  const handleDeleteSource = async (sourceId) => {
+    if (connectionAction) return;
+    if (!window.confirm('¿Seguro que querés eliminar esta fuente AIS?')) return;
+    setConnectionAction('deleting');
+    try {
+      const response = await fetch(`${config.baseURL}/api/ais/sources/${sourceId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const body = await response.json();
+        throw new Error(body.message || 'No se pudo eliminar la fuente AIS.');
+      }
+      setConnectionAction('');
+      const sourcesResp = await fetch(`${config.baseURL}/api/ais/sources`, {
+        credentials: 'include',
+      });
+      if (sourcesResp.ok) {
+        const sourcesData = await sourcesResp.json();
+        setSources(sourcesData || []);
+      }
+    } catch (requestError) {
+      setError(requestError.message || 'No se pudo eliminar la fuente AIS.');
       setConnectionAction('');
     }
   };
@@ -238,36 +373,6 @@ const AisLive = () => {
               {statusLabels[snapshot.status] || 'Estado desconocido'}
             </div>
             <div className="ais-live-connection-controls">
-              <input
-                type="text"
-                placeholder="IP (opcional)"
-                value={customHost}
-                onChange={(e) => setCustomHost(e.target.value)}
-                style={{
-                  padding: '6px 9px',
-                  fontSize: '0.76rem',
-                  border: '1px solid rgba(148, 163, 184, 0.18)',
-                  borderRadius: '8px',
-                  background: 'rgba(10, 17, 24, 0.42)',
-                  color: '#e8edf5',
-                  minWidth: '120px',
-                }}
-              />
-              <input
-                type="text"
-                placeholder="Puerto (opcional)"
-                value={customPort}
-                onChange={(e) => setCustomPort(e.target.value)}
-                style={{
-                  padding: '6px 9px',
-                  fontSize: '0.76rem',
-                  border: '1px solid rgba(148, 163, 184, 0.18)',
-                  borderRadius: '8px',
-                  background: 'rgba(10, 17, 24, 0.42)',
-                  color: '#e8edf5',
-                  minWidth: '70px',
-                }}
-              />
               <button
                 type="button"
                 className="ais-live-connect-button"
@@ -277,6 +382,15 @@ const AisLive = () => {
                 {connectionAction
                   ? (connectionAction === 'connect' ? 'Conectando…' : 'Desconectando…')
                   : (connectionActive ? 'Desconectar entrada TCP' : 'Conectar entrada TCP')}
+              </button>
+              <button
+                type="button"
+                className="ais-live-connect-button"
+                onClick={() => setShowAddSource(true)}
+                disabled={Boolean(connectionAction)}
+                style={{ marginLeft: 'var(--space-2)', background: 'var(--color-success)' }}
+              >
+                + Agregar fuente
               </button>
             </div>
           </div>
@@ -301,6 +415,170 @@ const AisLive = () => {
             {snapshot.error}
           </div>
         )}
+
+        {/* Gestión de fuentes AIS */}
+        <section className="ais-live-sources">
+          <div className="ais-live-section-header">
+            <div>
+              <h2>Fuentes AIS configuradas</h2>
+              <p>Gestioná múltiples estaciones receptoras simultáneamente.</p>
+            </div>
+            {showAddSource && (
+              <form onSubmit={handleAddSource} className="ais-add-source-form" style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={newSource.name}
+                  onChange={(e) => setNewSource({ ...newSource, name: e.target.value })}
+                  style={{
+                    padding: '6px 9px',
+                    fontSize: '0.76rem',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '8px',
+                    background: 'rgba(10, 17, 24, 0.42)',
+                    color: '#e8edf5',
+                    minWidth: '140px',
+                  }}
+                />
+                <select
+                  value={newSource.mode}
+                  onChange={(e) => setNewSource({ ...newSource, mode: e.target.value })}
+                  style={{
+                    padding: '6px 9px',
+                    fontSize: '0.76rem',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '8px',
+                    background: 'rgba(10, 17, 24, 0.42)',
+                    color: '#e8edf5',
+                    minWidth: '130px',
+                  }}
+                >
+                  <option value="tcp-client">Cliente TCP</option>
+                  <option value="tcp-server">Servidor TCP</option>
+                  <option value="udp-server">Servidor UDP</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Host"
+                  value={newSource.host}
+                  onChange={(e) => setNewSource({ ...newSource, host: e.target.value })}
+                  style={{
+                    padding: '6px 9px',
+                    fontSize: '0.76rem',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '8px',
+                    background: 'rgba(10, 17, 24, 0.42)',
+                    color: '#e8edf5',
+                    minWidth: '120px',
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Puerto"
+                  value={newSource.port}
+                  onChange={(e) => setNewSource({ ...newSource, port: e.target.value })}
+                  style={{
+                    padding: '6px 9px',
+                    fontSize: '0.76rem',
+                    border: '1px solid rgba(148, 163, 184, 0.18)',
+                    borderRadius: '8px',
+                    background: 'rgba(10, 17, 24, 0.42)',
+                    color: '#e8edf5',
+                    minWidth: '80px',
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="ais-live-connect-button"
+                  disabled={Boolean(connectionAction)}
+                  style={{ marginLeft: 'var(--space-2)', background: 'var(--color-brand-500)' }}
+                >
+                  {connectionAction === 'adding' ? 'Agregando…' : 'Agregar'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddSource(false)}
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '0.76rem',
+                    border: '1px solid rgba(148, 163, 184, 0.3)',
+                    borderRadius: '8px',
+                    background: 'transparent',
+                    color: '#e8edf5',
+                    cursor: 'pointer',
+                    marginLeft: 'var(--space-2)',
+                  }}
+                >
+                  Cancelar
+                </button>
+              </form>
+            )}
+          </div>
+
+          {sourcesLoading && (
+            <p className="ais-live-empty">Cargando fuentes AIS…</p>
+          )}
+
+          {!sourcesLoading && sources.length === 0 && (
+            <p className="ais-live-empty">No hay fuentes AIS configuradas. Agregá tu primera estación receptora.</p>
+          )}
+
+          {!sourcesLoading && sources.length > 0 && (
+            <div className="ais-sources-list">
+              {sources.map((source) => {
+                const isConnecting = source.status === 'connecting' || source.status === 'reconnecting';
+                const canConnect = source.status === 'disconnected' || source.status === 'error';
+                return (
+                  <div key={source.sourceId} className="ais-source-card">
+                    <div className="ais-source-header">
+                      <div className="ais-source-info">
+                        <span className="ais-source-name">{source.name}</span>
+                        <span className={`ais-source-mode ais-source-mode-${source.mode}`}>{modeLabels[source.mode] || source.mode}</span>
+                        <span className={`ais-source-status is-${source.status}`}>
+                          <span className="ais-source-status-dot" />
+                          {statusLabels[source.status] || 'Estado desconocido'}
+                        </span>
+                        <span className="ais-source-address">{source.host}:{source.port}</span>
+                      </div>
+                      <div className="ais-source-actions">
+                        <button
+                          type="button"
+                          onClick={() => handleSourceConnectionToggle(source)}
+                          disabled={Boolean(connectionAction) || connectionAction === 'adding' || connectionAction === 'deleting'}
+                          className="ais-source-btn"
+                          style={{
+                            background: canConnect ? 'var(--color-success)' : 'var(--color-danger)',
+                            color: 'white',
+                          }}
+                        >
+                          {isConnecting
+                            ? (source.status === 'reconnecting' ? 'Reconectando…' : 'Conectando…')
+                            : canConnect
+                              ? 'Conectar'
+                              : 'Desconectar'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteSource(source.sourceId)}
+                          disabled={Boolean(connectionAction) || connectionAction === 'adding' || connectionAction === 'deleting'}
+                          className="ais-source-btn"
+                          style={{ background: 'transparent', color: 'var(--color-text-muted)', border: '1px solid var(--color-border-default)' }}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                    <div className="ais-source-meta">
+                      <span><strong>Objetivos:</strong> {source.targetCount || 0}</span>
+                      <span><strong>Mensajes:</strong> {source.messageCount || 0}</span>
+                      {source.lastReceivedAt && <span><strong>Último dato:</strong> {formatDate(source.lastReceivedAt)}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
         <section className="ais-live-stats" aria-label="Estado de la recepción AIS">
           <article><span>Barcos</span><strong>{snapshot.targets.filter((target) => target.kind === 'vessel').length}</strong></article>
